@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Email Verification</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            background-color: #ffffff;
+            max-width: 600px;
+            margin: 40px auto;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            text-align: left;
+        }
+
+        h1 {
+            color: #0c2952;
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+
+        p {
+            font-size: 16px;
+            line-height: 1.5;
+            color: #333333;
+            margin-bottom: 20px;
+        }
+
+        .otp-box {
+            display: block;
+            padding: 15px;
+            font-size: 35px;
+            font-weight: bold;
+            background-color: #e9ecef;
+            color: #0c2952;
+            letter-spacing: 2px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .footer {
+            font-size: 14px;
+            color: #888888;
+            margin-top: 30px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>Verify Your Email Address</h1>
+        <p>Hello {{firstName}},</p>
+        <p>Thanks for choosing our platform!</p>
+        <p>To verify your email address, please use the following One-Time Password (OTP):</p>
+        <div class="otp-box">{{OTP}}</div>
+        <p>This OTP is valid for a limited time. If you didn’t request this, please ignore this email.</p>
+        <p class="footer">Thanks,<br />The Concept Map Team</p>
+    </div>
+</body>
+
+</html>
