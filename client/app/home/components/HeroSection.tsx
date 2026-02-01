@@ -17,7 +17,7 @@ import connector from "@/assets/icons/connector.svg"
 const HeroSection = () => {
   return (
     <>
-      <section className="relative overflow-visible bg-primary-dark-green">
+      <section className="relative overflow-visible bg-[#013913]">
         
         <div className="mx-auto max-w-5xl px-6 pt-12 pb-40 text-center">
           <h1 className="text-4xl font-normal leading-tight text-white md:text-6xl">
@@ -33,44 +33,62 @@ const HeroSection = () => {
 
         <div className="relative mx-auto -mt-32 h-[300px] max-w-6xl">
 
-          <Image
-            src={dashboard}
-            alt="Dashboard"
-            className="absolute left-1/2 top-0 z-20  -translate-x-1/2 rounded-xl"
-          />
+<Image
+  src={dashboard}
+  alt="Dashboard"
+  className="absolute left-1/2 top-0 z-20 -translate-x-1/2 rounded-xl"
+/>
 
-          <Image
-            src={comment}
-            alt="Comment"
-            width={400}
-            height={300}
-            className="absolute left-10 -top-5 z-30 rounded-xl"
-          />
+<Image
+  src={comment}
+  alt="Comment"
+  width={400}
+  height={300}
+  className="
+    absolute left-10 -top-5 z-30 rounded-xl
+    animate-[levitate_14s_ease-in-out_infinite]
+    motion-reduce:animate-none
+  "
+/>
 
-          <Image
-            src={payment}
-            alt="Payment"
-            width={200}
-            height={250}
-            className="absolute right-14 -top-5 z-30 rounded-xl"
-          />
+<Image
+  src={payment}
+  alt="Payment"
+  width={200}
+  height={250}
+  className="
+    absolute right-14 -top-5 z-30 rounded-xl
+    animate-[levitate_16s_ease-in-out_infinite]
+    motion-reduce:animate-none
+  "
+/>
 
-          <Image
-            src={post}
-            alt="Post"
-            width={200}
-            height={300}
-            className="absolute top-85 right-23 z-30 rounded-xl"
-          />
+<Image
+  src={post}
+  alt="Post"
+  width={200}
+  height={300}
+  className="
+    absolute top-85 right-23 z-30 rounded-xl
+    animate-[levitate_18s_ease-in-out_infinite]
+    motion-reduce:animate-none
+  "
+/>
 
-          <Image
-            src={earnings}
-            alt="Earnings"
-            width={400}
-            height={300}
-            className="absolute top-40 left-35 z-30  rounded-xl"
-          />
-        </div>
+<Image
+  src={earnings}
+  alt="Earnings"
+  width={400}
+  height={300}
+  className="
+    absolute top-40 left-35 z-30 rounded-xl
+    animate-[levitate_15s_ease-in-out_infinite]
+    motion-reduce:animate-none
+  "
+/>
+
+</div>
+
         <section className="relative bg-white">
   <div className="relative mx-auto max-w-6xl ">
     
@@ -85,7 +103,6 @@ const HeroSection = () => {
 </section>
       </section>
 
-{/* SVG labels section */}
 <section className="relative bg-white mt-48">
   <div className="relative mx-auto max-w-6xl h-24">
     
@@ -93,13 +110,13 @@ const HeroSection = () => {
           <Image
             src={branch}
             alt="Buyers"
-            className="absolute right-0 left-60 -top-16  z-20"
+            className="absolute lg:left-60 -top-16  z-20 right-20 mt-5 lg:mt-0 lg:right-0"
           />
 
   </div>
 </section>
 
-      <section className="bg-white pt-20 pb-16">
+      <section className="bg-white pt-20 pb-16 mt-2 lg:mt-0">
         <div className="mx-auto max-w-6xl px-6">
           <div className="flex flex-col md:flex-row gap-6">
             
