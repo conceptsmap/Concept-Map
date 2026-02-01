@@ -1,4 +1,8 @@
+import dotenv from "dotenv";
+dotenv.config();
 import express from "express";
+import UserModel from "./repository/model/user.model";
+import argon2 from "argon2";
 import cors from "cors";
 import morgan from "morgan";
 import { PORT } from "./config";
@@ -6,8 +10,28 @@ import { router } from "./routes";
 import { errorHandler } from "./middleware/errorHandler";
 import { connectToDatabase } from "./connectDB";
 import cookieParser from "cookie-parser";
-import dotenv from "dotenv";
-dotenv.config();
+
+// Ensure fixed login user exists in DB
+async function ensureFixedUser() {
+  const email = process.env.LOGIN_EMAIL;
+  const password = process.env.LOGIN_PASSWORD;
+  if (!email || !password) return;
+  const user = await UserModel.findOne({ email });
+  if (!user) {
+    const hash = await argon2.hash(password);
+    await UserModel.create({
+      email,
+      password: hash,
+      is_verified: true,
+      username: "Admin",
+      profile_url: "",
+      role: "ADMIN",
+    });
+    console.log("Fixed login user created");
+  } else {
+    // Optionally update password if needed
+  }
+}
 
 const app = express();
 
@@ -32,7 +56,8 @@ app.use(cookieParser());
 app.use(morgan(process.env.NODE_ENV === "production" ? "combined" : "dev"));
 
 //function to connect to the database
-connectToDatabase();
+
+connectToDatabase().then(ensureFixedUser);
 
 //routes
 app.use("/api", router);

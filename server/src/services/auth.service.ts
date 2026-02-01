@@ -11,8 +11,9 @@ import jwt from "jsonwebtoken";
 import { JWT_SECRET_KEY } from "../config";
 import { sendEmail } from "../packages/notification/src";
 
+
 export class AuthService {
-  private readonly userCrudRepository: CrudRepository<IUser | IOtp>;
+  private readonly userCrudRepository: CrudRepository<IUser>;
   private readonly otpCrudRepository: CrudRepository<IOtp>;
 
   constructor() {
@@ -53,24 +54,28 @@ export class AuthService {
       });
     }
 
-    if (await argon2.verify(user.password, password)) {
-      const jwtPayload = {
-        id: user?._id,
-        role: user.role,
-        email: user.email,
-      };
-
-      //jwt creation
-      const token = jwt.sign(jwtPayload, JWT_SECRET_KEY!, {
-        expiresIn: "30d",
-      });
-
-      return {
-        ...user,
-        token,
-      };
+    try {
+      const passwordMatch = await argon2.verify(user.password, password);
+      if (passwordMatch) {
+        const jwtPayload = {
+          id: user?._id,
+          role: user.role,
+          email: user.email,
+        };
+        //jwt creation
+        const token = jwt.sign(jwtPayload, JWT_SECRET_KEY!, {
+          expiresIn: "30d",
+        });
+        return {
+          ...user,
+          token,
+        };
+      }
+    } catch (err) {
+      console.error("Password verification error", err);
     }
 
+    console.error("Wrong password");
     throw new CustomError(400, "BAD_REQUEST", { message: "Wrong password" });
   }
 
@@ -82,7 +87,7 @@ export class AuthService {
         action_type: "VERIFY_EMAIL",
       },
       "userId",
-    )) as any;
+    ));
 
     // Generate a new OTP code
     const newCode = generateOTP();
@@ -111,7 +116,7 @@ export class AuthService {
         },
       });
 
-      return await this.otpCrudRepository.updateDocumenById(otp._id as string, {
+      return await this.otpCrudRepository.updateDocumenById(otp._id.toString(), {
         code: newCode,
         retry_count: count,
       });
@@ -163,7 +168,7 @@ export class AuthService {
       });
     }
     if (otp.code === Number(code)) {
-      await this.otpCrudRepository.deleteDocumenById(otp._id as string);
+      await this.otpCrudRepository.deleteDocumenById(otp._id.toString());
 
       const user = (await this.userCrudRepository.updateDocumenById(userId, {
         is_verified: true,
@@ -198,7 +203,7 @@ export class AuthService {
         action_type: "VERIFY_EMAIL",
       },
       "userId",
-    )) as any;
+    ));
 
     if (otp.retry_count === 0 && !hasOtpExpired(otp.updatedAt)) {
       throw new CustomError(400, "BAD_REQUEST", {
@@ -226,7 +231,7 @@ export class AuthService {
       },
     });
 
-    return await this.otpCrudRepository.updateDocumenById(otp._id as string, {
+    return await this.otpCrudRepository.updateDocumenById(otp._id.toString(), {
       code: newCode,
       retry_count: count,
     });
