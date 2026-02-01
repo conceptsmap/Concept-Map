@@ -70,11 +70,11 @@ const Content = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-48 items-center px-6 md:px-12">
 
           <div className="text-left">
-            <h2 className="text-3xl md:text-4xl font-semibold text-[#013913] leading-snug">
+            <h2 className="text-3xl md:text-5xl text-[#013913] leading-snug">
               Unlock Original <br /> Scripts & Stories
             </h2>
 
-            <p className="mt-5 max-w-md text-sm md:text-base text-[#1F7A4F]">
+            <p className="mt-5 max-w-md text-sm md:text-base text-[#013913]">
               Browse through professionally written scripts across multiple
               genres. Get inspired, adapt, or produce your next big project!
             </p>
@@ -149,11 +149,11 @@ const Content = () => {
           </div>
 
           <div className="text-left">
-            <h2 className="text-3xl md:text-4xl font-semibold text-[#013913] leading-snug">
+            <h2 className="text-3xl md:text-5xl text-[#013913] leading-snug">
               Engaging Summaries <br /> at a Glance
             </h2>
 
-            <p className="mt-5 max-w-md text-sm md:text-base text-[#1F7A4F]">
+            <p className="mt-5 max-w-md text-sm md:text-base text-[#013913]">
               Not ready for a full script? Discover well-crafted synopses to get a
               quick overview of compelling stories before diving deeper.
             </p>

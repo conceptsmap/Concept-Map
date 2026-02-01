@@ -30,20 +30,20 @@ const Footer = () => {
             Visualize the Story <br /> Before It Comes to Life
           </h2>
 
-          <p className="mt-5 max-w-md text-sm md:text-base text-[#CFF3E1]">
+          <p className="mt-5 max-w-md text-sm md:text-base text-white">
             Storyboards help bring ideas to life with scene-by-scene
             visualizations.
           </p>
-
           <Button
-            className="
-              mt-8 px-4 py-5 text-lg font-bold text-white rounded-lg
-              bg-gradient-to-b from-[#98F3C8] to-[#1DBF73]
-              shadow-[inset_0_0_0_1px_#1DBF73,0_2px_4px_rgba(0,0,0,0.25)]
-            "
-          >
-            View Storyboards
-          </Button>
+          className="
+            mt-8 px-4 py-5 text-lg font-bold text-white rounded-lg border-3 border-[#1DBF73]
+            bg-gradient-to-b from-[#98F3C8] to-[#1DBF73]
+            shadow-[inset_0_0_0_1px_#1DBF73,0_2px_4px_rgba(0,0,0,0.25)]
+             transition-all
+          "
+        >
+       View Storyboards
+        </Button>
         </div>
 
         <div className="relative h-[360px]">

@@ -1,4 +1,3 @@
-import React from "react"
 import Image from "next/image"
 import dashboard from "@/assets/images/buyers after login (2) 1.png"
 import payment from "@/assets/images/Frame 30 (1) 1.png"
@@ -11,14 +10,13 @@ import discover from "@/assets/icons/discover.svg"
 import shield from "@/assets/icons/shield.svg"
 import stats from "@/assets/icons/stats.svg"
 import unlock from "@/assets/icons/unlock.svg"
-import branch from "@/assets/icons/branch.svg"
 import connector from "@/assets/icons/connector.svg"
+import KeyFeatures from "./KeyFeatures"
 
 const HeroSection = () => {
   return (
     <>
       <section className="relative overflow-visible bg-[#013913]">
-        
         <div className="mx-auto max-w-5xl px-6 pt-12 pb-40 text-center">
           <h1 className="text-4xl font-normal leading-tight text-white md:text-6xl">
             Find &amp; Sell High-Quality Ad
@@ -26,100 +24,91 @@ const HeroSection = () => {
             Scripts Effortlessly!
           </h1>
 
-          <p className="mt-6 text-base text-white/90 md:text-lg">
+          <p className="mt-6 text-base text-white/90 md:text-lg mb-2">
             Join a marketplace where scriptwriters and agencies connect seamlessly.
           </p>
         </div>
 
         <div className="relative mx-auto -mt-32 h-[300px] max-w-6xl">
 
-<Image
-  src={dashboard}
-  alt="Dashboard"
-  className="absolute left-1/2 top-0 z-20 -translate-x-1/2 rounded-xl"
-/>
+          <Image
+            src={dashboard}
+            alt="Dashboard"
+            priority
+            className="absolute left-1/2 top-0 z-20 -translate-x-1/2 rounded-xl"
+          />
 
-<Image
-  src={comment}
-  alt="Comment"
-  width={400}
-  height={300}
-  className="
+          <Image
+            src={comment}
+            alt="Comment"
+            width={400}
+            height={300}
+            className="
     absolute left-10 -top-5 z-30 rounded-xl
     animate-[levitate_14s_ease-in-out_infinite]
     motion-reduce:animate-none
   "
-/>
+          />
 
-<Image
-  src={payment}
-  alt="Payment"
-  width={200}
-  height={250}
-  className="
+          <Image
+            src={payment}
+            alt="Payment"
+            width={200}
+            height={250}
+            className="
     absolute right-14 -top-5 z-30 rounded-xl
     animate-[levitate_16s_ease-in-out_infinite]
     motion-reduce:animate-none
   "
-/>
+          />
 
-<Image
-  src={post}
-  alt="Post"
-  width={200}
-  height={300}
-  className="
+          <Image
+            src={post}
+            alt="Post"
+            width={200}
+            height={300}
+            className="
     absolute top-85 right-23 z-30 rounded-xl
     animate-[levitate_18s_ease-in-out_infinite]
     motion-reduce:animate-none
   "
-/>
+          />
 
-<Image
-  src={earnings}
-  alt="Earnings"
-  width={400}
-  height={300}
-  className="
+          <Image
+            src={earnings}
+            alt="Earnings"
+            width={400}
+            height={300}
+            className="
     absolute top-40 left-35 z-30 rounded-xl
     animate-[levitate_15s_ease-in-out_infinite]
     motion-reduce:animate-none
   "
-/>
+          />
 
-</div>
+        </div>
 
         <section className="relative bg-white">
-  <div className="relative mx-auto max-w-6xl ">
-    
-      
-          <Image
-            src={connector}
-            alt="Key Features"
-            className="absolute -top-20  z-20"
-          />
+          <div className="relative mx-auto max-w-6xl ">
 
-  </div>
-</section>
+
+            <Image
+              src={connector}
+              alt="Key Features"
+              className="absolute -top-20  z-20"
+            />
+
+          </div>
+        </section>
       </section>
 
-<section className="relative bg-white mt-48">
-  <div className="relative mx-auto max-w-6xl h-24">
-    
-      
-          <Image
-            src={branch}
-            alt="Buyers"
-            className="absolute lg:left-60 -top-16  z-20 right-20 mt-5 lg:mt-0 lg:right-0"
-          />
+      <KeyFeatures />
 
-  </div>
-</section>
 
       <section className="bg-white pt-20 pb-16 mt-2 lg:mt-0">
         <div className="mx-auto max-w-6xl px-6">
           <div className="flex flex-col md:flex-row gap-6">
-            
+
             <div className="flex-1 rounded-2xl p-6 bg-gradient-to-br from-emerald-400 to-green-600 text-white">
               <ul className="space-y-4">
                 <li className="flex items-center gap-3">
