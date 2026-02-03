@@ -1,6 +1,7 @@
 import { Router } from "express";
 import { ScriptController } from "../../controllers/script.controller";
 import multer from "multer";
+import jwtVerifyMiddleware from "../../middleware/jwtVerify";
 
 export class ScriptRouter {
   public router: Router;
@@ -15,7 +16,7 @@ export class ScriptRouter {
   }
 
   private initRoutes() {
-    this.router.post("/", this.scriptController.createScipt);
+    this.router.post("/", jwtVerifyMiddleware, this.scriptController.createScipt);
     this.router.get("/:id", this.scriptController.getScript);
     this.router.post(
       "/upload",

@@ -10,7 +10,18 @@ export class ScriptController {
 
   createScipt = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const result = await this.scriptService.createScript(req.body);
+      const userId = req.user?.id;
+      if (!userId) {
+        return res.status(401).json({
+          status: "error",
+          message: "Unauthorized User",
+        });
+      }
+
+      const result = await this.scriptService.createScript({
+        ...req.body,
+        userId,
+      });
 
       res.status(201).json({
         status: "success",
@@ -24,7 +35,18 @@ export class ScriptController {
 
   getScript = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const result = await this.scriptService.getScriptDetails(req.params.id);
+      const scriptId = Array.isArray(req.params.id)
+        ? req.params.id[0]
+        : req.params.id;
+
+      if (typeof scriptId !== "string") {
+        return res.status(400).json({
+          status: "error",
+          message: "script id is required",
+        });
+      }
+
+      const result = await this.scriptService.getScriptDetails(scriptId);
       res.status(201).json({
         status: "success",
         message: "Successfully fetched script details",
@@ -60,9 +82,24 @@ export class ScriptController {
   ) => {
     try {
       const { scriptId, userId } = req.query;
+      const normalizedUserId = Array.isArray(userId) ? userId[0] : userId;
+      const normalizedScriptId = Array.isArray(scriptId)
+        ? scriptId[0]
+        : scriptId;
+
+      if (
+        typeof normalizedUserId !== "string" ||
+        typeof normalizedScriptId !== "string"
+      ) {
+        return res.status(400).json({
+          status: "error",
+          message: "scriptId and userId are required",
+        });
+      }
+
       const result = await this.scriptService.getAllOtherScripts(
-        userId as string,
-        scriptId as string
+        normalizedUserId,
+        normalizedScriptId
       );
       res.status(201).json({
         status: "success",

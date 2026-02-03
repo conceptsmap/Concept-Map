@@ -29,6 +29,10 @@ export default function LoginPage() {
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data?.message || "Login failed");
+      const token = data?.data?.token;
+      if (token) {
+        localStorage.setItem("auth_token", token);
+      }
       setSuccess("Login successful!");
     } catch (err: unknown) {
       if (err instanceof Error) {

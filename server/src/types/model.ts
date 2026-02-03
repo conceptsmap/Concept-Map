@@ -25,22 +25,31 @@ export interface IScript extends Document {
   category: ScriptCategory;
   genre: TVCOTTSeriesGenre | ShortsGenre;
   industry_category: IndustryCategory;
-  price: number;
-  currency: string;
-  type: ScriptType;
-  script: Array<{
-    name: string;
-    scenes: Array<{
+  type: ScriptType[];
+  userId: mongoose.ObjectId;
+  script?: {
+    price?: number;
+    currency?: string;
+    content?: Array<{
       name: string;
-      description: string;
+      scenes: Array<{
+        name: string;
+        description: string;
+      }>;
     }>;
-  }>;
-  story_borad: Array<{
-    name: string;
-    cloud_key: string;
-  }>;
-  synposis: {
-    description: string;
+  };
+  story_borad?: {
+    price?: number;
+    currency?: string;
+    content?: Array<{
+      name: string;
+      cloud_url: string;
+    }>;
+  };
+  synopsis?: {
+    price?: number;
+    currency?: string;
+    content?: string;
   };
 }
 
