@@ -131,7 +131,7 @@ const HeroSection = () => {
 
       <KeyFeatures />
 
-      <section className="bg-white pt-20 pb-16 mt-2 lg:mt-0">
+      <section className="bg-white pt-20 pb-16 mt-10 lg:mt-0">
         <div className={"mx-auto max-w-5xl px-6"}>
           <div
             ref={cardsRef}

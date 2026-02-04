@@ -31,12 +31,12 @@ const HowItWorks = () => {
 
         <div className="grid lg:grid-cols-2 gap-12 items-center">
 
-          <div className='lg:ps-28 text-center lg:text-left '>
+          <div className='[@media(min-width:1200px)]:ps-28 lg:ps-24 ps-0 text-center lg:text-left '>
             <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-12">
               How it Works
             </h2>
 
-            <div className="space-y-6 ps-18">
+            <div className="space-y-6 ps-0 [@media(min-width:1200px)]:ps-18">
               {steps.map((step, index) => (
                 <div key={index} className="flex items-start gap-4 justify-center lg:justify-start">
 
