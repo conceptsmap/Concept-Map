@@ -17,29 +17,29 @@ const Navbar = () => {
         </div>
 
         <nav className="hidden md:flex items-center gap-8">
-          <span className="cursor-pointer text-sm font-medium text-white/80 hover:text-white">
+          <span className="cursor-pointer text-sm font-medium text-white">
             Synopsis
           </span>
-          <span className="cursor-pointer text-sm font-medium text-white/80 hover:text-white">
+          <span className="cursor-pointer text-sm font-medium text-white">
             Storyboard
           </span>
-          <span className="cursor-pointer text-sm font-medium text-white/80 hover:text-white">
+          <span className="cursor-pointer text-sm font-medium text-white">
             Script
           </span>
         </nav>
 
         <Button
           className="
-              py-5 text-lg font-bold text-white rounded-lg border-3 border-[#207D3E]
+              py-5 text-[16px] font-semibold text-white rounded-lg border-3 border-[#207D3E]
             bg-gradient-to-b from-[#73D091] to-[#08501F]
             shadow-[inset_0_0_0_1px_black,0_2px_4px_rgba(0,0,0,0.25)]
              transition-all
           "
         >
-        Sign up for free
+          Sign up for free
         </Button>
       </div>
-    </header>
+    </header >
   )
 }
 

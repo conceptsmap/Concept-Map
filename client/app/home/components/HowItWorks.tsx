@@ -26,64 +26,63 @@ const HowItWorks = () => {
   ]
 
   return (
-<section className="py-12 bg-linear-to-b from-white to-[#EEEEEE]">
-<div className="max-w-7xl mx-auto px-6">
+    <section className="pt-16 pb-24 bg-linear-to-b from-white to-[#EEEEEE]">
+      <div className="max-w-7xl mx-auto px-6">
 
-    <div className="grid lg:grid-cols-2 gap-12 items-center">
+        <div className="grid lg:grid-cols-2 gap-12 items-center">
 
-      <div className='lg:ps-28 text-center lg:text-left '>
-        <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-12">
-          How it Works
-        </h2>
+          <div className='lg:ps-28 text-center lg:text-left '>
+            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-12">
+              How it Works
+            </h2>
 
-        <div className="space-y-6 ps-18">
-          {steps.map((step, index) => (
-            <div key={index} className="flex items-start gap-4 justify-center lg:justify-start">
-              
-              <div
-                className={`
+            <div className="space-y-6 ps-18">
+              {steps.map((step, index) => (
+                <div key={index} className="flex items-start gap-4 justify-center lg:justify-start">
+
+                  <div
+                    className={`
                   ${step.color}
-                  ${step.color === "bg-white" ? "border-2 border-gray-300" : ""}
-                  rounded-full px-6 py-3 min-w-58 text-center
+                  ${step.color === "bg-white" ? "" : ""}
+                  rounded-2xl px-6 py-3 min-w-58 text-center shadow-lg
                 `}
-              >
-                <span
-                  className={`font-semibold ${
-                    step.color === "bg-white" ? "text-[#1DBF73]" : "text-white"
-                  }`}
-                >
-                  {step.title}
-                </span>
-              </div>
+                  >
+                    <span
+                      className={`font-medium text-sm ${step.color === "bg-white" ? "text-[#1DBF73]" : "text-white"
+                        }`}
+                    >
+                      {step.title}
+                    </span>
+                  </div>
+                </div>
+              ))}
             </div>
-          ))}
+            <section className="relative bg-white">
+              <div className="relative mx-auto max-w-6xl  hidden lg:block">
+
+
+                <Image
+                  src={Steps}
+                  alt="Key Features"
+                  className="absolute  bottom-[2px] -right-10 z-20"
+                />
+
+              </div>
+            </section>
+          </div>
+
+
+          <div className="relative">
+            <Image
+              src={img}
+              alt="Writers Conference Zambia 2025"
+              className="rounded-lg shadow-xl w-full h-auto"
+            />
+          </div>
+
         </div>
-      <section className="relative bg-white">
-  <div className="relative mx-auto max-w-6xl  hidden lg:block">
-    
-      
-          <Image
-            src={Steps}
-            alt="Key Features"
-            className="absolute bottom-2 -right-10 z-20"
-          />
-
-  </div>
-</section>
       </div>
-
-
-      <div className="relative">
-        <Image
-          src={img}
-          alt="Writers Conference Zambia 2025"
-          className="rounded-lg shadow-lg w-full h-auto"
-        />
-      </div>
-
-    </div>
-  </div>
-</section>
+    </section>
 
   )
 }

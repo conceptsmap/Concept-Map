@@ -49,10 +49,10 @@ export default function LoginPage() {
     <div className="min-h-dvh flex flex-col lg:flex-row bg-white">
       {/* LEFT: LOGIN FORM */}
       <div className="flex flex-1 items-center justify-center px-4 py-10 min-h-[50vh]">
-        <div className="w-full max-w-md rounded-xl bg-white shadow-xl p-6 sm:p-8 space-y-6">
+        <div className="w-130  rounded-xl bg-white p-6 sm:p-8 space-y-6">
           {/* Header */}
           <div className="space-y-1">
-            <h1 className="text-2xl font-bold">Get Started Now</h1>
+            <h1 className="text-2xl font-semibold">Get Started Now</h1>
             <p className="text-sm text-gray-500">
               Welcome to Concept Map – Buy, Sell & Discover Scripts
             </p>
@@ -60,7 +60,7 @@ export default function LoginPage() {
 
           {/* Social Login (Dummy Buttons) */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            <Button variant="outline" className="w-full flex items-center gap-2">
+            <Button variant="outline" className="w-full flex items-center gap-2 font-semibold">
               <Image
                 src="https://www.svgrepo.com/show/475656/google-color.svg"
                 alt="Google"
@@ -72,7 +72,7 @@ export default function LoginPage() {
               Login with Google
             </Button>
 
-            <Button variant="outline" className="w-full flex items-center gap-2">
+            <Button variant="outline" className="w-full flex items-center gap-2 font-semibold">
               <Image
                 src="https://www.svgrepo.com/show/475647/facebook-color.svg"
                 alt="Facebook"
@@ -97,7 +97,7 @@ export default function LoginPage() {
 
           {/* Email / Password Login */}
 
-          <form className="space-y-4" onSubmit={handleSubmit}>
+          <form className="space-y-6" onSubmit={handleSubmit}>
             <div className="space-y-2">
               <Label htmlFor="email">Email address</Label>
               <Input
