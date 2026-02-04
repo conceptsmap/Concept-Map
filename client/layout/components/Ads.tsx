@@ -10,7 +10,7 @@ const Ads = () => {
         <Image
           src={add2}
           alt="Ad 1"
-          width={182}
+          width={282}
           height={324}
           priority
         />

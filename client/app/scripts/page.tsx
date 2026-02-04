@@ -1,5 +1,5 @@
 
-import PostCreationScript from "../components/post/PostCreationScript";
+import PostCreationScript from "./components/PostCreation";
 
 export default function ScriptsPage() {
 	return (

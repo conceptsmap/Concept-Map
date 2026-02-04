@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useState } from "react"
+import React, { useState, useEffect } from "react"
 import Image from "next/image"
 import Link from "next/link"
 import { usePathname, useRouter } from "next/navigation"
@@ -13,15 +13,77 @@ import search from "@/assets/icons/search.svg"
 import toggle from "@/assets/icons/toggle.svg"
 import table_list from "@/assets/icons/table_list.svg"
 import signout from "@/assets/icons/signout.svg"
+import offer from "@/assets/icons/offer.svg"
 
 import { Button } from "@/components/ui/button"
 
-const BuyerSidebar = () => {
+const Sidebar = () => {
   const pathname = usePathname()
   const [collapsed, setCollapsed] = useState(false)
+  const [mounted, setMounted] = useState(false)
   const router = useRouter()
+  
+  useEffect(() => {
+    // Mark component as mounted for hydration - this is intentional for SSR
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setMounted(true)
+  }, [])
+
+  // Read user role only when mounted to avoid hydration mismatch
+  const userRole = mounted ? localStorage.getItem("user_role") : null
+
   const handleLogout = () => {
+    localStorage.removeItem("auth_token")
+    localStorage.removeItem("user_role")
     router.push("/login")
+  }
+
+  // Buyer tabs
+  const buyerTabs = [
+    { icon: home, label: "Home", href: "/", active: pathname === "/" },
+    { icon: search, label: "Search", href: "/search", active: pathname.startsWith("/search") },
+    { icon: bookmark, label: "Saved", href: "/saved", active: pathname.startsWith("/saved") },
+    { icon: table_list, label: "My Purchases", href: "/purchases", active: pathname.startsWith("/purchases") },
+    { icon: task, label: "Request Gigs", href: "/request-gigs", active: pathname.startsWith("/request-gigs"), highlight: true },
+    { icon: community, label: "Community", href: "/community", active: pathname.startsWith("/community"), highlight: true },
+  ]
+
+  // Seller tabs (CREATOR role)
+  const sellerTabs = [
+    { icon: home, label: "Home", href: "/", active: pathname === "/" },
+    { icon: search, label: "Search", href: "/search", active: pathname.startsWith("/search") },
+    { icon: bookmark, label: "Saved", href: "/saved", active: pathname.startsWith("/saved") },
+    { icon: task, label: "Profile", href: "/profile", active: pathname.startsWith("/profile") },
+    { icon: table_list, label: "My Posts", href: "/my-posts", active: pathname.startsWith("/my-posts") },
+    { icon: offer, label: "Earnings", href: "/earnings", active: pathname.startsWith("/earnings") },
+    { icon: community, label: "Community", href: "/community", active: pathname.startsWith("/community") },
+    { icon: task, label: "Gig Marketplace", href: "/gig-marketplace", active: pathname.startsWith("/gig-marketplace"), highlight: true },
+  ]
+
+  const tabs = userRole === "CREATOR" ? sellerTabs : buyerTabs
+
+  // Prevent hydration mismatch by not rendering tabs until mounted
+  if (!mounted) {
+    return (
+      <aside
+        className={`
+        h-screen bg-white shadow-sm transition-all duration-300
+        ${collapsed ? "w-[88px]" : "w-[320px]"}
+        rounded-3xl p-4
+        flex flex-col
+      `}
+      >
+        <div className="mb-6 flex justify-start">
+          <button
+            onClick={() => setCollapsed(!collapsed)}
+            className="flex h-12 w-12 items-center justify-center rounded-xl border"
+          >
+            <Image src={toggle} alt="Menu" className="h-6 w-6" />
+          </button>
+        </div>
+        <nav className="space-y-1 flex-1"></nav>
+      </aside>
+    )
   }
 
   return (
@@ -43,75 +105,20 @@ const BuyerSidebar = () => {
         </button>
       </div>
 
-      {/* {!collapsed && (
-        <div className="mb-6 flex gap-3">
-          <Link href="/login">
-          <Button className="flex-1 rounded-xl bg-[#013913] py-5 text-white hover:bg-[#013913]/90 cursor-pointer">
-            Login
-          </Button>
-          </Link>
-
-          <Button
-            variant="outline"
-            className="flex-1 rounded-xl py-5 text-[#013913] border-[#E5E7EB]"
-          >
-            Sign up
-          </Button>
-        </div>
-      )} */}
-
       <nav className="space-y-1 flex-1">
-
-        <SidebarItem
-          icon={home}
-          label="Home"
-          href="/"
-          active={pathname === "/"}
-          collapsed={collapsed}
-        />
-
-        <SidebarItem
-          icon={search}
-          label="Search"
-          href="/search"
-          active={pathname.startsWith("/search")}
-          collapsed={collapsed}
-        />
-
-        <SidebarItem
-          icon={bookmark}
-          label="Saved"
-          href="/saved"
-          active={pathname.startsWith("/saved")}
-          collapsed={collapsed}
-        />
-
-        <SidebarItem
-          icon={table_list}
-          label="My Purchases"
-          href="/purchases"
-          active={pathname.startsWith("/purchases")}
-          collapsed={collapsed}
-        />
-
-        <SidebarItem
-          icon={task}
-          label="Request Gigs"
-          href="/request-gigs"
-          active={pathname.startsWith("/request-gigs")}
-          collapsed={collapsed}
-          highlight
-        />
-
-        <SidebarItem
-          icon={community}
-          label="Community"
-          href="/community"
-          active={pathname.startsWith("/community")}
-          collapsed={collapsed}
-          highlight
-        />
+        {tabs.map((tab) => (
+          <SidebarItem
+            key={tab.href}
+            icon={tab.icon}
+            label={tab.label}
+            href={tab.href}
+            active={tab.active}
+            collapsed={collapsed}
+            highlight={tab.highlight}
+          />
+        ))}
       </nav>
+
       <div className="pt-4 border-t">
         <Button
           onClick={handleLogout}
@@ -209,4 +216,4 @@ const SidebarItem = ({
 }
 
 
-export default BuyerSidebar
+export default Sidebar

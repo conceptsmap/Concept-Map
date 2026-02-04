@@ -42,10 +42,9 @@ export class AuthService {
     });
   }
 
-  async login(email: string, password: string, role: string) {
+  async login(email: string, password: string, role?: string) {
     const user = (await this.userCrudRepository.fetchOneDocument({
       email: email,
-      role,
     })) as IUser;
 
     if (!user || (user && !user.is_verified)) {

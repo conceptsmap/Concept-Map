@@ -87,7 +87,7 @@ export default function PostCreationScript() {
         },
       };
 
-      const res = await fetch("http://localhost:8000/api/web/script", {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/web/script`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

@@ -7,8 +7,10 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 export default function LoginPage() {
+  const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -21,19 +23,26 @@ export default function LoginPage() {
     setSuccess("");
     setLoading(true);
     try {
-      const res = await fetch("http://localhost:8000/api/web/auth/login", {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/web/auth/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password, role: "ADMIN" }),
+        body: JSON.stringify({ email, password }),
         credentials: "include",
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data?.message || "Login failed");
       const token = data?.data?.token;
+      const userRole = data?.data?._doc?.role || data?.data?.role;
+      
       if (token) {
         localStorage.setItem("auth_token", token);
       }
+      if (userRole) {
+        localStorage.setItem("user_role", userRole);
+      }
+      
       setSuccess("Login successful!");
+      router.push("/dashboard");
     } catch (err: unknown) {
       if (err instanceof Error) {
         setError(err.message || "Login failed");

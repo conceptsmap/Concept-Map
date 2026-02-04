@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button"
 import Image from "next/image"
+import Link from "next/link"
 import story from "@/assets/images/story.svg"
 
 const Navbar = () => {
@@ -17,27 +18,29 @@ const Navbar = () => {
         </div>
 
         <nav className="hidden md:flex items-center gap-8">
-          <span className="cursor-pointer text-sm font-medium text-white">
+          <Link href="/login" className="cursor-pointer text-sm font-medium text-white">
             Synopsis
-          </span>
-          <span className="cursor-pointer text-sm font-medium text-white">
+          </Link>
+          <Link href="/login" className="cursor-pointer text-sm font-medium text-white">
             Storyboard
-          </span>
-          <span className="cursor-pointer text-sm font-medium text-white">
+          </Link>
+          <Link href="/login" className="cursor-pointer text-sm font-medium text-white">
             Script
-          </span>
+          </Link>
         </nav>
 
-        <Button
-          className="
+        <Link href="/login">
+          <Button
+            className="
               py-5 text-[16px] font-semibold text-white rounded-lg border-3 border-[#207D3E]
             bg-gradient-to-b from-[#73D091] to-[#08501F]
             shadow-[inset_0_0_0_1px_black,0_2px_4px_rgba(0,0,0,0.25)]
              transition-all
           "
-        >
-          Sign up for free
-        </Button>
+          >
+            Sign up for free
+          </Button>
+        </Link>
       </div>
     </header >
   )
