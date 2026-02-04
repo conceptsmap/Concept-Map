@@ -6,11 +6,11 @@ import Ads from './Ads'
 
 const BuyerLayout = () => {
   return (
-    <div className='bg-[#F5F5F5] p-5 flex '>
-        <BuyerSidebar />
-        <Navbar />
-        <Notifications />
-        <Ads />
+    <div className='bg-[#F5F5F5] p-2 flex '>
+      <BuyerSidebar />
+      <Navbar />
+      {/* <Notifications /> */}
+      <Ads />
     </div>
   )
 }

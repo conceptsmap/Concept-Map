@@ -23,17 +23,17 @@ const BuyerSidebar = () => {
   const handleLogout = () => {
     router.push("/login")
   }
-  
+
   return (
     <aside
-    className={`
+      className={`
       h-screen bg-white shadow-sm transition-all duration-300
       ${collapsed ? "w-[88px]" : "w-[320px]"}
       rounded-3xl p-4
       flex flex-col
     `}
-  >
-  
+    >
+
       <div className="mb-6 flex justify-start">
         <button
           onClick={() => setCollapsed(!collapsed)}
@@ -43,7 +43,7 @@ const BuyerSidebar = () => {
         </button>
       </div>
 
-      {!collapsed && (
+      {/* {!collapsed && (
         <div className="mb-6 flex gap-3">
           <Link href="/login">
           <Button className="flex-1 rounded-xl bg-[#013913] py-5 text-white hover:bg-[#013913]/90 cursor-pointer">
@@ -58,9 +58,9 @@ const BuyerSidebar = () => {
             Sign up
           </Button>
         </div>
-      )}
+      )} */}
 
-<nav className="space-y-1 flex-1">
+      <nav className="space-y-1 flex-1">
 
         <SidebarItem
           icon={home}
@@ -112,11 +112,11 @@ const BuyerSidebar = () => {
           highlight
         />
       </nav>
-<div className="pt-4 border-t">
-  <Button
-    onClick={handleLogout}
-    variant={"outline"}
-    className={`
+      <div className="pt-4 border-t">
+        <Button
+          onClick={handleLogout}
+          variant={"outline"}
+          className={`
       relative group
       flex items-center justify-start gap-3 w-full
       rounded-xl px-4 py-3
@@ -124,13 +124,13 @@ const BuyerSidebar = () => {
       hover:bg-gray-100
       ${collapsed ? "justify-center px-0" : ""}
     `}
-  >
-    <Image src={signout} alt="Logout" className="h-5 w-5" />
-    {!collapsed && <span className="font-medium">Logout</span>}
+        >
+          <Image src={signout} alt="Logout" className="h-5 w-5" />
+          {!collapsed && <span className="font-medium">Logout</span>}
 
-    {collapsed && (
-      <div
-        className="
+          {collapsed && (
+            <div
+              className="
           pointer-events-none
           absolute left-full top-1/2 z-50
           ml-3 -translate-y-1/2
@@ -141,15 +141,15 @@ const BuyerSidebar = () => {
           transition-opacity duration-200
           group-hover:opacity-100
         "
-      >
-        Logout
+            >
+              Logout
+            </div>
+          )}
+        </Button>
       </div>
-    )}
-  </Button>
-</div>
 
     </aside>
-    
+
   )
 }
 
