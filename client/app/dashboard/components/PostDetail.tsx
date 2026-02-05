@@ -130,7 +130,7 @@ const PostDetail: React.FC<PostDetailProps> = ({
   }
 
   return (
-    <div className="w-full max-w-3xl rounded-2xl bg-white p-6 shadow-sm border border-gray-100">
+    <div className="w-full rounded-2xl bg-white p-6 shadow-sm border border-gray-100">
       {/* Header */}
       <div className="flex items-start justify-between">
         <div className="flex items-center gap-3">
