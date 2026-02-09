@@ -19,7 +19,7 @@ import { Button } from "@/components/ui/button"
 
 const Sidebar = () => {
   const pathname = usePathname()
-  const [collapsed, setCollapsed] = useState(false)
+  const [collapsed, setCollapsed] = useState(true)
   const [mounted, setMounted] = useState(false)
   const router = useRouter()
   

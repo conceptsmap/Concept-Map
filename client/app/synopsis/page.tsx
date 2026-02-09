@@ -1,17 +1,17 @@
 "use client";
 
-import PostCreationScript from "./components/PostCreationScript";
+import PostCreationSynopsis from "./components/PostCreationSynopsis";
 import Layout from "@/layout/components/Layout";
 import Notifications from "@/layout/components/Notifications";
 import Creative from "@/layout/components/Creative";
 
-export default function ScriptsPage() {
+export default function SynopsisPage() {
   return (
     <Layout>
-      <div className="flex gap-4 items-start">
+      <div className="flex gap-4 items-start p-3 space-y-3">
         {/* LEFT */}
         <div className="flex-1">
-          <PostCreationScript />
+          <PostCreationSynopsis />
         </div>
         {/* RIGHT */}
         <div className="flex flex-col gap-4 shrink-0 w-[245px]">

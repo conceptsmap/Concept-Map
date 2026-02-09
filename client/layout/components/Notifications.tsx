@@ -1,53 +1,69 @@
-"use client"
+"use client";
 
-import React from "react"
-import Image from "next/image"
-import { Button } from "@/components/ui/button"
-import bell from "@/assets/icons/bell.svg"
-import lock from "@/assets/icons/lock.svg"
-import announcement from "@/assets/icons/announcement.svg"
-import offer from "@/assets/icons/offer.svg"
-import Link from "next/link"
+import React from "react";
+import Image from "next/image";
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
+
+import bell from "@/assets/icons/bell.svg";
+import lock from "@/assets/icons/lock.svg";
+import announcement from "@/assets/icons/announcement.svg";
+import offer from "@/assets/icons/offer.svg";
 
 const Notifications = () => {
-
   return (
-    <div className="w-[460px] rounded-3xl bg-white p-5 shadow-lg">
-      
-      <div className="mb-4 flex items-center gap-3">
-      <Image src={bell} alt="Bell" className="h-5 w-5" />
-        <h2 className="text-lg font-semibold">Notifications</h2>
+    <div
+      className="
+        w-full
+        max-w-95
+        xl:max-w-60
+        lg:max-w-85
+        rounded-2xl
+        bg-white
+        p-5
+        shadow-md
+        space-y-5
+      "
+    >
+      {/* Header */}
+      <div className="flex items-center gap-3">
+        <Image src={bell} alt="Bell" className="h-5 w-5" />
+        <h2 className="text-base font-semibold">Notifications</h2>
       </div>
 
-      <div className="mb-6 space-y-3">
+      {/* Login notice */}
+      <div className="space-y-4">
         <div className="flex items-start gap-3">
-          <Image src={lock} alt="Lock" className="h-5 w-5" />
+          <Image src={lock} alt="Lock" className="h-5 w-5 mt-0.5" />
           <div className="text-sm text-gray-600">
-            <div className="font-medium text-gray-900">
+            <p className="font-medium text-gray-900">
               Log in to see your notifications!
-            </div>{" "}
-           <div> Stay updated on your purchases, new script releases, and seller interactions.</div>
+            </p>
+            <p>
+              Stay updated on your purchases, new script releases, and seller
+              interactions.
+            </p>
           </div>
         </div>
 
         <div className="flex gap-3 pl-8">
           <Link href="/login">
-          <Button className="rounded-xl bg-[#1DBF73] px-6 text-white hover:bg-[#1DBF73]/90 cursor-pointer">
-            Login
-          </Button>
+            <Button className="rounded-xl bg-[#1DBF73] px-5 text-white hover:bg-[#1DBF73]/90">
+              Login
+            </Button>
           </Link>
 
           <Button
             variant="outline"
-            className="rounded-xl px-6 text-[#1DBF73] border-[#E5E7EB]"
+            className="rounded-xl px-5 text-[#1DBF73] border-[#E5E7EB]"
           >
             Sign up
           </Button>
         </div>
       </div>
 
-
-      <div className="space-y-5">
+      {/* Notifications */}
+      <div className="space-y-4">
         <NotificationItem
           icon={<Image src={announcement} alt="Announcement" className="h-5 w-5" />}
           title="New scripts are live!"
@@ -61,19 +77,19 @@ const Notifications = () => {
         />
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default Notifications
+export default Notifications;
 
 const NotificationItem = ({
   icon,
   title,
   description,
 }: {
-  icon: React.ReactNode
-  title: string
-  description: string
+  icon: React.ReactNode;
+  title: string;
+  description: string;
 }) => {
   return (
     <div className="flex items-start gap-3">
@@ -83,5 +99,5 @@ const NotificationItem = ({
         {description}
       </p>
     </div>
-  )
-}
+  );
+};

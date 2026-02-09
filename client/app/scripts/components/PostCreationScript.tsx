@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -15,6 +16,7 @@ import {
 } from "@/components/ui/select";
 
 export default function PostCreationScript() {
+  const router = useRouter();
   const [tags, setTags] = useState("#shortfilm #film");
   const [title, setTitle] = useState("");
   const [shortDescription, setShortDescription] = useState("");
@@ -23,7 +25,9 @@ export default function PostCreationScript() {
   const [scriptSample, setScriptSample] = useState("");
   const [audience, setAudience] = useState<string | undefined>("public");
   const [category, setCategory] = useState<string | undefined>("TVC");
-  const [industryCategory, setIndustryCategory] = useState<string | undefined>("TECHNOLOGY");
+  const [industryCategory, setIndustryCategory] = useState<string | undefined>(
+    "TECHNOLOGY",
+  );
   const [scriptType, setScriptType] = useState<string | undefined>("SCRIPT");
   const [confirmRights, setConfirmRights] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -111,7 +115,16 @@ export default function PostCreationScript() {
   };
 
   return (
-    <div className="w-full max-w-5xl mx-auto px-4 py-6">
+    <div
+      className="
+  w-full
+  mx-auto
+  px-4
+"
+    >
+        {/*   max-w-full
+   xl:max-w-6xl
+   2xl:max-w-7xl */}
       <form
         onSubmit={handleSubmit}
         className="bg-white rounded-xl shadow-md p-4 sm:p-6 space-y-6"
@@ -156,23 +169,34 @@ export default function PostCreationScript() {
               <SelectContent>
                 <SelectItem value="TVC">TVC</SelectItem>
                 <SelectItem value="OTT_SERIES">OTT Series</SelectItem>
-                <SelectItem value="SHORT_FORM_VIDEO">Short Form Video</SelectItem>
+                <SelectItem value="SHORT_FORM_VIDEO">
+                  Short Form Video
+                </SelectItem>
               </SelectContent>
             </Select>
           </div>
 
           <div className="space-y-2">
             <Label>Industry Category</Label>
-            <Select value={industryCategory} onValueChange={setIndustryCategory}>
+            <Select
+              value={industryCategory}
+              onValueChange={setIndustryCategory}
+            >
               <SelectTrigger>
                 <SelectValue placeholder="Select industry" />
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="TECHNOLOGY">Technology</SelectItem>
                 <SelectItem value="FINTECH">Fintech</SelectItem>
-                <SelectItem value="MEDIA_AND_ENTERTAINMENT">Media & Entertainment</SelectItem>
-                <SelectItem value="HEALTH_AND_WELLNESS">Health & Wellness</SelectItem>
-                <SelectItem value="TRAVEL_AND_HOSPITALITY">Travel & Hospitality</SelectItem>
+                <SelectItem value="MEDIA_AND_ENTERTAINMENT">
+                  Media & Entertainment
+                </SelectItem>
+                <SelectItem value="HEALTH_AND_WELLNESS">
+                  Health & Wellness
+                </SelectItem>
+                <SelectItem value="TRAVEL_AND_HOSPITALITY">
+                  Travel & Hospitality
+                </SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -248,14 +272,31 @@ export default function PostCreationScript() {
 
         {/* Related Posts */}
         <div className="flex flex-wrap gap-2">
-          <Button variant="outline" size="sm">Synopsis +</Button>
-          <Button variant="outline" size="sm">Story Board +</Button>
+          <Button type="button" variant="outline" size="sm" onClick={() => router.push("/synopsis")}> 
+            Synopsis +
+          </Button>
+          <Button type="button" variant="outline" size="sm" onClick={() => router.push("/storyboard")}> 
+            Story Board +
+          </Button>
         </div>
 
         {/* Script Type */}
         <div className="space-y-2">
           <Label>Type</Label>
-          <Select value={scriptType} onValueChange={setScriptType}>
+          <Select
+            value={scriptType}
+            onValueChange={(value) => {
+              if (value === "STORY_BOARD") {
+                router.push("/storyboard");
+                return;
+              }
+              if (value === "SYNOPSIS") {
+                router.push("/synopsis");
+                return;
+              }
+              setScriptType(value);
+            }}
+          >
             <SelectTrigger>
               <SelectValue placeholder="Select type" />
             </SelectTrigger>
