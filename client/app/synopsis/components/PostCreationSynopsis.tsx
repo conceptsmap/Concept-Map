@@ -18,15 +18,75 @@ import {
 export default function PostCreationSynopsis() {
   const router = useRouter();
   const [title, setTitle] = useState("");
-  const [genre, setGenre] = useState<string | undefined>("THRILLER");
+  // Use a valid default genre from TVCOTTSeriesGenre enum
+  const [genre, setGenre] = useState<string | undefined>("CRIME");
   const [price, setPrice] = useState("");
   const [synopsis, setSynopsis] = useState("");
   const [audience, setAudience] = useState<string | undefined>("public");
   const [tags, setTags] = useState("#shortfilm #film");
   const [confirmRights, setConfirmRights] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError("");
+    setSuccess("");
+    if (!confirmRights) {
+      setError("Please confirm that you own the rights to this synopsis.");
+      return;
+    }
+    const token = localStorage.getItem("auth_token");
+    if (!token) {
+      setError("Please log in first.");
+      return;
+    }
+    if (!title || !genre) {
+      setError("Please fill all required fields: Title, Genre.");
+      return;
+    }
+    setLoading(true);
+    try {
+      const payload = {
+        main_title: title,
+        description: title,
+        category: "TVC", // or get from UI if needed
+        genre,
+        industry_category: "TECHNOLOGY", // or get from UI if needed
+        type: ["SYNOPSIS"],
+        synopsis: {
+          price: price ? Number(price) : undefined,
+          currency: "INR",
+          content: synopsis,
+        },
+        tags,
+        audience,
+      };
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/web/script/synopsis`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(payload),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data?.message || "Failed to create synopsis");
+      setSuccess("Synopsis created successfully!");
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        setError(err.message || "Failed to create synopsis");
+      } else {
+        setError("Failed to create synopsis");
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
-    <form className="bg-white rounded-xl shadow-md p-4 sm:p-6 space-y-6">
+    <form className="bg-white rounded-xl shadow-md p-4 sm:p-6 space-y-6" onSubmit={handleSubmit}>
       {/* Header */}
       <div className="flex items-center gap-2">
         <span className="text-green-600 text-lg">📝</span>
@@ -49,13 +109,20 @@ export default function PostCreationSynopsis() {
           <Label>Genre</Label>
           <Select value={genre} onValueChange={setGenre}>
             <SelectTrigger>
-              <SelectValue placeholder="Thriller" />
+              <SelectValue placeholder="Select Genre" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="THRILLER">Thriller</SelectItem>
-              <SelectItem value="DRAMA">Drama</SelectItem>
-              <SelectItem value="ACTION">Action</SelectItem>
+              <SelectItem value="CRIME">Crime</SelectItem>
               <SelectItem value="ROMANCE">Romance</SelectItem>
+              <SelectItem value="HORROR">Horror</SelectItem>
+              <SelectItem value="ACTION">Action</SelectItem>
+              <SelectItem value="COMEDY">Comedy</SelectItem>
+              <SelectItem value="DRAMA">Drama</SelectItem>
+              <SelectItem value="SCIFI">Sci-Fi</SelectItem>
+              <SelectItem value="FANTASY">Fantasy</SelectItem>
+              <SelectItem value="HISTORICAL">Historical</SelectItem>
+              <SelectItem value="DOCUMENTARY">Documentary</SelectItem>
+              <SelectItem value="OTHERS">Others</SelectItem>
             </SelectContent>
           </Select>
         </div>
@@ -132,9 +199,11 @@ export default function PostCreationSynopsis() {
       </div>
 
       {/* Action */}
+      {error && <div className="text-red-600 text-sm">{error}</div>}
+      {success && <div className="text-green-600 text-sm">{success}</div>}
       <div className="flex justify-end">
-        <Button className="bg-green-600 hover:bg-green-700">
-          Create Post
+        <Button className="bg-green-600 hover:bg-green-700" type="submit" disabled={loading}>
+          {loading ? "Submitting..." : "Create Post"}
         </Button>
       </div>
     </form>

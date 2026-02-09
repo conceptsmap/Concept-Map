@@ -1,4 +1,4 @@
-import mongoose, { Document } from "mongoose";
+import mongoose, { Document, Types } from "mongoose";
 
 //UserSchema model type
 export interface IUser extends Document {
@@ -14,7 +14,7 @@ export interface IUser extends Document {
 export interface IOtp extends Document {
   code: number;
   retry_count: number;
-  userId: mongoose.ObjectId;
+  userId: Types.ObjectId;
   action_type: VerificationAction;
 }
 
@@ -26,7 +26,42 @@ export interface IScript extends Document {
   genre: TVCOTTSeriesGenre | ShortsGenre;
   industry_category: IndustryCategory;
   type: ScriptType[];
-  userId: mongoose.ObjectId;
+  userId: Types.ObjectId;
+  script?: {
+    price?: number;
+    currency?: string;
+    content?: Array<{
+      name: string;
+      scenes: Array<{
+        name: string;
+        description: string;
+      }>;
+    }>;
+  };
+  story_borad?: {
+    price?: number;
+    currency?: string;
+    content?: Array<{
+      name: string;
+      cloud_url: string;
+    }>;
+  };
+  synopsis?: {
+    price?: number;
+    currency?: string;
+    content?: string;
+  };
+}
+
+// Data interface for creation (does NOT extend Document)
+export interface IScriptCreate {
+  main_title: string;
+  description: string;
+  category: ScriptCategory;
+  genre: TVCOTTSeriesGenre | ShortsGenre;
+  industry_category: IndustryCategory;
+  type: ScriptType[];
+  userId: Types.ObjectId;
   script?: {
     price?: number;
     currency?: string;
@@ -54,8 +89,8 @@ export interface IScript extends Document {
 }
 
 export interface IPurschase extends Document {
-  user_id: mongoose.ObjectId;
-  script_id: mongoose.ObjectId;
+  user_id: Types.ObjectId;
+  script_id: Types.ObjectId;
   price: number;
   payment_method: PaymentMethod;
   payment_status: string;

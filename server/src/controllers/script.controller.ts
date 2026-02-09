@@ -1,5 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { ScriptService } from "../services/script.service";
+import { ScriptType } from "../types/model";
+import mongoose from "mongoose";
 
 export class ScriptController {
   private readonly scriptService: ScriptService;
@@ -8,26 +10,73 @@ export class ScriptController {
     this.scriptService = new ScriptService();
   }
 
-  createScipt = async (req: Request, res: Response, next: NextFunction) => {
+  // Create Script Post
+  createScript = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const userId = req.user?.id;
       if (!userId) {
-        return res.status(401).json({
-          status: "error",
-          message: "Unauthorized User",
-        });
+        return res.status(401).json({ status: "error", message: "Unauthorized User" });
       }
-
+      const { main_title, description, category, genre, industry_category, script } = req.body;
       const result = await this.scriptService.createScript({
-        ...req.body,
-        userId,
+        main_title,
+        description,
+        category,
+        genre,
+        industry_category,
+        type: [ScriptType.SCRIPT],
+        userId: new mongoose.Types.ObjectId(userId),
+        script,
       });
+      res.status(201).json({ status: "success", message: "Script created", data: result });
+    } catch (error) {
+      next(error);
+    }
+  };
 
-      res.status(201).json({
-        status: "success",
-        message: "Successfully uploaded story board",
-        data: result,
+  // Create Story Board Post
+  createStoryBoard = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const userId = req.user?.id;
+      if (!userId) {
+        return res.status(401).json({ status: "error", message: "Unauthorized User" });
+      }
+      const { main_title, description, category, genre, industry_category, story_borad } = req.body;
+      const result = await this.scriptService.createScript({
+        main_title,
+        description,
+        category,
+        genre,
+        industry_category,
+        type: [ScriptType.STORY_BOARD],
+        userId: new mongoose.Types.ObjectId(userId),
+        story_borad,
       });
+      res.status(201).json({ status: "success", message: "Story Board created", data: result });
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  // Create Synopsis Post
+  createSynopsis = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const userId = req.user?.id;
+      if (!userId) {
+        return res.status(401).json({ status: "error", message: "Unauthorized User" });
+      }
+      const { main_title, description, category, genre, industry_category, synopsis } = req.body;
+      const result = await this.scriptService.createScript({
+        main_title,
+        description,
+        category,
+        genre,
+        industry_category,
+        type: [ScriptType.SYNOPSIS],
+        userId: new mongoose.Types.ObjectId(userId),
+        synopsis,
+      });
+      res.status(201).json({ status: "success", message: "Synopsis created", data: result });
     } catch (error) {
       next(error);
     }

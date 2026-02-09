@@ -20,7 +20,8 @@ export default function PostCreationScript() {
   const [tags, setTags] = useState("#shortfilm #film");
   const [title, setTitle] = useState("");
   const [shortDescription, setShortDescription] = useState("");
-  const [genre, setGenre] = useState<string | undefined>("DRAMA");
+  // Use a valid default genre from TVCOTTSeriesGenre enum
+  const [genre, setGenre] = useState<string | undefined>("CRIME");
   const [price, setPrice] = useState("");
   const [scriptSample, setScriptSample] = useState("");
   const [audience, setAudience] = useState<string | undefined>("public");
@@ -91,7 +92,7 @@ export default function PostCreationScript() {
         },
       };
 
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/web/script`, {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/web/script/script`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -208,14 +209,20 @@ export default function PostCreationScript() {
             <Label>Genre</Label>
             <Select value={genre} onValueChange={setGenre}>
               <SelectTrigger>
-                <SelectValue placeholder="Thriller" />
+                <SelectValue placeholder="Select Genre" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="DRAMA">Drama</SelectItem>
+                <SelectItem value="CRIME">Crime</SelectItem>
+                <SelectItem value="ROMANCE">Romance</SelectItem>
+                <SelectItem value="HORROR">Horror</SelectItem>
                 <SelectItem value="ACTION">Action</SelectItem>
                 <SelectItem value="COMEDY">Comedy</SelectItem>
-                <SelectItem value="HORROR">Horror</SelectItem>
-                <SelectItem value="ROMANCE">Romance</SelectItem>
+                <SelectItem value="DRAMA">Drama</SelectItem>
+                <SelectItem value="SCIFI">Sci-Fi</SelectItem>
+                <SelectItem value="FANTASY">Fantasy</SelectItem>
+                <SelectItem value="HISTORICAL">Historical</SelectItem>
+                <SelectItem value="DOCUMENTARY">Documentary</SelectItem>
+                <SelectItem value="OTHERS">Others</SelectItem>
               </SelectContent>
             </Select>
           </div>

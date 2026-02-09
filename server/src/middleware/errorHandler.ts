@@ -8,6 +8,9 @@ export const errorHandler = (
   res: Response,
   next: NextFunction
 ): void => {
+  // Log all errors for debugging
+  console.error(error);
+
   //custom errors
   if (error instanceof CustomError) {
     res.status(Number(error.status)).json({

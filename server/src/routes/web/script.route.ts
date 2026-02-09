@@ -16,7 +16,10 @@ export class ScriptRouter {
   }
 
   private initRoutes() {
-    this.router.post("/", jwtVerifyMiddleware, this.scriptController.createScipt);
+    // Separate endpoints for each type
+    this.router.post("/script", jwtVerifyMiddleware, this.scriptController.createScript);
+    this.router.post("/storyboard", jwtVerifyMiddleware, this.scriptController.createStoryBoard);
+    this.router.post("/synopsis", jwtVerifyMiddleware, this.scriptController.createSynopsis);
     this.router.get("/:id", this.scriptController.getScript);
     this.router.post(
       "/upload",

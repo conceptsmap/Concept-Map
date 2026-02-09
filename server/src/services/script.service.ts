@@ -1,6 +1,7 @@
 import ScriptModel from "../repository/model/script.model";
 import { CrudRepository } from "../repository/query/crud.repository";
 import { IScript } from "../types/model";
+import { IScriptCreate } from "../types/model";
 import { v2 as cloudinary } from "cloudinary";
 import { CustomError } from "../utils/customError";
 
@@ -16,7 +17,7 @@ export class ScriptService {
     });
   }
 
-  async createScript(data: IScript) {
+  async createScript(data: IScriptCreate) {
     return await this.crudRepository.createDocument(data);
   }
 
