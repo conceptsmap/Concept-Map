@@ -1,5 +1,4 @@
 'use client'
-import Layout from '@/layout/components/Layout'
 
 import { notFound, useParams } from 'next/navigation'
 import { posts } from '../components/posts'
@@ -17,10 +16,8 @@ export default function PostDetailPage() {
   }
 
   return (
-    <Layout>
       <div className="flex justify-center p-3">
         <PostDetail {...post} />
       </div>
-    </Layout>
   )
 }

@@ -189,15 +189,9 @@ export default function PostCreationScript() {
               <SelectContent>
                 <SelectItem value="TECHNOLOGY">Technology</SelectItem>
                 <SelectItem value="FINTECH">Fintech</SelectItem>
-                <SelectItem value="MEDIA_AND_ENTERTAINMENT">
-                  Media & Entertainment
-                </SelectItem>
-                <SelectItem value="HEALTH_AND_WELLNESS">
-                  Health & Wellness
-                </SelectItem>
-                <SelectItem value="TRAVEL_AND_HOSPITALITY">
-                  Travel & Hospitality
-                </SelectItem>
+                <SelectItem value="MEDIA & ENTERTAINMENT">Media & Entertainment</SelectItem>
+                <SelectItem value="HEALTH & WELLNESS">Health & Wellness</SelectItem>
+                <SelectItem value="TRAVEL & HOSPITALITY">Travel & Hospitality</SelectItem>
               </SelectContent>
             </Select>
           </div>
