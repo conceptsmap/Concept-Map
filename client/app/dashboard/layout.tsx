@@ -12,9 +12,9 @@ export default function ProtectedLayout({
 
   useEffect(() => {
     const token = localStorage.getItem("auth_token")
-    if (!token) {
-      router.push("/login")
-    }
+    // if (!token) {
+    //   router.push("/login")
+    // }
   }, [router])
 
   return <>{children}</>
