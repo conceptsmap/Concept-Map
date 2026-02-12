@@ -1,20 +1,23 @@
 "use client";
 
+
+
+import { useRouter } from "next/navigation";
 import { useState, useRef, useEffect } from "react";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import searchIcon from "@/assets/icons/search.svg";
 
-const SUGGESTIONS = [
-  "Coffee shop ads",
-  "Thriller scripts",
-  "Perfume ad",
-];
+type BackendSuggestion = { main_title?: string; title?: string };
+
 
 export default function SearchWithSuggestions() {
   const [value, setValue] = useState("");
   const [open, setOpen] = useState(false);
+  const [suggestions, setSuggestions] = useState<string[]>([]);
+  const [loading, setLoading] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
+  const router = useRouter();
 
   useEffect(() => {
     const close = (e: MouseEvent) => {
@@ -24,9 +27,38 @@ export default function SearchWithSuggestions() {
     return () => document.removeEventListener("mousedown", close);
   }, []);
 
-  const filtered = SUGGESTIONS.filter((s) =>
-    s.toLowerCase().includes(value.toLowerCase())
-  );
+  useEffect(() => {
+    if (!value) {
+      setSuggestions([]);
+      return;
+    }
+    setLoading(true);
+    const controller = new AbortController();
+    const fetchSuggestions = async () => {
+      try {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/web/search?textSearch=${encodeURIComponent(value)}&take=5`, { signal: controller.signal });
+        const data = await res.json();
+        if (res.ok && data?.data?.scripts) {
+          setSuggestions((data.data.scripts as BackendSuggestion[]).map((s) => s.main_title || s.title || ""));
+        } else {
+          setSuggestions([]);
+        }
+      } catch {
+        setSuggestions([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchSuggestions();
+    return () => controller.abort();
+  }, [value]);
+
+  const handleSearch = (searchValue: string) => {
+    setOpen(false);
+    if (searchValue) {
+      router.push(`/search?q=${encodeURIComponent(searchValue)}`);
+    }
+  };
 
   return (
     <div ref={ref} className="relative inline-flex items-center gap-3">
@@ -55,48 +87,58 @@ export default function SearchWithSuggestions() {
             setOpen(true);
           }}
           onFocus={() => setOpen(true)}
-          placeholder="Coffee shop ads"
+          placeholder="Search scripts, synopses, storyboards..."
           className="
             w-full bg-transparent
             pl-11 pr-4 py-3
             text-sm outline-none
           "
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              handleSearch(value);
+            }
+          }}
         />
       </div>
 
       {/* BUTTON */}
-      <Button className="rounded-full bg-green-700 px-8 hover:bg-green-800">
+      <Button className="rounded-full bg-green-700 px-8 hover:bg-green-800" onClick={() => handleSearch(value)}>
         Search
       </Button>
 
       {/* DROPDOWN */}
-      {open && value && filtered.length > 0 && (
+      {open && value && (suggestions.length > 0 || loading) && (
         <div
           className="
             absolute left-0 top-full mt-2
             w-full rounded-xl
             border border-gray-200
             bg-white shadow-sm
+            z-50
           "
         >
-          {filtered.map((item) => (
-            <button
-              key={item}
-              onClick={() => {
-                setValue(item);
-                setOpen(false);
-              }}
-              className="
-                flex items-center gap-3
-                w-full px-4 py-2.5
-                text-sm text-left
-                hover:bg-gray-100
-              "
-            >
-              <Image src={searchIcon} alt="" className="h-4 w-4 opacity-60" />
-              {item}
-            </button>
-          ))}
+          {loading ? (
+            <div className="px-4 py-2.5 text-sm text-gray-500">Loading...</div>
+          ) : (
+            suggestions.map((item, idx) => (
+              <button
+                key={item + "-" + idx}
+                onClick={() => {
+                  setValue(item);
+                  handleSearch(item);
+                }}
+                className="
+                  flex items-center gap-3
+                  w-full px-4 py-2.5
+                  text-sm text-left
+                  hover:bg-gray-100
+                "
+              >
+                <Image src={searchIcon} alt="" className="h-4 w-4 opacity-60" />
+                {item}
+              </button>
+            ))
+          )}
         </div>
       )}
     </div>
