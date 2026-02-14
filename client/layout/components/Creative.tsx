@@ -2,6 +2,7 @@
 
 
 import { Button } from "@/components/ui/button";
+import { FilePenLine, MessageSquare, MessagesSquareIcon, Plus, ScrollText, Table2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 export default function PostCreativeSelector() {
@@ -22,9 +23,8 @@ export default function PostCreativeSelector() {
     <div
       className="
         w-full
-        max-w-95
-        xl:max-w-60
-        lg:max-w-85
+        xl:max-w-75
+        lg:max-w-56
         rounded-2xl
         bg-white
         p-5
@@ -34,7 +34,7 @@ export default function PostCreativeSelector() {
     >
       {/* Header */}
       <div className="space-y-1">
-        <h3 className="text-base font-semibold">Post a Creative</h3>
+        <h3 className="text-base font-bold flex items-center "><Table2 className="h-4 w-4 mr-1 inline" /> Post a Creative</h3>
         <p className="text-sm text-gray-500">
           Choose a post type and share your creative work with buyers.
         </p>
@@ -44,7 +44,7 @@ export default function PostCreativeSelector() {
       <div className="space-y-3">
         {/* Synopsis */}
         <CreativeItem
-          emoji="🧾"
+          emoji={<MessagesSquareIcon className="h-5 w-5" />}
           bg="bg-green-600"
           title="Synopsis"
           desc="Post a new synopsis"
@@ -53,7 +53,7 @@ export default function PostCreativeSelector() {
 
         {/* Story Board */}
         <CreativeItem
-          emoji="🔄"
+          emoji={<ScrollText className="h-5 w-5" />}
           bg="bg-purple-600"
           title="Story Board"
           desc="Post a new story board"
@@ -62,7 +62,7 @@ export default function PostCreativeSelector() {
 
         {/* Script */}
         <CreativeItem
-          emoji="✍️"
+          emoji={<FilePenLine className="h-5 w-5" />}
           bg="bg-green-700"
           title="Script"
           desc="Post a new script"
@@ -80,7 +80,7 @@ function CreativeItem({
   desc,
   onClick,
 }: {
-  emoji: string;
+  emoji: any;
   bg: string;
   title: string;
   desc: string;
@@ -98,13 +98,13 @@ function CreativeItem({
           {emoji}
         </div>
         <div>
-          <p className="font-medium text-sm">{title}</p>
+          <p className="font-semibold text-sm">{title}</p>
           <p className="text-xs text-gray-500">{desc}</p>
         </div>
       </div>
 
       <Button size="icon" variant="ghost">
-        +
+        <Plus className="h-4 w-4" />
       </Button>
     </div>
   );

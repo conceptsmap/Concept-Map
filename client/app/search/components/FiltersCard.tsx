@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { X, ChevronDown, ChevronUp, Search } from "lucide-react";
+import { X, ChevronDown, ChevronUp, Search, SlidersHorizontal } from "lucide-react";
 
 const genres = [
   { label: "Romance", value: "ROMANCE" },
@@ -97,10 +97,9 @@ export default function FiltersCard({ onFilterChange, onClearFilters }: FiltersC
       className={`
         px-3 py-1.5 text-sm rounded-md border
         transition
-        ${
-          selected
-            ? "bg-green-600 text-white border-green-600"
-            : "bg-white text-gray-700 border-gray-200 hover:bg-gray-100"
+        ${selected
+          ? "bg-green-600 text-white border-green-600"
+          : "bg-white text-gray-700 border-gray-200 hover:bg-gray-100"
         }
       `}
     >
@@ -112,9 +111,8 @@ export default function FiltersCard({ onFilterChange, onClearFilters }: FiltersC
     <div
       className="
         w-full
-        max-w-95
-        xl:max-w-60
-        lg:max-w-85
+      xl:max-w-75
+        lg:max-w-56
         rounded-2xl
         bg-white
         p-5
@@ -124,7 +122,7 @@ export default function FiltersCard({ onFilterChange, onClearFilters }: FiltersC
     >
       {/* Header */}
       <div className="flex items-center justify-between mb-4">
-        <h2 className="font-semibold text-gray-800">Filters</h2>
+        <h2 className="font-semibold text-gray-800 flex items-center"><SlidersHorizontal className="h-5 w-5 mr-2 inline" /> Filters</h2>
         <button onClick={clearAllFilters} aria-label="Clear all filters">
           <X className="h-4 w-4 cursor-pointer text-gray-500 hover:text-gray-700" />
         </button>
@@ -176,7 +174,7 @@ export default function FiltersCard({ onFilterChange, onClearFilters }: FiltersC
       </div>
 
       {/* Industry/Brand */}
-      <div className="mb-6">
+      {/* <div className="mb-6">
         <div
           className="flex items-center justify-between cursor-pointer"
           onClick={() => setOpenIndustry(!openIndustry)}
@@ -190,7 +188,7 @@ export default function FiltersCard({ onFilterChange, onClearFilters }: FiltersC
             <ChevronDown className="h-4 w-4 text-gray-500" />
           )}
         </div>
-      </div>
+      </div> */}
 
       {/* Location */}
       <div className="mb-6">
@@ -199,6 +197,7 @@ export default function FiltersCard({ onFilterChange, onClearFilters }: FiltersC
           <input
             value={location}
             onChange={(e) => setLocation(e.target.value)}
+            placeholder="Search based on location"
             className="
               w-full rounded-md border border-gray-200
               px-3 py-2 pr-10 text-sm

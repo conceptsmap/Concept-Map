@@ -6,6 +6,7 @@ import Notifications from "@/layout/components/Notifications";
 import Creative from "@/layout/components/Creative";
 import Post, { PostProps } from "../dashboard/components/Post";
 import FiltersCard, { FilterValues } from "./components/FiltersCard";
+import PostSkeleton from "../dashboard/components/PostSkelton";
 
 type BackendPost = PostProps & { _id?: string };
 
@@ -27,18 +28,18 @@ export default function ScriptsPage() {
   // Build query string from filters
   const buildFilterParams = useCallback((currentFilters: FilterValues) => {
     const params = new URLSearchParams();
-    
+
     // Combine genres and occasions into filter param
     const filterItems = [...currentFilters.genres, ...currentFilters.occasions];
     if (filterItems.length > 0) {
       params.set("filter", filterItems.join(","));
     }
-    
+
     // Location - split into state (just use location as state for now)
     if (currentFilters.location) {
       params.set("state", currentFilters.location);
     }
-    
+
     return params.toString();
   }, []);
 
@@ -56,16 +57,16 @@ export default function ScriptsPage() {
   }, []);
 
   // Check if any filters are active
-  const hasActiveFilters = filters.genres.length > 0 || 
-    filters.occasions.length > 0 || 
-    filters.licenceTypes.length > 0 || 
+  const hasActiveFilters = filters.genres.length > 0 ||
+    filters.occasions.length > 0 ||
+    filters.licenceTypes.length > 0 ||
     filters.location.length > 0;
 
   // Fetch posts when query or filters change
   useEffect(() => {
     const filterParams = buildFilterParams(filters);
     const hasFiltersOrQuery = query || hasActiveFilters;
-    
+
     if (!hasFiltersOrQuery) {
       // Fetch default recent posts
       (async () => {
@@ -122,13 +123,17 @@ export default function ScriptsPage() {
   const displayLoading = (query || hasActiveFilters) ? loading : defaultLoading;
 
   return (
-    <div className="flex gap-4 items-start">
+    <div className="flex gap-4 items-start mt-2">
       {/* LEFT */}
-      <div className="flex-1 px-3 ">
+      <div className="flex-1">
         {/* {!query && !displayLoading && displayPosts.length > 0 && (
           <h2 className="text-lg font-semibold text-gray-700 mb-4">Recent Posts</h2>
         )} */}
-        {displayLoading && <div className="text-gray-500 p-4">Loading...</div>}
+        {displayLoading &&
+          Array.from({ length: 5 }).map((_, index) => (
+            <PostSkeleton key={index} />
+          ))
+        }
         {displayError && !displayLoading && <div className="text-red-500 p-4">{displayError}</div>}
         {!displayLoading && !displayError && displayPosts.length === 0 && (query || hasActiveFilters) && (
           <div className="text-gray-500 p-4">No results found.</div>
@@ -148,8 +153,9 @@ export default function ScriptsPage() {
         </div>
       </div>
       {/* RIGHT */}
-      <div className="flex flex-col gap-4 shrink-0 w-[245px]">
-        <FiltersCard 
+      <div className="flex flex-col gap-4 shrink-0   xl:max-w-75
+        lg:max-w-56">
+        <FiltersCard
           onFilterChange={handleFilterChange}
           onClearFilters={handleClearFilters}
         />

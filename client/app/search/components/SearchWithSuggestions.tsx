@@ -7,6 +7,7 @@ import { useState, useRef, useEffect } from "react";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import searchIcon from "@/assets/icons/search.svg";
+import { Input } from "@/components/ui/input";
 
 type BackendSuggestion = { main_title?: string; title?: string };
 
@@ -61,17 +62,14 @@ export default function SearchWithSuggestions() {
   };
 
   return (
-    <div ref={ref} className="relative inline-flex items-center gap-3">
+    <div ref={ref} className="w-full relative inline-flex justify-between items-center gap-3">
       {/* INPUT PILL */}
       <div
         className="
           relative flex items-center
-          bg-white rounded-full
+          bg-white rounded-lg
           border border-gray-200
           w-[100%]
-          sm:w-[520px]
-          lg:w-[680px]
-          xl:w-[760px]
         "
       >
         <Image
@@ -80,7 +78,7 @@ export default function SearchWithSuggestions() {
           className="absolute left-4 h-4 w-4 opacity-60"
         />
 
-        <input
+        <Input
           value={value}
           onChange={(e) => {
             setValue(e.target.value);
@@ -91,7 +89,7 @@ export default function SearchWithSuggestions() {
           className="
             w-full bg-transparent
             pl-11 pr-4 py-3
-            text-sm outline-none
+            text-sm outline-none border-none shadow-md
           "
           onKeyDown={(e) => {
             if (e.key === "Enter") {
@@ -102,7 +100,7 @@ export default function SearchWithSuggestions() {
       </div>
 
       {/* BUTTON */}
-      <Button className="rounded-full bg-green-700 px-8 hover:bg-green-800" onClick={() => handleSearch(value)}>
+      <Button className=" bg-[#013913] px-8 hover:bg-[#013913]/80 cursor-pointer font-medium" onClick={() => handleSearch(value)}>
         Search
       </Button>
 
@@ -113,7 +111,7 @@ export default function SearchWithSuggestions() {
             absolute left-0 top-full mt-2
             w-full rounded-xl
             border border-gray-200
-            bg-white shadow-sm
+            bg-white shadow-md
             z-50
           "
         >

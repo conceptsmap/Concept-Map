@@ -3,23 +3,33 @@
 import React, { useState } from "react"
 
 const categories = [
-  "All",
-  "Feature Film",
-  "Short Film",
-  "TV Series / Web Series",
-  "Advertisement Script",
-]
+  "ALL",
+  "CRIME",
+  "ROMANCE",
+  "HORROR",
+  "ACTION",
+  "COMEDY",
+  "DRAMA",
+  "SCIFI",
+  "FANTASY",
+  "HISTORICAL",
+  "DOCUMENTARY",
+  "OTHERS"
+];
 
 const Navbar = () => {
-  const [active, setActive] = useState("All")
+  const [active, setActive] = useState("ALL")
 
   return (
-    <div className="w-full overflow-x-auto">
+    <div className="w-full min-w-0 overflow-hidden">
       <div
         className="
-          flex w-max gap-3
+          flex overflow-x-auto gap-3 scrollbar-hide
           rounded-2xl bg-[#F5F7F6]
-          p-3
+          py-2
+           [&::-webkit-scrollbar]:hidden
+          [-ms-overflow-style:none]
+          [scrollbar-width:none]
         "
       >
         {categories.map((item) => {
@@ -32,11 +42,11 @@ const Navbar = () => {
               className={`
                 whitespace-nowrap
                 rounded-xl px-6 py-2 text-sm font-medium
-                transition-all duration-200
-                ${
-                  isActive
-                    ? "bg-[#013913] text-white shadow-sm"
-                    : "bg-white text-gray-800 hover:bg-gray-100"
+                transition-all duration-200 
+               capitalize
+                ${isActive
+                  ? "bg-[#013913] text-white shadow-sm"
+                  : "bg-white text-gray-800 hover:bg-gray-100"
                 }
               `}
             >

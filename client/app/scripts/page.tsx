@@ -12,10 +12,6 @@ export default function ScriptsPage() {
         <PostCreationScript />
       </div>
       {/* RIGHT */}
-      <div className="flex flex-col gap-4 shrink-0 w-[245px]">
-        <Creative />
-        <Notifications />
-      </div>
     </div>
   );
 }

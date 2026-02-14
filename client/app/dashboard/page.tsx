@@ -1,17 +1,15 @@
 import React from 'react'
 import Post, { PostProps } from './components/Post'
 import { posts } from './components/posts'
-import Creative from '@/layout/components/Creative'
-import Notifications from '@/layout/components/Notifications'
-
-
+import Navbar from '@/layout/components/Navbar';
 
 const DashboardPage = () => {
   return (
     <>
-      <div className="flex gap-4 items-start">
+      <div className=" gap-4 items-start">
+        <Navbar />
         {/* LEFT */}
-        <div className="flex-1">
+        <div className="flex-1 gap-3 flex flex-col">
           {posts.map((post: PostProps) => (
             <Post
               key={post.id}
@@ -20,10 +18,6 @@ const DashboardPage = () => {
           ))}
         </div>
         {/* RIGHT */}
-        <div className="flex flex-col gap-4 shrink-0 w-61.25">
-          <Creative />
-          <Notifications />
-        </div>
       </div>
     </>
   );

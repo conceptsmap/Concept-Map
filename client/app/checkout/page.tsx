@@ -1,4 +1,3 @@
-import BuyerLayout from '@/layout/components/BuyerLayout'
 import close from '@/assets/icons/close.svg'
 import React from 'react'
 import Image from 'next/image'
@@ -6,8 +5,8 @@ import PaymentMethod from './components/PaymentMethod'
 
 const CheckoutPage = () => {
     return (
-        <div className='flex'>
-            <div className="min-h-screen bg-[#F4F6F5] flex items-top justify-center p-4 w-full">
+        <div className='flex gap-3'>
+            <div className="min-h-screen bg-[#F4F6F5] flex items-top justify-center gap-3 w-full">
 
                 <div className="w-full rounded-3xl bg-white shadow-sm p-6">
 

@@ -1,3 +1,4 @@
+'use client'
 import React from "react";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
@@ -7,8 +8,10 @@ import fb from "@/assets/icons/fb.svg"
 import x from "@/assets/icons/x.svg"
 import yt from "@/assets/icons/yt.svg"
 import instagram from "@/assets/icons/instagram.svg"
+import { useRouter } from "next/navigation";
 
 const Footer = () => {
+  const router = useRouter();
   return (
     <section>
       <div
@@ -35,8 +38,9 @@ const Footer = () => {
                   visualizations.
                 </p>
                 <Button
+                  onClick={() => router.push("/login")}
                   className="
-            mt-8 px-4 py-5 text-lg font-semibold text-white rounded-lg border-3 border-[#1DBF73]
+            mt-8 px-4 py-5 text-lg font-semibold text-white rounded-lg border-3 cursor-pointer border-[#1DBF73]
             bg-gradient-to-b from-[#98F3C8] to-[#1DBF73]
             shadow-[inset_0_0_0_1px_#1DBF73,0_2px_4px_rgba(0,0,0,0.25)]
              transition-all

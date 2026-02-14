@@ -36,18 +36,18 @@ const PaymentMethod = () => {
 
   if (status === "waiting") {
     return (
-     <LoadingScreen />
+      <LoadingScreen />
     )
   }
 
   if (status === "success") {
     return (
-      <SuccessScreen/>
+      <SuccessScreen />
     )
   }
 
   return (
-    <div className="w-full max-w-md min-h-[520px] rounded-3xl bg-white p-5 shadow-sm flex flex-col p-4">
+    <div className=" w-[399px] min-h-[520px] rounded-3xl bg-white p-5 shadow-sm flex flex-col p-4">
 
       <h2 className="mb-4 text-xl font-bold">Payment Method</h2>
 

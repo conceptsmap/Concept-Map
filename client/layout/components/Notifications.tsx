@@ -15,9 +15,8 @@ const Notifications = () => {
     <div
       className="
         w-full
-        max-w-95
-        xl:max-w-60
-        lg:max-w-85
+            xl:max-w-75
+        lg:max-w-56
         rounded-2xl
         bg-white
         p-5
@@ -46,7 +45,7 @@ const Notifications = () => {
           </div>
         </div>
 
-        <div className="flex gap-3 pl-8">
+        {/* <div className="flex gap-3 pl-8">
           <Link href="/login">
             <Button className="rounded-xl bg-[#1DBF73] px-5 text-white hover:bg-[#1DBF73]/90">
               Login
@@ -59,7 +58,7 @@ const Notifications = () => {
           >
             Sign up
           </Button>
-        </div>
+        </div> */}
       </div>
 
       {/* Notifications */}

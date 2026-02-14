@@ -11,7 +11,7 @@ import arrow from "@/assets/icons/right-arrow.svg"
 
 const Profile = () => {
     return (
-        <div className="mx-auto max-w-3xl p-4 flex gap-3 flex-col">
+        <div className="mx-auto  flex gap-3 flex-col">
 
             <div className="overflow-hidden rounded-3xl bg-white shadow-sm">
 
@@ -38,15 +38,15 @@ const Profile = () => {
                         />
                     </div>
 
-                    <svg 
-                        className="absolute left-0 w-full pointer-events-none" 
+                    <svg
+                        className="absolute left-0 w-full pointer-events-none"
                         style={{ top: '-44px', height: '48px' }}
                         viewBox="0 0 1200 48"
                         preserveAspectRatio="xMinYMin slice"
                         xmlns="http://www.w3.org/2000/svg"
                     >
-                        <path 
-                            d="M 0,48 L 0,0 L 28,0 Q 36,0 40,4 Q 44,8 48,16 Q 56,28 64,34 Q 72,40 88,40 Q 104,40 112,34 Q 120,28 128,16 Q 132,8 136,4 Q 140,0 148,0 L 1200,0 L 1200,48 Z" 
+                        <path
+                            d="M 0,48 L 0,0 L 28,0 Q 36,0 40,4 Q 44,8 48,16 Q 56,28 64,34 Q 72,40 88,40 Q 104,40 112,34 Q 120,28 128,16 Q 132,8 136,4 Q 140,0 148,0 L 1200,0 L 1200,48 Z"
                             fill="white"
                         />
                     </svg>

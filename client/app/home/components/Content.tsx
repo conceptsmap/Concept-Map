@@ -1,3 +1,4 @@
+'use client'
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import img1 from "@/assets/images/Frame 16 (9) 1.png";
@@ -5,8 +6,10 @@ import img2 from "@/assets/images/Frame 16 (8) 1.png";
 import img3 from "@/assets/images/Frame 1 (5) 1.png";
 import img4 from "@/assets/images/Frame 16 (7) 1.png";
 import img5 from "@/assets/images/Frame 12 (2) 1.png";
+import { useRouter } from "next/navigation";
 
 const Content = () => {
+  const router = useRouter();
   return (
     <div>
       <section className="flex flex-col items-center justify-center text-center py-20  bg-white">
@@ -33,8 +36,9 @@ const Content = () => {
 
         <div className="mt-10 flex flex-wrap gap-5 justify-center">
           <Button
+            onClick={() => router.push("/login")}
             className="
-            px-4 py-5 text-lg font-semibold text-white rounded-lg border-3 border-[#1DBF73]
+            px-4 py-5 text-lg font-semibold text-white rounded-lg border-3 cursor-pointer border-[#1DBF73]
             bg-gradient-to-b from-[#98F3C8] to-[#1DBF73]
             shadow-[inset_0_0_0_1px_#1DBF73,0_2px_4px_rgba(0,0,0,0.25)]
              transition-all
@@ -43,8 +47,9 @@ const Content = () => {
             Browse Marketplace
           </Button>
           <Button
+            onClick={() => router.push("/login")}
             className="
-            px-6 py-5 text-lg font-semibold text-white rounded-lg border-3 border-[#207D3E]
+            px-6 py-5 text-lg font-semibold text-white rounded-lg border-3 cursor-pointer border-[#207D3E]
             bg-gradient-to-b from-[#73D091] to-[#08501F]
             shadow-[inset_0_0_0_1px_black,0_2px_4px_rgba(0,0,0,0.25)]
              transition-all
@@ -80,8 +85,9 @@ const Content = () => {
                   </p>
 
                   <Button
+                    onClick={() => router.push("/login")}
                     className="
-                mt-8 px-5 py-5 text-lg font-semibold text-white rounded-lg
+                mt-8 px-5 py-5 text-lg font-semibold text-white cursor-pointer rounded-lg
                 bg-gradient-to-b from-[#73D091] to-[#08501F]
                 shadow-[inset_0_0_0_1px_black,0_2px_4px_rgba(0,0,0,0.25)]
               "

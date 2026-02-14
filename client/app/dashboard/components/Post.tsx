@@ -12,6 +12,7 @@ import { Button } from '@/components/ui/button'
 import heart_filled from '@/assets/icons/heart_filled.svg'
 import Link from 'next/link'
 import profile from '@/assets/images/dummy_profile.svg'
+import { Lock } from 'lucide-react';
 
 export type PostType = 'synopsis' | 'storyboard' | 'script'
 
@@ -110,35 +111,35 @@ const Post: React.FC<PostProps> = ({
         </div>
 
         <div className="flex items-center gap-4 text-gray-600">
-        <button
-  onClick={() => {
-    setLiked(prev => !prev)
-  }}
-  className="flex items-center gap-1.5 transition-colors"
->
-  <Image
-    src={liked ? heart_filled : heart}
-    alt="Like"
-    className="w-5 h-5"
-  />
-   <span className="text-sm font-medium">{likes.toLocaleString()}</span>
-</button>
+          <button
+            onClick={() => {
+              setLiked(prev => !prev)
+            }}
+            className="flex items-center gap-1.5 transition-colors"
+          >
+            <Image
+              src={liked ? heart_filled : heart}
+              alt="Like"
+              className="w-5 h-5"
+            />
+            <span className="text-sm font-medium">{likes.toLocaleString()}</span>
+          </button>
 
-<button
-  onClick={() => {
-    commentInputRef.current?.focus()
-  }}
-  className="flex items-center gap-1.5 transition-colors"
->
-  <Image src={comment} alt="Comment" className="w-5 h-5" />
-  <span className="text-sm font-medium">{comments}</span>
-</button>
+          <button
+            onClick={() => {
+              commentInputRef.current?.focus()
+            }}
+            className="flex items-center gap-1.5 transition-colors"
+          >
+            <Image src={comment} alt="Comment" className="w-5 h-5" />
+            <span className="text-sm font-medium">{comments}</span>
+          </button>
 
-          <button className="text-gray-400 hover:text-gray-600 transition-colors">
+          <button className="text-black hover:text-gray-600 transition-colors">
             <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 16 16">
-              <circle cx="8" cy="2.5" r="1.5"/>
-              <circle cx="8" cy="8" r="1.5"/>
-              <circle cx="8" cy="13.5" r="1.5"/>
+              <circle cx="8" cy="2.5" r="1.5" />
+              <circle cx="8" cy="8" r="1.5" />
+              <circle cx="8" cy="13.5" r="1.5" />
             </svg>
           </button>
         </div>
@@ -155,82 +156,81 @@ const Post: React.FC<PostProps> = ({
       </div>
 
       {/* Content Box */}
-    {/* Content */}
-{type === 'storyboard' && storyboard?.image ? (
-  <div className="relative mb-4 overflow-hidden rounded-lg border border-gray-200">
-    {/* Cropped storyboard image */}
-    <div className="relative h-64 w-full">
-      <Image
-        src={storyboardImg}
-        alt={title}
-        fill
-        className="object-cover object-top"
-      />
-    </div>
+      {/* Content */}
+      {type === 'storyboard' && storyboard?.image ? (
+        <div className="relative mb-4 overflow-hidden rounded-lg border border-gray-200">
+          {/* Cropped storyboard image */}
+          <div className="relative h-64 w-full">
+            <Image
+              src={storyboardImg}
+              alt={title}
+              fill
+              className="object-cover object-top"
+            />
+          </div>
 
-    {/* Overlay: badge + expand */}
-    <div className="absolute top-3 right-3 flex gap-2">
-      <span className="inline-block rounded-md bg-white px-3 p-1 text-sm font-medium text-[#013913] shadow-sm border">
-        storyboard
-      </span>
+          {/* Overlay: badge + expand */}
+          <div className="absolute top-3 right-3 flex gap-2">
+            <span className="inline-block rounded-md bg-white px-3 p-1 text-sm font-medium text-[#013913] shadow-sm border">
+              storyboard
+            </span>
 
-      <button
-        onClick={onExpand}
-        className="rounded-lg border border-gray-200 bg-white hover:bg-gray-50 shadow-sm"
-      >
-        <Image src={expand} alt="Expand" />
-      </button>
-    </div>
-  </div>
-) : (
-  <div className="relative rounded-lg bg-[#F5F5F5] p-4 mb-4">
-    <div className="flex gap-3">
-      {/* Text */}
-      <div className="flex-1 pr-14">
-        <p className="text-sm text-gray-700 leading-relaxed line-clamp-4 whitespace-pre-line">
-          {getDisplayContent()}
-        </p>
-      </div>
+            <button
+              onClick={onExpand}
+              className="rounded-lg border border-gray-200 bg-white hover:bg-gray-50 shadow-sm"
+            >
+              <Image src={expand} alt="Expand" />
+            </button>
+          </div>
+        </div>
+      ) : (
+        <div className="relative rounded-lg bg-[#F5F5F5] p-4 mb-4">
+          <div className="flex gap-3">
+            {/* Text */}
+            <div className="flex-1 pr-14">
+              <p className="text-sm text-gray-700 leading-relaxed line-clamp-4 whitespace-pre-line">
+                {getDisplayContent()}
+              </p>
+            </div>
 
-      {/* Type + expand */}
-      <div className="flex flex-row items-start gap-2 flex-shrink-0 min-w-[60px]">
-        <span className="inline-block rounded-md bg-white px-3 p-1 text-sm font-medium text-[#013913] shadow-sm border">
-          {type}
-        </span>
+            {/* Type + expand */}
+            <div className="flex flex-row items-start gap-2 flex-shrink-0 min-w-[60px]">
+              <span className="inline-block rounded-md bg-white px-3 p-1 text-sm font-medium text-[#013913] shadow-sm border">
+                {type}
+              </span>
 
-        <button
-          onClick={onExpand}
-          className="rounded-lg border border-gray-200 bg-white hover:bg-gray-50 shadow-sm"
-        >
-          <Link href={`/dashboard/${id}`}>
-          <Image src={expand} alt="Expand" />
-          </Link>
-        </button>
-      </div>
-    </div>
-  </div>
-)}
+              <button
+                onClick={onExpand}
+                className="rounded-lg border border-gray-200 bg-white hover:bg-gray-50 shadow-sm"
+              >
+                <Link href={`/dashboard/${id}`}>
+                  <Image src={expand} alt="Expand" />
+                </Link>
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
 
       {/* Footer: Rights Badge */}
       <div className="flex items-center justify-start mb-4">
-        <span className="inline-flex items-center gap-1.5 rounded-full bg-green-50 px-3 py-1.5 text-xs font-semibold text-green-700 border border-green-100">
-          <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 16 16">
-            <path d="M8 1a3 3 0 0 0-3 3v1H4a1 1 0 0 0-1 1v7a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V6a1 1 0 0 0-1-1h-1V4a3 3 0 0 0-3-3zm2 4V4a2 2 0 1 0-4 0v1h4z"/>
-          </svg>
+        <span className="inline-flex items-center gap-1.5  rounded-lg bg-[#DBFFE7] px-3 py-1 text-sm  text-[#013913] border border-green-100">
+          <Lock className="w-3 h-3 text-[#013913]" />
+
           {rightsLabel}
         </span>
       </div>
 
       {/* Comment Input + See More Button */}
-      <div className="flex items-center gap-3 pt-3 border-t border-gray-100">
-        <Input  ref={commentInputRef} placeholder="Add a comment..." />
-          <button className="text-gray-400 hover:text-gray-600 transition-colors flex-shrink-0 rounded-lg border p-2 border-gray-200 bg-white  hover:bg-gray-50 transition-colors shadow-sm">
-            <Image src={bookmark} alt="Bookmark" className="w-5 h-5" />
-          </button>
+      <div className="flex items-center gap-3  0">
+        <Input ref={commentInputRef} placeholder="Add a comment..." />
+        <button className="text-gray-400 hover:text-gray-600 transition-colors flex-shrink-0 rounded-lg border p-2 border-gray-200 bg-white  hover:bg-gray-50 transition-colors shadow-sm">
+          <Image src={bookmark} alt="Bookmark" className="w-5 h-5" />
+        </button>
         <Link href={`/dashboard/${id}`}>
-        <Button className='bg-green-500 hover:bg-green-600 px-5 py-2 text-sm font-semibold text-white transition-colors shadow-sm'>
-          See More
+          <Button className='bg-green-500 hover:bg-green-600 px-5 py-2 text-sm font-semibold text-white transition-colors shadow-sm'>
+            See More
           </Button>
         </Link>
       </div>

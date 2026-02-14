@@ -22,7 +22,7 @@ const Sidebar = () => {
   const [collapsed, setCollapsed] = useState(true)
   const [mounted, setMounted] = useState(false)
   const router = useRouter()
-  
+
   useEffect(() => {
     // Mark component as mounted for hydration - this is intentional for SSR
     // eslint-disable-next-line react-hooks/set-state-in-effect
@@ -40,7 +40,7 @@ const Sidebar = () => {
 
   // Buyer tabs
   const buyerTabs = [
-    { icon: home, label: "Home", href: "/", active: pathname === "/" },
+    { icon: home, label: "Home", href: "/dashboard", active: pathname === "/dashboard" },
     { icon: search, label: "Search", href: "/search", active: pathname.startsWith("/search") },
     { icon: bookmark, label: "Saved", href: "/saved", active: pathname.startsWith("/saved") },
     { icon: table_list, label: "My Purchases", href: "/purchases", active: pathname.startsWith("/purchases") },
@@ -50,7 +50,7 @@ const Sidebar = () => {
 
   // Seller tabs (CREATOR role)
   const sellerTabs = [
-    { icon: home, label: "Home", href: "/", active: pathname === "/" },
+    { icon: home, label: "Home", href: "/dashboard", active: pathname === "/dashboard" },
     { icon: search, label: "Search", href: "/search", active: pathname.startsWith("/search") },
     { icon: bookmark, label: "Saved", href: "/saved", active: pathname.startsWith("/saved") },
     { icon: task, label: "Profile", href: "/profile", active: pathname.startsWith("/profile") },
@@ -68,7 +68,7 @@ const Sidebar = () => {
       <aside
         className={`
         h-screen bg-white shadow-sm transition-all duration-300
-        ${collapsed ? "w-[88px]" : "w-[320px]"}
+        ${collapsed ? "w-[88px]" : "w-[200px]"}
         rounded-3xl p-4
         flex flex-col
       `}
@@ -90,8 +90,8 @@ const Sidebar = () => {
     <aside
       className={`
       h-screen bg-white shadow-sm transition-all duration-300
-      ${collapsed ? "w-[88px]" : "w-[320px]"}
-      rounded-3xl p-4
+      ${collapsed ? "w-[88px]" : "w-[200px]"}
+      rounded-3xl py-4 px-2
       flex flex-col
     `}
     >

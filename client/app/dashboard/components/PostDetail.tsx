@@ -11,6 +11,7 @@ import heart_filled from '@/assets/icons/heart_filled.svg'
 import profile from '@/assets/images/dummy_profile.svg'
 
 import { Button } from '@/components/ui/button'
+import { Lock } from 'lucide-react'
 
 export type PostType = 'synopsis' | 'storyboard' | 'script'
 
@@ -198,11 +199,10 @@ const PostDetail: React.FC<PostDetailProps> = ({
 
       {/* Content */}
       <div
-        className={`relative mt-4 rounded-xl ${
-          type === 'storyboard'
-            ? 'bg-white p-0'
-            : 'bg-[#F5F5F5] p-5'
-        }`}
+        className={`relative mt-4 rounded-xl ${type === 'storyboard'
+          ? 'bg-white p-0'
+          : 'bg-[#F5F5F5] p-5'
+          }`}
       >
         {renderContent()}
 
@@ -224,8 +224,8 @@ const PostDetail: React.FC<PostDetailProps> = ({
 
       {/* Footer */}
       <div className="mt-5 flex items-center justify-between">
-        <span className="inline-flex items-center gap-1.5 rounded-md bg-green-50 px-3 py-1.5 text-xs font-semibold text-[#013913] border border-green-100">
-          <Image src={lock} alt="rights" width={14} height={14} />
+        <span className="inline-flex items-center gap-1.5  rounded-lg bg-[#DBFFE7] px-3 py-1 text-sm  text-[#013913] border border-green-100">
+          <Lock className="w-3 h-3 text-[#013913]" />
           {rightsLabel}
         </span>
 
@@ -237,10 +237,10 @@ const PostDetail: React.FC<PostDetailProps> = ({
       </div>
 
       {/* Purchase */}
-      {( script?.price ||price) && (
+      {(script?.price || price) && (
         <div className="mt-4 flex items-center justify-end gap-3">
           <span className="text-lg font-bold text-green-600">
-          ₹{(script?.price ?? price ?? 0).toLocaleString()}
+            ₹{(script?.price ?? price ?? 0).toLocaleString()}
           </span>
           <Link href="/checkout">
             <Button className="bg-green-500 hover:bg-green-600 px-6">

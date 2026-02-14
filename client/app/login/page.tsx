@@ -5,9 +5,10 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-
-import { useState } from "react";
+import google from "@/assets/icons/google.png"
+import facebook from "@/assets/icons/facebook.png"
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -33,14 +34,14 @@ export default function LoginPage() {
       if (!res.ok) throw new Error(data?.message || "Login failed");
       const token = data?.data?.token;
       const userRole = data?.data?._doc?.role || data?.data?.role;
-      
+
       if (token) {
         localStorage.setItem("auth_token", token);
       }
       if (userRole) {
         localStorage.setItem("user_role", userRole);
       }
-      
+
       setSuccess("Login successful!");
       router.push("/dashboard");
     } catch (err: unknown) {
@@ -71,7 +72,7 @@ export default function LoginPage() {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <Button variant="outline" className="w-full flex items-center gap-2 font-semibold">
               <Image
-                src="https://www.svgrepo.com/show/475656/google-color.svg"
+                src={google}
                 alt="Google"
                 width={18}
                 height={18}
@@ -83,7 +84,7 @@ export default function LoginPage() {
 
             <Button variant="outline" className="w-full flex items-center gap-2 font-semibold">
               <Image
-                src="https://www.svgrepo.com/show/475647/facebook-color.svg"
+                src={facebook}
                 alt="Facebook"
                 width={18}
                 height={18}
