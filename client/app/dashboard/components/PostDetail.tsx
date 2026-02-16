@@ -38,6 +38,7 @@ interface ScriptData {
 }
 
 interface PostDetailProps {
+  id: string
   author: Author
   title: string
   description?: string
@@ -58,6 +59,7 @@ interface PostDetailProps {
 }
 
 const PostDetail: React.FC<PostDetailProps> = ({
+  id,
   author,
   title,
   description,
@@ -242,7 +244,7 @@ const PostDetail: React.FC<PostDetailProps> = ({
           <span className="text-lg font-bold text-green-600">
             ₹{(script?.price ?? price ?? 0).toLocaleString()}
           </span>
-          <Link href="/checkout">
+          <Link href={`/checkout?postId=${id}`}>
             <Button className="bg-green-500 hover:bg-green-600 px-6">
               Buy Now
             </Button>

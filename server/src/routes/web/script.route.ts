@@ -20,6 +20,7 @@ export class ScriptRouter {
     this.router.post("/script", jwtVerifyMiddleware, this.scriptController.createScript);
     this.router.post("/storyboard", jwtVerifyMiddleware, this.scriptController.createStoryBoard);
     this.router.post("/synopsis", jwtVerifyMiddleware, this.scriptController.createSynopsis);
+    this.router.get("/all", this.scriptController.getAllScripts);
     this.router.get("/:id", this.scriptController.getScript);
     this.router.post(
       "/upload",

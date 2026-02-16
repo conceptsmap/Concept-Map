@@ -120,7 +120,6 @@ export default function PostCreationScript() {
       className="
   w-full
   mx-auto
-  px-4
 "
     >
         {/*   max-w-full
@@ -273,10 +272,10 @@ export default function PostCreationScript() {
 
         {/* Related Posts */}
         <div className="flex flex-wrap gap-2">
-          <Button type="button" variant="outline" size="sm" onClick={() => router.push("/synopsis")}> 
+          <Button type="button" variant="outline" size="sm" onClick={() => router.push("/posts?type=synopsis")}> 
             Synopsis +
           </Button>
-          <Button type="button" variant="outline" size="sm" onClick={() => router.push("/storyboard")}> 
+          <Button type="button" variant="outline" size="sm" onClick={() => router.push("/posts?type=storyboard")}> 
             Story Board +
           </Button>
         </div>
@@ -288,11 +287,11 @@ export default function PostCreationScript() {
             value={scriptType}
             onValueChange={(value) => {
               if (value === "STORY_BOARD") {
-                router.push("/storyboard");
+                router.push("/posts?type=storyboard");
                 return;
               }
               if (value === "SYNOPSIS") {
-                router.push("/synopsis");
+                router.push("/posts?type=synopsis");
                 return;
               }
               setScriptType(value);

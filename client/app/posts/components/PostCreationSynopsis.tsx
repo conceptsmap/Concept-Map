@@ -178,10 +178,10 @@ export default function PostCreationSynopsis() {
 
       {/* Related Posts */}
       <div className="flex flex-wrap gap-2">
-        <Button type="button" variant="outline" size="sm" onClick={() => router.push("/scripts")}>
+        <Button type="button" variant="outline" size="sm" onClick={() => router.push("/posts?type=script")}>
           Script +
         </Button>
-        <Button type="button" variant="outline" size="sm" onClick={() => router.push("/storyboard")}>
+        <Button type="button" variant="outline" size="sm" onClick={() => router.push("/posts?type=storyboard")}>
           Story Board +
         </Button>
       </div>

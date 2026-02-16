@@ -57,4 +57,15 @@ export class ScriptService {
 
     return scripts;
   }
+
+  async getAllScripts(skip: number = 0, limit: number = 20) {
+    const scripts = await this.crudRepository.fetchAllDocuments(
+      {},
+      skip,
+      limit,
+      "userId",
+      "desc"
+    );
+    return scripts;
+  }
 }

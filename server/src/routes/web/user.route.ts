@@ -1,5 +1,6 @@
 import { Router } from "express";
 import { UserController } from "../../controllers/user.controller";
+import jwtVerifyMiddleware from "../../middleware/jwtVerify";
 
 export class UserRouter {
   public router: Router;
@@ -12,6 +13,7 @@ export class UserRouter {
   }
 
   private initRoutes() {
+    this.router.get("/me", jwtVerifyMiddleware, this.userController.getCurrentUser);
     this.router.get("/:userId", this.userController.getUserData);
     this.router.get("/", this.userController.getUserDataUsingEmail);
   }

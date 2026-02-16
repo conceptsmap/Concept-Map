@@ -8,6 +8,26 @@ export class UserController {
     this.userService = new UserService();
   }
 
+  getCurrentUser = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const userId = req.user?.id;
+      if (!userId) {
+        return res.status(401).json({
+          status: "error",
+          message: "Unauthorized",
+        });
+      }
+      const result = await this.userService.getUserData(userId);
+      res.status(200).json({
+        status: "success",
+        message: "User data fetched successfully",
+        data: result,
+      });
+    } catch (error) {
+      next(error);
+    }
+  };
+
   getUserData = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { userId } = req.params;

@@ -159,4 +159,19 @@ export class ScriptController {
       next(error);
     }
   };
+
+  getAllScripts = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const skip = parseInt(req.query.skip as string) || 0;
+      const limit = parseInt(req.query.limit as string) || 20;
+      const result = await this.scriptService.getAllScripts(skip, limit);
+      res.status(200).json({
+        status: "success",
+        message: "Successfully fetched all scripts",
+        data: result,
+      });
+    } catch (error) {
+      next(error);
+    }
+  };
 }

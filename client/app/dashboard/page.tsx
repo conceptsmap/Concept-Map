@@ -1,21 +1,98 @@
-import React from 'react'
-import Post, { PostProps } from './components/Post'
-import { posts } from './components/posts'
+"use client";
+
+import React, { useEffect, useState } from 'react'
+import Post, { PostProps, PostType } from './components/Post'
 import Navbar from '@/layout/components/Navbar';
+import PostSkeleton from './components/PostSkelton';
+
+interface ApiScript {
+  _id: string;
+  main_title?: string;
+  title?: string;
+  description?: string;
+  type?: string[];
+  likes?: number;
+  comments?: number;
+  synopsis?: { price?: number; currency?: string; content?: string };
+  script?: { price?: number; currency?: string; content?: { name: string; scenes: { name: string; description: string }[] }[] };
+  story_borad?: { price?: number; currency?: string; content?: { name: string; cloud_url: string }[] };
+  userId?: { _id: string; username?: string; role?: string; profile_url?: string };
+}
 
 const DashboardPage = () => {
+  const [posts, setPosts] = useState<PostProps[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchPosts = async () => {
+      try {
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api';
+        const res = await fetch(`${apiUrl}/web/script/all`);
+        const data = await res.json();
+        if (res.ok && data?.data) {
+          const mappedPosts: PostProps[] = data.data.map((script: ApiScript) => {
+            // Determine post type
+            let postType: PostType = 'script';
+            if (script.type?.includes('SYNOPSIS')) postType = 'synopsis';
+            else if (script.type?.includes('STORY_BOARD')) postType = 'storyboard';
+
+            return {
+              id: script._id,
+              author: script.userId && typeof script.userId === 'object'
+                ? {
+                    name: script.userId.username || 'Unknown',
+                    role: script.userId.role || '',
+                    avatar: script.userId.profile_url || '',
+                  }
+                : { name: 'Unknown', role: '', avatar: '' },
+              title: script.main_title || script.title || 'Untitled',
+              type: postType,
+              likes: script.likes || 0,
+              comments: script.comments || 0,
+              rightsLabel: 'Basic / Exclusive Rights',
+              synopsis: script.synopsis?.content,
+              script: script.script,
+              storyboard: script.story_borad?.content?.[0]?.cloud_url
+                ? { image: script.story_borad.content[0].cloud_url }
+                : undefined,
+            };
+          });
+          setPosts(mappedPosts);
+        }
+      } catch (error) {
+        console.error('Failed to fetch posts:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchPosts();
+  }, []);
+
   return (
     <>
-      <div className=" gap-4 items-start">
+      <div className="gap-4 items-start">
         <Navbar />
         {/* LEFT */}
         <div className="flex-1 gap-3 flex flex-col">
-          {posts.map((post: PostProps) => (
-            <Post
-              key={post.id}
-              {...post}
-            />
-          ))}
+          {loading ? (
+            <>
+              <PostSkeleton />
+              <PostSkeleton />
+              <PostSkeleton />
+            </>
+          ) : posts.length > 0 ? (
+            posts.map((post: PostProps) => (
+              <Post
+                key={post.id}
+                {...post}
+              />
+            ))
+          ) : (
+            <div className="text-center py-10 text-gray-500">
+              No posts available yet. Be the first to create one!
+            </div>
+          )}
         </div>
         {/* RIGHT */}
       </div>

@@ -26,8 +26,8 @@ export default function PostCreationStoryBoard() {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const router = useRouter();
-  const handleScriptClick = () => router.push("/scripts");
-  const handleSynopsisClick = () => router.push("/synopsis");
+  const handleScriptClick = () => router.push("/posts?type=script");
+  const handleSynopsisClick = () => router.push("/posts?type=synopsis");
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

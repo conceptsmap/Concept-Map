@@ -9,15 +9,15 @@ export default function PostCreativeSelector() {
   const router = useRouter();
   // Handler for Script click
   const handleScriptClick = () => {
-    router.push("/scripts");
+    router.push("/posts?type=script");
   };
   // Handler for Synopsis click
   const handleSynopsisClick = () => {
-    router.push("/synopsis");
+    router.push("/posts?type=synopsis");
   };
   // Handler for Story Board click
   const handleStoryboardClick = () => {
-    router.push("/storyboard");
+    router.push("/posts?type=storyboard");
   };
   return (
     <div
@@ -80,7 +80,7 @@ function CreativeItem({
   desc,
   onClick,
 }: {
-  emoji: any;
+  emoji: React.ReactNode;
   bg: string;
   title: string;
   desc: string;
