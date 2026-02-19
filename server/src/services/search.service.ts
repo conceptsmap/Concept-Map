@@ -12,33 +12,71 @@ export class SearchService {
   async searchScript(searchFilter: any) {
     const {
       skip = "0",
-      take = 10,
+      take = "10",
       type = "",
-      filter = "",
+      genre = "",
       textSearch,
-      priceRange = "0",
-      country,
-      state,
+      maxPrice = "50000",
+      minPrice = "0",
+      location = "",
+      category,
     } = searchFilter;
 
-    const filterQuery = {
-      ...(type && { type: { $in: type.split(",") } }),
-      ...(filter &&
-        filter.length > 0 && {
-          $or: [
-            { genre: { $in: filter.split(",") } },
-            { industry_category: { $in: filter.split(",") } },
-          ],
-        }),
-      ...(state &&
-        state.length > 0 && {
-          state: { $in: state.split(",") },
-        }),
-      ...(country &&
-        country.length > 0 && {
-          country: { $in: country.split(",") },
-        }),
-      ...(textSearch && {
+    const parsedMinPrice = parseInt(minPrice);
+    const parsedMaxPrice = parseInt(maxPrice);
+
+    const filterQuery: any = {
+      $and: [],
+    };
+
+    /* ========================
+     TYPE FILTER
+  ========================= */
+    if (type) {
+      filterQuery.$and.push({
+        type: { $in: type.split(",") },
+      });
+    }
+
+    /* ========================
+     GENRE / INDUSTRY FILTER
+  ========================= */
+    if (genre) {
+      const genreArray = genre.split(",");
+
+      filterQuery.$and.push({
+        $or: [
+          { genre: { $in: genreArray } },
+          { industry_category: { $in: genreArray } },
+        ],
+      });
+    }
+
+    /* ========================
+     LOCATION FILTER
+  ========================= */
+    if (location) {
+      const locArray = location.split(",");
+
+      filterQuery.$and = filterQuery.$and || [];
+      filterQuery.$and.push({
+        $or: locArray.flatMap((loc: string) => [
+          { state: { $regex: `^${loc.trim()}$`, $options: "i" } },
+          { country: { $regex: `^${loc.trim()}$`, $options: "i" } },
+        ]),
+      });
+    }
+    if (category) {
+      filterQuery.$and.push({
+        category: { $in: category.split(",") },
+      });
+    }
+
+    /* ========================
+     TEXT SEARCH
+  ========================= */
+    if (textSearch) {
+      filterQuery.$and.push({
         $or: [
           { main_title: { $regex: textSearch, $options: "i" } },
           { description: { $regex: textSearch, $options: "i" } },
@@ -56,42 +94,65 @@ export class SearchService {
           },
           { "synopsis.content": { $regex: textSearch, $options: "i" } },
         ],
-      }),
-      ...(parseInt(priceRange) !== 0 && {
+      });
+    }
+
+    /* ========================
+     PRICE FILTER
+  ========================= */
+    if (!isNaN(parsedMinPrice) && !isNaN(parsedMaxPrice)) {
+      filterQuery.$and.push({
         $or: [
           {
             "script.price": {
-              $gte: parseInt(priceRange.split(",")[0]),
-              $lte: parseInt(priceRange.split(",")[1]),
+              $gte: parsedMinPrice,
+              $lte: parsedMaxPrice,
             },
           },
           {
-            "story_board.price": {
-              $gte: parseInt(priceRange.split(",")[0]),
-              $lte: parseInt(priceRange.split(",")[1]),
+            "story_borad.price": {
+              $gte: parsedMinPrice,
+              $lte: parsedMaxPrice,
             },
           },
           {
             "synopsis.price": {
-              $gte: parseInt(priceRange.split(",")[0]),
-              $lte: parseInt(priceRange.split(",")[1]),
+              $gte: parsedMinPrice,
+              $lte: parsedMaxPrice,
             },
           },
         ],
-      }),
-    };
+      });
+    }
 
+    // If no filters applied, remove $and
+    if (filterQuery.$and.length === 0) {
+      delete filterQuery.$and;
+    }
+
+    /* ========================
+     DATABASE CALL
+  ========================= */
     const count = await this.crudRepository.fetchDocumentCount(filterQuery);
+
     const scripts = await this.crudRepository.fetchAllDocuments(
       filterQuery,
       parseInt(skip),
-      parseInt(take as string),
+      parseInt(take),
       "userId",
     );
 
-    // Map scripts to include author info and default likes/comments
+    /* ========================
+     MAP RESULT FOR FRONTEND
+  ========================= */
     const mappedScripts = scripts.map((script: any) => {
-      let author = { name: "Unknown", jobRole: "", avatar: "", profile: "" };
+      let author = {
+        name: "Unknown",
+        jobRole: "",
+        avatar: "",
+        profile: "",
+      };
+
       if (script.userId && typeof script.userId === "object") {
         author = {
           name: script.userId.username || "Unknown",
@@ -101,25 +162,23 @@ export class SearchService {
         };
       }
 
-      // Compose title and content for Post
       let title = script.main_title || script.title || "Untitled";
       let description = script.description || "";
+
       let type =
         Array.isArray(script.type) && script.type.length > 0
           ? script.type[0].toLowerCase()
           : "script";
-      let scriptContent = undefined;
-      if (script.script && Array.isArray(script.script.content)) {
-        scriptContent = script.script;
-      }
-      let synopsis =
-        script.synopsis && script.synopsis.content
-          ? script.synopsis.content
+
+      let scriptContent =
+        script.script && Array.isArray(script.script.content)
+          ? script.script
           : undefined;
+
+      let synopsis = script.synopsis?.content || undefined;
+
       let storyboard =
-        script.story_borad &&
-        Array.isArray(script.story_borad.content) &&
-        script.story_borad.content.length > 0
+        script.story_borad?.content?.length > 0
           ? { image: script.story_borad.content[0].cloud_url }
           : undefined;
 
@@ -134,7 +193,7 @@ export class SearchService {
         synopsis,
         script: scriptContent,
         storyboard,
-        genres: script.genre ? [script.genre] : undefined,
+        genres: script.genre ? [script.genre] : [],
         description,
       };
     });

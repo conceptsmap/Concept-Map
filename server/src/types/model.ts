@@ -62,6 +62,8 @@ export interface IScriptCreate {
   industry_category: IndustryCategory;
   type: ScriptType[];
   userId: Types.ObjectId;
+  country: string[];
+  state: string[];
   script?: {
     price?: number;
     currency?: string;

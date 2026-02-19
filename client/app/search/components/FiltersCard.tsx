@@ -1,7 +1,13 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { X, ChevronDown, ChevronUp, Search, SlidersHorizontal } from "lucide-react";
+import {
+  X,
+  ChevronDown,
+  ChevronUp,
+  Search,
+  SlidersHorizontal,
+} from "lucide-react";
 
 const genres = [
   { label: "Romance", value: "ROMANCE" },
@@ -16,27 +22,25 @@ const genres = [
   { label: "Historical", value: "HISTORICAL" },
 ];
 
-const occasions = [
-  { label: "Festival", value: "FESTIVAL" },
-  { label: "Sale", value: "SALE" },
-  { label: "Launch", value: "LAUNCH" },
-  { label: "Back to School", value: "BACK_TO_SCHOOL" },
-  { label: "National Days", value: "NATIONAL_DAYS" },
-  { label: "Auspicious Date", value: "AUSPICIOUS_DATE" },
-  { label: "Season", value: "SEASON" },
+const contentTypes = [
+  { label: "Script", value: "SCRIPT" },
+  { label: "Synopsis", value: "SYNOPSIS" },
+  { label: "Storyboard", value: "STORY_BOARD" },
 ];
 
-const licenceTypes = [
-  { label: "Exclusive Licence", value: "EXCLUSIVE_LICENCE" },
-  { label: "Basic / Exclusive Rights", value: "BASIC_EXCLUSIVE_RIGHTS" },
-  { label: "Standard / Exclusive", value: "STANDARD_EXCLUSIVE" },
+const categories = [
+  { label: "TVC", value: "TVC" },
+  { label: "OTT Series", value: "OTT_SERIES" },
+  { label: "Short Form Video", value: "SHORT_FORM_VIDEO" },
 ];
 
 export interface FilterValues {
   genres: string[];
-  occasions: string[];
-  licenceTypes: string[];
+  contentTypes: string[];
+  categories: string[];
   location: string;
+  minPrice: number;
+  maxPrice: number;
 }
 
 interface FiltersCardProps {
@@ -44,30 +48,45 @@ interface FiltersCardProps {
   onClearFilters?: () => void;
 }
 
-export default function FiltersCard({ onFilterChange, onClearFilters }: FiltersCardProps) {
+export default function FiltersCard({
+  onFilterChange,
+  onClearFilters,
+}: FiltersCardProps) {
   const [selectedGenre, setSelectedGenre] = useState<string[]>([]);
-  const [selectedOccasion, setSelectedOccasion] = useState<string[]>([]);
-  const [selectedLicence, setSelectedLicence] = useState<string[]>([]);
+  const [selectedContentType, setSelectedContentType] = useState<string[]>([]);
+  const [selectedCategory, setSelectedCategory] = useState<string[]>([]);
   const [location, setLocation] = useState("");
 
-  const [openOccasion, setOpenOccasion] = useState(true);
-  const [openIndustry, setOpenIndustry] = useState(false);
+  const [minPrice, setMinPrice] = useState(0);
+  const [maxPrice, setMaxPrice] = useState(50000);
 
-  // Emit filter changes whenever any filter changes
+  // Emit filter changes
   useEffect(() => {
     onFilterChange?.({
       genres: selectedGenre,
-      occasions: selectedOccasion,
-      licenceTypes: selectedLicence,
+      contentTypes: selectedContentType,
+      categories: selectedCategory,
       location,
+      minPrice,
+      maxPrice,
     });
-  }, [selectedGenre, selectedOccasion, selectedLicence, location, onFilterChange]);
+  }, [
+    selectedGenre,
+    selectedContentType,
+    selectedCategory,
+    location,
+    minPrice,
+    maxPrice,
+    onFilterChange,
+  ]);
 
   const clearAllFilters = () => {
     setSelectedGenre([]);
-    setSelectedOccasion([]);
-    setSelectedLicence([]);
+    setSelectedContentType([]);
+    setSelectedCategory([]);
     setLocation("");
+    setMinPrice(0);
+    setMaxPrice(50000);
     onClearFilters?.();
   };
 
@@ -94,42 +113,29 @@ export default function FiltersCard({ onFilterChange, onClearFilters }: FiltersC
   }) => (
     <button
       onClick={onClick}
-      className={`
-        px-3 py-1.5 text-sm rounded-md border
-        transition
-        ${selected
-          ? "bg-green-600 text-white border-green-600"
-          : "bg-white text-gray-700 border-gray-200 hover:bg-gray-100"
-        }
-      `}
+      className={`px-3 py-1.5 text-sm rounded-md border transition ${selected
+        ? "bg-green-600 text-white border-green-600"
+        : "bg-white text-gray-700 border-gray-200 hover:bg-gray-100"
+        }`}
     >
       {label}
     </button>
   );
 
   return (
-    <div
-      className="
-        w-full
-      xl:max-w-75
-        lg:max-w-56
-        rounded-2xl
-        bg-white
-        p-5
-        shadow-md
-        space-y-4
-      "
-    >
+    <div className="w-full xl:max-w-75 lg:max-w-56 rounded-2xl bg-white p-5 shadow-md space-y-6">
       {/* Header */}
-      <div className="flex items-center justify-between mb-4">
-        <h2 className="font-semibold text-gray-800 flex items-center"><SlidersHorizontal className="h-5 w-5 mr-2 inline" /> Filters</h2>
-        <button onClick={clearAllFilters} aria-label="Clear all filters">
-          <X className="h-4 w-4 cursor-pointer text-gray-500 hover:text-gray-700" />
+      <div className="flex items-center justify-between">
+        <h2 className="font-semibold text-gray-800 flex items-center">
+          <SlidersHorizontal className="h-5 w-5 mr-2" /> Filters
+        </h2>
+        <button onClick={clearAllFilters}>
+          <X className="h-4 w-4 text-gray-500 hover:text-gray-700" />
         </button>
       </div>
 
       {/* Genre */}
-      <div className="mb-6">
+      <div>
         <p className="text-sm font-medium text-gray-700 mb-3">Genre</p>
         <div className="flex flex-wrap gap-2">
           {genres.map((g) => (
@@ -137,94 +143,104 @@ export default function FiltersCard({ onFilterChange, onClearFilters }: FiltersC
               key={g.value}
               label={g.label}
               selected={selectedGenre.includes(g.value)}
-              onClick={() => toggleItem(g.value, selectedGenre, setSelectedGenre)}
+              onClick={() =>
+                toggleItem(g.value, selectedGenre, setSelectedGenre)
+              }
             />
           ))}
         </div>
       </div>
 
-      {/* Occasion */}
-      <div className="mb-6">
-        <div
-          className="flex items-center justify-between cursor-pointer mb-3"
-          onClick={() => setOpenOccasion(!openOccasion)}
-        >
-          <p className="text-sm font-medium text-gray-700">Occasion</p>
-          {openOccasion ? (
-            <ChevronUp className="h-4 w-4 text-gray-500" />
-          ) : (
-            <ChevronDown className="h-4 w-4 text-gray-500" />
-          )}
+      {/* Content Type */}
+      <div>
+        <p className="text-sm font-medium text-gray-700 mb-3">
+          Content Type
+        </p>
+        <div className="flex flex-wrap gap-2">
+          {contentTypes.map((t) => (
+            <Chip
+              key={t.value}
+              label={t.label}
+              selected={selectedContentType.includes(t.value)}
+              onClick={() =>
+                toggleItem(
+                  t.value,
+                  selectedContentType,
+                  setSelectedContentType
+                )
+              }
+            />
+          ))}
         </div>
-
-        {openOccasion && (
-          <div className="flex flex-wrap gap-2">
-            {occasions.map((o) => (
-              <Chip
-                key={o.value}
-                label={o.label}
-                selected={selectedOccasion.includes(o.value)}
-                onClick={() =>
-                  toggleItem(o.value, selectedOccasion, setSelectedOccasion)
-                }
-              />
-            ))}
-          </div>
-        )}
       </div>
 
-      {/* Industry/Brand */}
-      {/* <div className="mb-6">
-        <div
-          className="flex items-center justify-between cursor-pointer"
-          onClick={() => setOpenIndustry(!openIndustry)}
-        >
-          <p className="text-sm font-medium text-gray-700">
-            Industry/Brand
-          </p>
-          {openIndustry ? (
-            <ChevronUp className="h-4 w-4 text-gray-500" />
-          ) : (
-            <ChevronDown className="h-4 w-4 text-gray-500" />
-          )}
+      {/* Category */}
+      <div>
+        <p className="text-sm font-medium text-gray-700 mb-3">Category</p>
+        <div className="flex flex-wrap gap-2">
+          {categories.map((c) => (
+            <Chip
+              key={c.value}
+              label={c.label}
+              selected={selectedCategory.includes(c.value)}
+              onClick={() =>
+                toggleItem(c.value, selectedCategory, setSelectedCategory)
+              }
+            />
+          ))}
         </div>
-      </div> */}
+      </div>
 
       {/* Location */}
-      <div className="mb-6">
+      <div>
         <p className="text-sm font-medium text-gray-700 mb-2">Location</p>
         <div className="relative">
           <input
             value={location}
             onChange={(e) => setLocation(e.target.value)}
             placeholder="Search based on location"
-            className="
-              w-full rounded-md border border-gray-200
-              px-3 py-2 pr-10 text-sm
-              outline-none focus:border-green-600
-            "
+            className="w-full rounded-md border border-gray-200 px-3 py-2 pr-10 text-sm outline-none focus:border-green-600"
           />
           <Search className="absolute right-3 top-2.5 h-4 w-4 text-gray-500" />
         </div>
       </div>
 
-      {/* Licence Type */}
+      {/* Price Range Slider */}
       <div>
         <p className="text-sm font-medium text-gray-700 mb-3">
-          Licence Type
+          Price Range
         </p>
-        <div className="flex flex-wrap gap-2">
-          {licenceTypes.map((l) => (
-            <Chip
-              key={l.value}
-              label={l.label}
-              selected={selectedLicence.includes(l.value)}
-              onClick={() =>
-                toggleItem(l.value, selectedLicence, setSelectedLicence)
-              }
-            />
-          ))}
+
+        <div className="flex justify-between text-sm text-gray-600 mb-2">
+          <span>₹{minPrice}</span>
+          <span>₹{maxPrice}</span>
         </div>
+
+        {/* Min Slider */}
+        <input
+          type="range"
+          min={0}
+          max={50000}
+          step={1000}
+          value={minPrice}
+          onChange={(e) =>
+            setMinPrice(Math.min(Number(e.target.value), maxPrice - 1000))
+          }
+          className="w-full accent-green-600 mb-2"
+        />
+
+        {/* Max Slider */}
+        <input
+          type="range"
+          min={0}
+          max={50000}
+          step={1000}
+          value={maxPrice}
+          onChange={(e) =>
+            setMaxPrice(Math.max(Number(e.target.value), minPrice + 1000))
+          }
+          className="w-full accent-green-600"
+        />
       </div>
     </div>
   );

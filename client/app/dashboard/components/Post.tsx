@@ -20,7 +20,7 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 
-export type PostType = 'synopsis' | 'storyboard' | 'script'
+export type PostType = 'synopsis' | 'story_board' | 'script'
 
 interface Author {
   name: string
@@ -241,15 +241,14 @@ const Post: React.FC<PostProps> = ({
 
       {/* Content Box */}
       {/* Content */}
-      {type === 'storyboard' && storyboard?.image ? (
+      {type === 'story_board' && storyboard?.image ? (
         <div className="relative mb-4 overflow-hidden rounded-lg border border-gray-200">
           {/* Cropped storyboard image */}
           <div className="relative h-64 w-full">
-            <Image
-              src={storyboardImg}
+            <img
+              src={storyboard?.image}
               alt={title}
-              fill
-              className="object-cover object-top"
+              className="w-full h-64 object-contain rounded-lg border bg-gray-100 p-1"
             />
           </div>
 

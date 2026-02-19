@@ -11,6 +11,7 @@ export class SearchController {
   filterScript = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const filters = req.query;
+      console.log(filters);
       const result = await this.searchService.searchScript(filters);
       res.status(201).json({
         status: "success",

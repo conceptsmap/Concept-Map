@@ -37,7 +37,7 @@ const DashboardPage = () => {
             // Determine post type
             let postType: PostType = 'script';
             if (script.type?.includes('SYNOPSIS')) postType = 'synopsis';
-            else if (script.type?.includes('STORY_BOARD')) postType = 'storyboard';
+            else if (script.type?.includes('STORY_BOARD')) postType = 'story_board';
 
             return {
               id: script._id,

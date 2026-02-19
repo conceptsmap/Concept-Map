@@ -18,7 +18,7 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog'
 
-export type PostType = 'synopsis' | 'storyboard' | 'script'
+export type PostType = 'synopsis' | 'story_board' | 'script'
 
 interface Author {
   name: string
@@ -93,6 +93,8 @@ const PostDetail: React.FC<PostDetailProps> = ({
   const [commentCount, setCommentCount] = useState(comments)
   const [showCommentsModal, setShowCommentsModal] = useState(false)
 
+  console.log(storyboard, type)
+
   const mockComments: Comment[] = [
     {
       id: '1',
@@ -118,7 +120,7 @@ const PostDetail: React.FC<PostDetailProps> = ({
   const renderContent = () => {
     if (type === 'synopsis') {
       return (
-        <p className="text-sm text-gray-700 leading-relaxed whitespace-pre-line">
+        <p className="text-sm text-gray-700 min-h-60 leading-relaxed whitespace-pre-line">
           {synopsis}
         </p>
       )
@@ -126,7 +128,7 @@ const PostDetail: React.FC<PostDetailProps> = ({
 
     if (type === 'script' && script?.content?.length) {
       return (
-        <div className="space-y-6">
+        <div className="space-y-6 min-h-60">
           {script.content.map((block, blockIdx) => (
             <div key={blockIdx}>
               <h3 className="text-sm font-semibold text-gray-900 mb-3">
@@ -150,15 +152,15 @@ const PostDetail: React.FC<PostDetailProps> = ({
       )
     }
 
-    if (type === 'storyboard' && storyboard?.image) {
+    if (type === 'story_board' && storyboard?.image) {
       return (
         <div className="relative w-full overflow-hidden rounded-lg border border-gray-200">
           <Image
-            src={storyboardImg}
+            src={storyboard?.image}
             alt={title}
-            width={1200}
-            height={800}
-            className="w-full h-auto object-contain"
+            width={800}
+            height={500}
+            className="w-full h-auto object-contain opacity-20"
           />
         </div>
       )
@@ -235,7 +237,7 @@ const PostDetail: React.FC<PostDetailProps> = ({
 
       {/* Content */}
       <div
-        className={`relative mt-4 rounded-xl ${type === 'storyboard'
+        className={`relative mt-4 rounded-xl ${type === 'story_board'
           ? 'bg-white p-0'
           : 'bg-[#F5F5F5] p-5'
           }`}
@@ -244,7 +246,7 @@ const PostDetail: React.FC<PostDetailProps> = ({
 
         {/* Lock Overlay Only When Locked */}
         {locked && (
-          <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-white via-white/90 to-transparent flex flex-col items-center justify-end pb-4">
+          <div className="absolute inset-x-0 bottom-0  bg-gradient-to-t from-white via-white/90 to-transparent flex flex-col items-center justify-end pb-4">
             <div className="rounded-md bg-[#013913] text-white px-4 py-2 text-sm font-semibold flex items-center gap-2">
               <Image src={lockWhite} alt="lock" className="w-4 h-4" />
               Locked
@@ -272,7 +274,7 @@ const PostDetail: React.FC<PostDetailProps> = ({
       </div>
 
       {/* Purchase */}
-      {locked && (script?.price || price) && (
+      {locked && (
         <div className="mt-4 flex items-center justify-end gap-3">
           <span className="text-lg font-bold text-green-600">
             ₹{(script?.price ?? price ?? 0).toLocaleString()}

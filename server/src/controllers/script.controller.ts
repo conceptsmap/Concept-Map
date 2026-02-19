@@ -26,6 +26,8 @@ export class ScriptController {
         genre,
         industry_category,
         script,
+        country,
+        state,
       } = req.body;
       const result = await this.scriptService.createScript({
         main_title,
@@ -36,6 +38,8 @@ export class ScriptController {
         type: [ScriptType.SCRIPT],
         userId: new mongoose.Types.ObjectId(userId),
         script,
+        country,
+        state,
       });
       res
         .status(201)
@@ -65,6 +69,8 @@ export class ScriptController {
         genre,
         industry_category,
         story_borad,
+        country,
+        state,
       } = req.body;
       const result = await this.scriptService.createScript({
         main_title,
@@ -75,6 +81,8 @@ export class ScriptController {
         type: [ScriptType.STORY_BOARD],
         userId: new mongoose.Types.ObjectId(userId),
         story_borad,
+        country,
+        state,
       });
       res.status(201).json({
         status: "success",
@@ -102,6 +110,8 @@ export class ScriptController {
         genre,
         industry_category,
         synopsis,
+        country,
+        state,
       } = req.body;
       const result = await this.scriptService.createScript({
         main_title,
@@ -112,6 +122,8 @@ export class ScriptController {
         type: [ScriptType.SYNOPSIS],
         userId: new mongoose.Types.ObjectId(userId),
         synopsis,
+        country,
+        state,
       });
       res
         .status(201)
@@ -151,7 +163,6 @@ export class ScriptController {
     next: NextFunction,
   ) => {
     try {
-      console.log("hiii");
       const result = await this.scriptService.uploadStoryBoard(req.files);
       res.status(201).json({
         status: "success",
@@ -206,7 +217,7 @@ export class ScriptController {
   getAllScripts = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const skip = parseInt(req.query.skip as string) || 0;
-      const limit = parseInt(req.query.limit as string) || 20;
+      const limit = parseInt(req.query.limit as string) || 50;
       const result = await this.scriptService.getAllScripts(skip, limit);
       res.status(200).json({
         status: "success",

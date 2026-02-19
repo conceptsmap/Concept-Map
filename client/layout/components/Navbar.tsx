@@ -10,7 +10,7 @@ const categories = [
   "ACTION",
   "COMEDY",
   "DRAMA",
-  "SCIFI",
+  "SCI-FI",
   "FANTASY",
   "HISTORICAL",
   "DOCUMENTARY",

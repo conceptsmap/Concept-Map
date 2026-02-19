@@ -19,7 +19,7 @@ interface ApiScript {
     userId?: { _id: string; username?: string; role?: string; profile_url?: string, jobRole?: string };
 }
 
-type PostType = 'all' | 'synopsis' | 'storyboard' | 'script';
+type PostType = 'all' | 'synopsis' | 'storyboard' | 'story_board' | 'script';
 
 const categories: PostType[] = ['all', 'synopsis', 'storyboard', 'script'];
 
@@ -54,7 +54,7 @@ const MyPostsPage = () => {
                         // Determine post type
                         let postType: PostType = 'script';
                         if (script.type?.includes('SYNOPSIS')) postType = 'synopsis';
-                        else if (script.type?.includes('STORY_BOARD')) postType = 'storyboard';
+                        else if (script.type?.includes('STORY_BOARD')) postType = 'story_board';
 
                         return {
                             id: script._id,
@@ -97,7 +97,7 @@ const MyPostsPage = () => {
     // Filter posts based on selected type
     const filteredPosts = activePostType === 'all'
         ? posts
-        : posts.filter((post) => post.type === activePostType);
+        : posts.filter((post) => post.type === (activePostType == "storyboard" ? "story_board" : activePostType));
 
     return (
         <>
