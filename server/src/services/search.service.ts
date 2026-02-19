@@ -86,32 +86,42 @@ export class SearchService {
       filterQuery,
       parseInt(skip),
       parseInt(take as string),
-      "userId"
+      "userId",
     );
 
     // Map scripts to include author info and default likes/comments
     const mappedScripts = scripts.map((script: any) => {
-      let author = { name: "Unknown", role: "", avatar: "" };
+      let author = { name: "Unknown", jobRole: "", avatar: "", profile: "" };
       if (script.userId && typeof script.userId === "object") {
         author = {
           name: script.userId.username || "Unknown",
-          role: script.userId.role || "",
+          jobRole: script.userId.jobRole || "",
           avatar: script.userId.profile_url || "",
+          profile: script.userId.profile_url || "",
         };
       }
 
       // Compose title and content for Post
       let title = script.main_title || script.title || "Untitled";
       let description = script.description || "";
-      let type = Array.isArray(script.type) && script.type.length > 0 ? script.type[0].toLowerCase() : "script";
+      let type =
+        Array.isArray(script.type) && script.type.length > 0
+          ? script.type[0].toLowerCase()
+          : "script";
       let scriptContent = undefined;
       if (script.script && Array.isArray(script.script.content)) {
         scriptContent = script.script;
       }
-      let synopsis = script.synopsis && script.synopsis.content ? script.synopsis.content : undefined;
-      let storyboard = script.story_borad && Array.isArray(script.story_borad.content) && script.story_borad.content.length > 0
-        ? { image: script.story_borad.content[0].cloud_url }
-        : undefined;
+      let synopsis =
+        script.synopsis && script.synopsis.content
+          ? script.synopsis.content
+          : undefined;
+      let storyboard =
+        script.story_borad &&
+        Array.isArray(script.story_borad.content) &&
+        script.story_borad.content.length > 0
+          ? { image: script.story_borad.content[0].cloud_url }
+          : undefined;
 
       return {
         id: script._id?.toString?.() || script.id,

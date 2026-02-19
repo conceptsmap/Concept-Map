@@ -31,6 +31,10 @@ const UserSchema: Schema = new Schema(
       enum: Object.values(Role),
       required: true,
     },
+    jobRole: {
+      type: String,
+      default: "",
+    },
   },
   {
     timestamps: true,

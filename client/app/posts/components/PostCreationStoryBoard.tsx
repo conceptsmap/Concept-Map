@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
+import { ImagePlus } from "lucide-react";
 import {
   Select,
   SelectTrigger,
@@ -148,7 +149,7 @@ export default function PostCreationStoryBoard() {
         <Label>Story Board Sample</Label>
 
         <div className="flex flex-col items-center justify-center gap-2 rounded-xl border border-dashed border-gray-300 p-10 text-center text-sm text-gray-500">
-          <div className="text-xl">🖼️</div>
+          <ImagePlus className="w-7 h-7 text-gray-400" />
           <p>Drop your image here or browse</p>
           <Input
             type="file"

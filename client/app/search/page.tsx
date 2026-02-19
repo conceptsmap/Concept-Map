@@ -7,6 +7,7 @@ import Creative from "@/layout/components/Creative";
 import Post, { PostProps } from "../dashboard/components/Post";
 import FiltersCard, { FilterValues } from "./components/FiltersCard";
 import PostSkeleton from "../dashboard/components/PostSkelton";
+import { profile } from "console";
 
 type BackendPost = PostProps & { _id?: string };
 
@@ -72,9 +73,10 @@ export default function ScriptsPage() {
       (async () => {
         setDefaultLoading(true);
         try {
-          const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/web/search?take=10`);
+          const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/web/search?take=20`);
           const data = await res.json();
           if (res.ok && data?.data?.scripts) {
+            console.log("Default posts data:", data.data.scripts);
             setDefaultPosts(data.data.scripts);
           }
         } catch {
@@ -144,8 +146,10 @@ export default function ScriptsPage() {
             const safePost = {
               ...post,
               author: post.author && typeof post.author === 'object'
-                ? { name: post.author.name || 'Unknown', role: post.author.role || '', avatar: post.author.avatar || '' }
-                : { name: 'Unknown', role: '', avatar: '' },
+                ? {
+                  name: post.author.name || 'Unknown', jobRole: post.author.jobRole || '', avatar: post.author.avatar || '', profile: post.author.profile || ''
+                }
+                : { name: 'Unknown', jobRole: '', avatar: '', profile: '' },
               likes: typeof post.likes === 'number' ? post.likes : 0,
             };
             return <Post key={post._id ?? post.id} {...safePost} />;
