@@ -10,18 +10,21 @@ interface ApiScript {
   main_title?: string;
   title?: string;
   description?: string;
+  genre?: string;
   type?: string[];
   likes?: number;
   comments?: number;
   synopsis?: { price?: number; currency?: string; content?: string };
   script?: { price?: number; currency?: string; content?: { name: string; scenes: { name: string; description: string }[] }[] };
   story_borad?: { price?: number; currency?: string; content?: { name: string; cloud_url: string }[] };
-  userId?: { _id: string; username?: string; role?: string; profile_url?: string };
+  userId?: { _id: string; username?: string; role?: string; profile_url?: string, jobRole?: string };
 }
 
 const DashboardPage = () => {
   const [posts, setPosts] = useState<PostProps[]>([]);
+  const [allPosts, setAllPosts] = useState<PostProps[]>([]);
   const [loading, setLoading] = useState(true);
+  const [selectedCategory, setSelectedCategory] = useState('ALL');
 
   useEffect(() => {
     const fetchPosts = async () => {
@@ -40,10 +43,11 @@ const DashboardPage = () => {
               id: script._id,
               author: script.userId && typeof script.userId === 'object'
                 ? {
-                    name: script.userId.username || 'Unknown',
-                    role: script.userId.role || '',
-                    avatar: script.userId.profile_url || '',
-                  }
+                  name: script.userId.username || 'Unknown',
+                  jobRole: script.userId.jobRole || '',
+                  avatar: script.userId.profile_url || '',
+                  profile: script.userId.profile_url || '',
+                }
                 : { name: 'Unknown', role: '', avatar: '' },
               title: script.main_title || script.title || 'Untitled',
               type: postType,
@@ -55,8 +59,10 @@ const DashboardPage = () => {
               storyboard: script.story_borad?.content?.[0]?.cloud_url
                 ? { image: script.story_borad.content[0].cloud_url }
                 : undefined,
+              genres: script.genre ? [script.genre] : [],
             };
           });
+          setAllPosts(mappedPosts);
           setPosts(mappedPosts);
         }
       } catch (error) {
@@ -69,10 +75,29 @@ const DashboardPage = () => {
     fetchPosts();
   }, []);
 
+  // Filter posts based on selected category
+  useEffect(() => {
+    if (selectedCategory === 'ALL') {
+      setPosts(allPosts);
+    } else {
+      const filtered = allPosts.filter((post) =>
+        post.genres?.includes(selectedCategory)
+      );
+      setPosts(filtered);
+    }
+  }, [selectedCategory, allPosts]);
+
+  const handleCategoryChange = (category: string) => {
+    setSelectedCategory(category);
+  };
+
   return (
     <>
       <div className="gap-4 items-start">
-        <Navbar />
+        <Navbar
+          activeCategory={selectedCategory}
+          onCategoryChange={handleCategoryChange}
+        />
         {/* LEFT */}
         <div className="flex-1 gap-3 flex flex-col">
           {loading ? (
@@ -90,7 +115,7 @@ const DashboardPage = () => {
             ))
           ) : (
             <div className="text-center py-10 text-gray-500">
-              No posts available yet. Be the first to create one!
+              No posts available in {selectedCategory === 'ALL' ? 'this category' : selectedCategory}. Be the first to create one!
             </div>
           )}
         </div>

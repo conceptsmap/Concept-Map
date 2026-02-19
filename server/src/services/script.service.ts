@@ -45,14 +45,15 @@ export class ScriptService {
   }
 
   async getAllOtherScripts(userId: string, scriptId: string) {
-    console.log(userId, scriptId);
     const scripts = await this.crudRepository.fetchAllDocuments(
       {
         userId: userId,
         // _id: { $ne: scriptId },
       },
       0,
-      10
+      10,
+      "userId",
+      "desc",
     );
 
     return scripts;
@@ -64,7 +65,7 @@ export class ScriptService {
       skip,
       limit,
       "userId",
-      "desc"
+      "desc",
     );
     return scripts;
   }

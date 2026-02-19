@@ -16,7 +16,7 @@ type Status = "method" | "waiting" | "success"
 type Section = "card" | "upi" | "bank"
 type CardType = "visa" | "master" | "new" | null
 
-const PaymentMethod = () => {
+const PaymentMethod = ({ price }: any) => {
   const [status, setStatus] = useState<Status>("method")
   const [openSection, setOpenSection] = useState<Section>("card")
   const [selectedCard, setSelectedCard] = useState<CardType>("visa")
@@ -158,7 +158,7 @@ const PaymentMethod = () => {
         onClick={() => setStatus("waiting")}
         className="rounded-xl bg-[#22C55E] py-4 text-white font-semibold cursor-pointer"
       >
-        Pay ₹6,000
+        Pay ₹{price.toLocaleString()}
       </button>
     </div>
   )

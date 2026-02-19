@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 import { notFound, useParams } from 'next/navigation'
 import { posts } from '../components/posts'
 import PostDetail from '../components/PostDetail'
+import PostDetailSkeleton from '../components/PostDetailSkeleton'
 
 interface PostData {
   id: string
@@ -11,6 +12,7 @@ interface PostData {
     name: string
     role?: string
     avatar?: string
+    jobRole?: string
   }
   title: string
   description?: string
@@ -68,22 +70,23 @@ export default function PostDetailPage() {
             id: script._id || script.id,
             author: script.userId && typeof script.userId === 'object'
               ? {
-                  name: script.userId.username || 'Unknown',
-                  role: script.userId.role || '',
-                  avatar: script.userId.profile_url || '',
-                }
+                name: script.userId.username || 'Unknown',
+                role: script.userId.role || '',
+                jobRole: script.userId.jobRole || '',
+                avatar: script.userId.profile_url || '',
+              }
               : { name: 'Unknown', role: '', avatar: '' },
             title: script.main_title || script.title || 'Untitled',
             description: script.description || '',
-            type: Array.isArray(script.type) && script.type.length > 0 
-              ? script.type[0].toLowerCase() 
+            type: Array.isArray(script.type) && script.type.length > 0
+              ? script.type[0].toLowerCase()
               : 'script',
             likes: typeof script.likes === 'number' ? script.likes : 0,
             comments: typeof script.comments === 'number' ? script.comments : 0,
             rightsLabel: script.rightsLabel || 'Basic / Exclusive Rights',
             synopsis: script.synopsis?.content,
             script: script.script,
-            storyboard: script.story_borad?.content?.[0]?.cloud_url 
+            storyboard: script.story_borad?.content?.[0]?.cloud_url
               ? { image: script.story_borad.content[0].cloud_url }
               : undefined,
             price: script.script?.price || script.synopsis?.price || script.story_borad?.price,
@@ -103,7 +106,7 @@ export default function PostDetailPage() {
   if (loading) {
     return (
       <div className="flex justify-center p-3">
-        <div className="text-gray-500">Loading...</div>
+        <PostDetailSkeleton />
       </div>
     )
   }
@@ -113,8 +116,8 @@ export default function PostDetailPage() {
   }
 
   return (
-      <div className="flex justify-center p-3">
-        <PostDetail {...post} />
-      </div>
+    <div className="flex justify-center p-3">
+      <PostDetail {...post} />
+    </div>
   )
 }

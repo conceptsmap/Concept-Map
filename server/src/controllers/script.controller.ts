@@ -15,9 +15,18 @@ export class ScriptController {
     try {
       const userId = req.user?.id;
       if (!userId) {
-        return res.status(401).json({ status: "error", message: "Unauthorized User" });
+        return res
+          .status(401)
+          .json({ status: "error", message: "Unauthorized User" });
       }
-      const { main_title, description, category, genre, industry_category, script } = req.body;
+      const {
+        main_title,
+        description,
+        category,
+        genre,
+        industry_category,
+        script,
+      } = req.body;
       const result = await this.scriptService.createScript({
         main_title,
         description,
@@ -28,20 +37,35 @@ export class ScriptController {
         userId: new mongoose.Types.ObjectId(userId),
         script,
       });
-      res.status(201).json({ status: "success", message: "Script created", data: result });
+      res
+        .status(201)
+        .json({ status: "success", message: "Script created", data: result });
     } catch (error) {
       next(error);
     }
   };
 
   // Create Story Board Post
-  createStoryBoard = async (req: Request, res: Response, next: NextFunction) => {
+  createStoryBoard = async (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ) => {
     try {
       const userId = req.user?.id;
       if (!userId) {
-        return res.status(401).json({ status: "error", message: "Unauthorized User" });
+        return res
+          .status(401)
+          .json({ status: "error", message: "Unauthorized User" });
       }
-      const { main_title, description, category, genre, industry_category, story_borad } = req.body;
+      const {
+        main_title,
+        description,
+        category,
+        genre,
+        industry_category,
+        story_borad,
+      } = req.body;
       const result = await this.scriptService.createScript({
         main_title,
         description,
@@ -52,7 +76,11 @@ export class ScriptController {
         userId: new mongoose.Types.ObjectId(userId),
         story_borad,
       });
-      res.status(201).json({ status: "success", message: "Story Board created", data: result });
+      res.status(201).json({
+        status: "success",
+        message: "Story Board created",
+        data: result,
+      });
     } catch (error) {
       next(error);
     }
@@ -63,9 +91,18 @@ export class ScriptController {
     try {
       const userId = req.user?.id;
       if (!userId) {
-        return res.status(401).json({ status: "error", message: "Unauthorized User" });
+        return res
+          .status(401)
+          .json({ status: "error", message: "Unauthorized User" });
       }
-      const { main_title, description, category, genre, industry_category, synopsis } = req.body;
+      const {
+        main_title,
+        description,
+        category,
+        genre,
+        industry_category,
+        synopsis,
+      } = req.body;
       const result = await this.scriptService.createScript({
         main_title,
         description,
@@ -76,7 +113,9 @@ export class ScriptController {
         userId: new mongoose.Types.ObjectId(userId),
         synopsis,
       });
-      res.status(201).json({ status: "success", message: "Synopsis created", data: result });
+      res
+        .status(201)
+        .json({ status: "success", message: "Synopsis created", data: result });
     } catch (error) {
       next(error);
     }
@@ -109,10 +148,10 @@ export class ScriptController {
   uploadStoryBoard = async (
     req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ) => {
     try {
-      console.log("hiii")
+      console.log("hiii");
       const result = await this.scriptService.uploadStoryBoard(req.files);
       res.status(201).json({
         status: "success",
@@ -127,28 +166,32 @@ export class ScriptController {
   getAllOtherScripts = async (
     req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ) => {
     try {
-      const { scriptId, userId } = req.query;
+      let { scriptId, userId } = req.query;
+
+      // If userId is not provided in query, use the authenticated user's ID
+      if (!userId && req.user?.id) {
+        userId = req.user.id;
+      }
+
       const normalizedUserId = Array.isArray(userId) ? userId[0] : userId;
       const normalizedScriptId = Array.isArray(scriptId)
         ? scriptId[0]
-        : scriptId;
+        : scriptId || "";
 
-      if (
-        typeof normalizedUserId !== "string" ||
-        typeof normalizedScriptId !== "string"
-      ) {
+      if (typeof normalizedUserId !== "string") {
         return res.status(400).json({
           status: "error",
-          message: "scriptId and userId are required",
+          message: "userId is required",
         });
       }
 
+      console.log(normalizedUserId);
       const result = await this.scriptService.getAllOtherScripts(
         normalizedUserId,
-        normalizedScriptId
+        normalizedScriptId as string,
       );
       res.status(201).json({
         status: "success",

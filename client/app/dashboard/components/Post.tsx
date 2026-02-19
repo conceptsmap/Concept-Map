@@ -33,6 +33,7 @@ export interface PostProps {
   id: string
   author: Author
   title: string
+  saved?: boolean
   genres?: string[]
   description?: string
   content?: string
@@ -75,6 +76,7 @@ const Post: React.FC<PostProps> = ({
   author,
   title,
   genres,
+  saved: isSaved = false,
   type,
   likes,
   comments,
@@ -85,9 +87,12 @@ const Post: React.FC<PostProps> = ({
   onExpand,
   description
 }) => {
-  const [liked, setLiked] = useState(false)
-  const [saved, setSaved] = useState(false)
-  const [likeCount, setLikeCount] = useState(Math.floor(Math.random() * 10000))
+  const generatedLikeCount = Math.floor(Math.random() * 10000)
+  const randomNumber = Math.floor(Math.random() * 100)
+  
+  const [liked, setLiked] = useState(generatedLikeCount % 3 === 0)
+  const [saved, setSaved] = useState(randomNumber % 4 === 0 ? true : isSaved)
+  const [likeCount, setLikeCount] = useState(generatedLikeCount)
   const [showCommentsModal, setShowCommentsModal] = useState(false)
   const commentInputRef = useRef<HTMLInputElement>(null)
 

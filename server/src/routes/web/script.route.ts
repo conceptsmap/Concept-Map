@@ -17,17 +17,33 @@ export class ScriptRouter {
 
   private initRoutes() {
     // Separate endpoints for each type
-    this.router.post("/script", jwtVerifyMiddleware, this.scriptController.createScript);
-    this.router.post("/storyboard", jwtVerifyMiddleware, this.scriptController.createStoryBoard);
-    this.router.post("/synopsis", jwtVerifyMiddleware, this.scriptController.createSynopsis);
+    this.router.post(
+      "/script",
+      jwtVerifyMiddleware,
+      this.scriptController.createScript,
+    );
+    this.router.post(
+      "/storyboard",
+      jwtVerifyMiddleware,
+      this.scriptController.createStoryBoard,
+    );
+    this.router.post(
+      "/synopsis",
+      jwtVerifyMiddleware,
+      this.scriptController.createSynopsis,
+    );
     this.router.get("/all", this.scriptController.getAllScripts);
     this.router.get("/:id", this.scriptController.getScript);
     this.router.post(
       "/upload",
       this.upload.array("files", 10),
-      this.scriptController.uploadStoryBoard
+      this.scriptController.uploadStoryBoard,
     );
-    this.router.get("/all/details", this.scriptController.getAllOtherScripts);
+    this.router.get(
+      "/all/details",
+      jwtVerifyMiddleware,
+      this.scriptController.getAllOtherScripts,
+    );
   }
 }
 

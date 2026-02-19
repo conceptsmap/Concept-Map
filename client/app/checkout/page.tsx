@@ -6,6 +6,7 @@ import Image from 'next/image'
 import PaymentMethod from './components/PaymentMethod'
 import { useSearchParams, useRouter } from 'next/navigation'
 import LoadingScreen from './components/LoadingScreen'
+import SkeletonCheckoutLoader from './components/SkeletonCheckoutLoader'
 
 interface PostData {
     id: string
@@ -42,17 +43,17 @@ const CheckoutPage = () => {
 
             try {
                 const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api'
-                
+
                 // Fetch post data
                 const postRes = await fetch(`${apiUrl}/web/script/${postId}`)
                 const postData = await postRes.json()
-                
+
                 if (postRes.ok && postData?.data) {
                     const script = postData.data
                     const postType = Array.isArray(script.type) && script.type.length > 0
                         ? script.type[0].replace('_', ' ')
                         : 'Script'
-                    
+
                     const price = script.script?.price || script.synopsis?.price || script.story_borad?.price || 0
 
                     setPost({
@@ -94,8 +95,12 @@ const CheckoutPage = () => {
         fetchData()
     }, [postId])
 
+    // if (loading && ) {
+    //     return <LoadingScreen />
+    // }
+
     if (loading) {
-        return <LoadingScreen />
+        return <SkeletonCheckoutLoader />
     }
 
     if (!postId || !post) {
@@ -125,7 +130,7 @@ const CheckoutPage = () => {
                             </p>
                         </div>
 
-                        <button 
+                        <button
                             className="rounded-full p-1 hover:bg-gray-100"
                             onClick={() => router.back()}
                         >
@@ -167,7 +172,7 @@ const CheckoutPage = () => {
 
                 </div>
             </div>
-            <PaymentMethod />
+            <PaymentMethod price={post.price.toLocaleString()} />
         </div>
     )
 }
