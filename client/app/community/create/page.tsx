@@ -5,9 +5,8 @@ import Layout from '@/layout/components/Layout'
 const page = () => {
   return (
     <div>
-        <Layout>  <CreateDiscussion /></Layout>
-      
-        </div>
+      <CreateDiscussion />
+    </div >
   )
 }
 

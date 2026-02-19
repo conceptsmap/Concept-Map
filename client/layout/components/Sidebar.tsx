@@ -44,7 +44,7 @@ const Sidebar = () => {
     { icon: search, label: "Search", href: "/search", active: pathname.startsWith("/search") },
     { icon: bookmark, label: "Saved", href: "/saved", active: pathname.startsWith("/saved") },
     { icon: table_list, label: "My Purchases", href: "/purchases", active: pathname.startsWith("/purchases") },
-    { icon: task, label: "Request Gigs", href: "/request-gigs", active: pathname.startsWith("/request-gigs"), highlight: true },
+    // { icon: task, label: "Request Gigs", href: "/request-gigs", active: pathname.startsWith("/request-gigs"), highlight: true },
     { icon: community, label: "Community", href: "/community", active: pathname.startsWith("/community"), highlight: true },
   ]
 
@@ -57,7 +57,7 @@ const Sidebar = () => {
     { icon: table_list, label: "My Posts", href: "/my-posts", active: pathname.startsWith("/my-posts") },
     { icon: offer, label: "Earnings", href: "/earnings", active: pathname.startsWith("/earnings") },
     { icon: community, label: "Community", href: "/community", active: pathname.startsWith("/community") },
-    { icon: task, label: "Gig Marketplace", href: "/gig-marketplace", active: pathname.startsWith("/gig-marketplace"), highlight: true },
+    // { icon: task, label: "Gig Marketplace", href: "/gig-marketplace", active: pathname.startsWith("/gig-marketplace"), highlight: true },
   ]
 
   const tabs = userRole === "CREATOR" ? sellerTabs : buyerTabs

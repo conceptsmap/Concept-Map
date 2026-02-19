@@ -21,7 +21,8 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
 
   const hideNotificationsRoutes = [
     "/checkout",
-    "/search"
+    "/search",
+    "/community"
   ];
 
   const showNotifications =

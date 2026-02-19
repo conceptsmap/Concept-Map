@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { notFound, useParams } from 'next/navigation'
+import { notFound, useParams, useSearchParams } from 'next/navigation'
 import { posts } from '../components/posts'
 import PostDetail from '../components/PostDetail'
 import PostDetailSkeleton from '../components/PostDetailSkeleton'
@@ -43,7 +43,11 @@ interface PostData {
 
 export default function PostDetailPage() {
   const params = useParams()
+  const searchParams = useSearchParams()
   const postId = params.postId as string
+  const lockedParam = searchParams.get('locked')
+
+  const isLocked = lockedParam === 'false' ? false : true
 
   const [post, setPost] = useState<PostData | null>(null)
   const [loading, setLoading] = useState(true)
@@ -90,6 +94,7 @@ export default function PostDetailPage() {
               ? { image: script.story_borad.content[0].cloud_url }
               : undefined,
             price: script.script?.price || script.synopsis?.price || script.story_borad?.price,
+            locked: isLocked,
           }
           setPost(mappedPost)
         } else {
@@ -117,7 +122,7 @@ export default function PostDetailPage() {
 
   return (
     <div className="flex justify-center p-3">
-      <PostDetail {...post} />
+      <PostDetail {...post} locked={isLocked} />
     </div>
   )
 }

@@ -4,15 +4,15 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Paperclip } from "lucide-react";
+import { Edit3, Paperclip } from "lucide-react";
 
 export default function CreateDiscussion() {
   return (
-    <div className="w-full mx-auto px-4">
+    <div className="w-full mx-auto ">
       <form className="bg-white rounded-xl shadow-md p-4 sm:p-6 space-y-6">
         {/* Header */}
         <div className="flex items-center gap-2">
-          <span className=" text-lg">✎</span>
+          <Edit3 className="h-5 w-5 e" />
           <h2 className="text-lg font-semibold">Create Discussion</h2>
         </div>
 

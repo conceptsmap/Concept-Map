@@ -1,48 +1,54 @@
 "use client";
 
-
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { FilePenLine, MessageSquare, MessagesSquareIcon, Plus, ScrollText, Table2 } from "lucide-react";
+import {
+  FilePenLine,
+  MessagesSquareIcon,
+  Plus,
+  ScrollText,
+  Table2,
+} from "lucide-react";
 import { useRouter } from "next/navigation";
 
 export default function PostCreativeSelector() {
   const router = useRouter();
-  // Handler for Script click
+  const [isCreator, setIsCreator] = useState(false);
+
+  useEffect(() => {
+    const role = localStorage.getItem("user_role");
+    if (role === "CREATOR") {
+      setIsCreator(true);
+    }
+  }, []);
+
+  if (!isCreator) return null;
+
   const handleScriptClick = () => {
     router.push("/posts?type=script");
   };
-  // Handler for Synopsis click
+
   const handleSynopsisClick = () => {
     router.push("/posts?type=synopsis");
   };
-  // Handler for Story Board click
+
   const handleStoryboardClick = () => {
     router.push("/posts?type=storyboard");
   };
+
   return (
-    <div
-      className="
-        w-full
-        xl:max-w-75
-        lg:max-w-56
-        rounded-2xl
-        bg-white
-        p-5
-        shadow-md
-        space-y-4
-      "
-    >
-      {/* Header */}
+    <div className="w-full xl:max-w-75 lg:max-w-56 rounded-2xl bg-white p-5 shadow-md space-y-4">
       <div className="space-y-1">
-        <h3 className="text-base font-bold flex items-center "><Table2 className="h-4 w-4 mr-1 inline" /> Post a Creative</h3>
+        <h3 className="text-base font-bold flex items-center">
+          <Table2 className="h-4 w-4 mr-1 inline" />
+          Post a Creative
+        </h3>
         <p className="text-sm text-gray-500">
           Choose a post type and share your creative work with buyers.
         </p>
       </div>
 
-      {/* Options */}
       <div className="space-y-3">
-        {/* Synopsis */}
         <CreativeItem
           emoji={<MessagesSquareIcon className="h-5 w-5" />}
           bg="bg-green-600"
@@ -51,7 +57,6 @@ export default function PostCreativeSelector() {
           onClick={handleSynopsisClick}
         />
 
-        {/* Story Board */}
         <CreativeItem
           emoji={<ScrollText className="h-5 w-5" />}
           bg="bg-purple-600"
@@ -60,7 +65,6 @@ export default function PostCreativeSelector() {
           onClick={handleStoryboardClick}
         />
 
-        {/* Script */}
         <CreativeItem
           emoji={<FilePenLine className="h-5 w-5" />}
           bg="bg-green-700"
@@ -92,9 +96,7 @@ function CreativeItem({
       onClick={onClick}
     >
       <div className="flex items-center gap-3">
-        <div
-          className={`h-10 w-10 rounded-lg ${bg} flex items-center justify-center text-white`}
-        >
+        <div className={`h-10 w-10 rounded-lg ${bg} flex items-center justify-center text-white`}>
           {emoji}
         </div>
         <div>

@@ -53,6 +53,7 @@ const DashboardPage = () => {
               type: postType,
               likes: script.likes || 0,
               comments: script.comments || 0,
+              description: script.description || '',
               rightsLabel: 'Basic / Exclusive Rights',
               synopsis: script.synopsis?.content,
               script: script.script,

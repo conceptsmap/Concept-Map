@@ -42,6 +42,7 @@ export interface PostProps {
   comments: number
   rightsLabel?: string
   onExpand?: () => void
+  locked?: boolean
 
   synopsis?: string
 
@@ -85,11 +86,12 @@ const Post: React.FC<PostProps> = ({
   script,
   storyboard,
   onExpand,
+  locked = true,
   description
 }) => {
   const generatedLikeCount = Math.floor(Math.random() * 10000)
   const randomNumber = Math.floor(Math.random() * 100)
-  
+
   const [liked, setLiked] = useState(generatedLikeCount % 3 === 0)
   const [saved, setSaved] = useState(randomNumber % 4 === 0 ? true : isSaved)
   const [likeCount, setLikeCount] = useState(generatedLikeCount)
@@ -285,7 +287,7 @@ const Post: React.FC<PostProps> = ({
                 onClick={onExpand}
                 className="rounded-lg border border-gray-200 bg-white hover:bg-gray-50 shadow-sm"
               >
-                <Link href={`/dashboard/${id}`}>
+                <Link href={`/dashboard/${id}?locked=${locked}`}>
                   <Image src={expand} alt="Expand" />
                 </Link>
               </button>
@@ -323,7 +325,7 @@ const Post: React.FC<PostProps> = ({
               }`}
           />
         </button>
-        <Link href={`/dashboard/${id}`}>
+        <Link href={`/dashboard/${id}?locked=${locked}`}>
           <Button className='bg-green-500 hover:bg-green-600 px-5 py-2 text-sm font-semibold text-white transition-colors shadow-sm'>
             See More
           </Button>

@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react'
 
-import Post, { PostProps, PostType } from '../dashboard/components/Post';
+import Post, { PostProps, } from '../dashboard/components/Post';
 import PostSkeleton from '../dashboard/components/PostSkelton';
 
 interface ApiScript {
@@ -19,10 +19,16 @@ interface ApiScript {
     userId?: { _id: string; username?: string; role?: string; profile_url?: string, jobRole?: string };
 }
 
+type PostType = 'all' | 'synopsis' | 'storyboard' | 'script';
+
+const categories: PostType[] = ['all', 'synopsis', 'storyboard', 'script'];
+
 const MyPostsPage = () => {
     const [posts, setPosts] = useState<PostProps[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
+    const [activePostType, setActivePostType] = useState<PostType>('all');
+
 
     useEffect(() => {
         const fetchPosts = async () => {
@@ -66,6 +72,7 @@ const MyPostsPage = () => {
                             comments: script.comments || 0,
                             rightsLabel: 'Basic / Exclusive Rights',
                             synopsis: script.synopsis?.content,
+                            description: script.description || '',
                             script: script.script,
                             storyboard: script.story_borad?.content?.[0]?.cloud_url
                                 ? { image: script.story_borad.content[0].cloud_url }
@@ -87,10 +94,51 @@ const MyPostsPage = () => {
         fetchPosts();
     }, []);
 
+    // Filter posts based on selected type
+    const filteredPosts = activePostType === 'all'
+        ? posts
+        : posts.filter((post) => post.type === activePostType);
+
     return (
         <>
             <div className="gap-4 items-start">
                 {/* LEFT */}
+
+                <div className="w-full min-w-0 overflow-hidden">
+                    <div
+                        className="
+                            flex overflow-x-auto gap-3 scrollbar-hide
+                            rounded-2xl bg-[#F5F7F6]
+                            py-2
+                            [&::-webkit-scrollbar]:hidden
+                            [-ms-overflow-style:none]
+                            [scrollbar-width:none]
+                        "
+                    >
+                        {categories.map((item) => {
+                            const isActive = activePostType === item
+
+                            return (
+                                <button
+                                    key={item}
+                                    onClick={() => setActivePostType(item)}
+                                    className={`
+                                        whitespace-nowrap
+                                        rounded-xl px-6 py-2 text-sm font-medium
+                                        transition-all duration-200 
+                                        capitalize
+                                        ${isActive
+                                            ? "bg-[#013913] text-white shadow-sm"
+                                            : "bg-white text-gray-800 hover:bg-gray-100"
+                                        }
+                                    `}
+                                >
+                                    {item}
+                                </button>
+                            )
+                        })}
+                    </div>
+                </div>
                 <div className="flex-1 gap-3 flex flex-col">
                     {loading ? (
                         <>
@@ -102,11 +150,12 @@ const MyPostsPage = () => {
                         <div className="text-center py-10 text-red-500">
                             {error}
                         </div>
-                    ) : posts.length > 0 ? (
-                        posts.map((post: PostProps) => (
+                    ) : filteredPosts.length > 0 ? (
+                        filteredPosts.map((post: PostProps) => (
                             <Post
                                 key={post.id}
                                 {...post}
+                                locked={false}
                             />
                         ))
                     ) : (
