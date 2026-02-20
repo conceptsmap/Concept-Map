@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
+import { Suspense, useEffect, useState, useCallback } from "react";
 import { useSearchParams } from "next/navigation";
 import Notifications from "@/layout/components/Notifications";
 import Creative from "@/layout/components/Creative";
@@ -10,7 +10,8 @@ import PostSkeleton from "../dashboard/components/PostSkelton";
 
 type BackendPost = PostProps & { _id?: string };
 
-export default function ScriptsPage() {
+// ✅ Inner component with useSearchParams
+const ScriptsContent = () => {
   const searchParams = useSearchParams();
   const query = searchParams.get("q") || "";
 
@@ -29,30 +30,14 @@ export default function ScriptsPage() {
     maxPrice: 50000,
   });
 
-  // Build query string from filters
   const buildFilterParams = useCallback((currentFilters: FilterValues) => {
     const params = new URLSearchParams();
-
-    if (currentFilters.genres.length > 0) {
-      params.set("genre", currentFilters.genres.join(","));
-    }
-
-    if (currentFilters.contentTypes.length > 0) {
-      params.set("type", currentFilters.contentTypes.join(","));
-    }
-
-    if (currentFilters.categories.length > 0) {
-      params.set("category", currentFilters.categories.join(","));
-    }
-
-    if (currentFilters.location) {
-      params.set("location", currentFilters.location);
-    }
-
-    // Price range
+    if (currentFilters.genres.length > 0) params.set("genre", currentFilters.genres.join(","));
+    if (currentFilters.contentTypes.length > 0) params.set("type", currentFilters.contentTypes.join(","));
+    if (currentFilters.categories.length > 0) params.set("category", currentFilters.categories.join(","));
+    if (currentFilters.location) params.set("location", currentFilters.location);
     params.set("minPrice", String(currentFilters.minPrice));
     params.set("maxPrice", String(currentFilters.maxPrice));
-
     return params.toString();
   }, []);
 
@@ -71,7 +56,6 @@ export default function ScriptsPage() {
     });
   }, []);
 
-  // Check active filters
   const hasActiveFilters =
     filters.genres.length > 0 ||
     filters.contentTypes.length > 0 ||
@@ -80,48 +64,33 @@ export default function ScriptsPage() {
     filters.minPrice !== 0 ||
     filters.maxPrice !== 50000;
 
-  // Fetch posts
   useEffect(() => {
     const filterParams = buildFilterParams(filters);
     const hasFiltersOrQuery = query || hasActiveFilters;
 
     if (!hasFiltersOrQuery) {
-      // Default posts
       (async () => {
         setDefaultLoading(true);
         try {
-          const res = await fetch(
-            `${process.env.NEXT_PUBLIC_API_URL}/web/search?take=50`
-          );
+          const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/web/search?take=50`);
           const data = await res.json();
-          if (res.ok && data?.data?.scripts) {
-            setDefaultPosts(data.data.scripts);
-          }
-        } catch {
-        } finally {
+          if (res.ok && data?.data?.scripts) setDefaultPosts(data.data.scripts);
+        } catch { } finally {
           setDefaultLoading(false);
         }
       })();
-
       setPosts([]);
       setError("");
       return;
     }
 
-    // Filtered search
     setError("");
     (async () => {
       setLoading(true);
       try {
         let url = `${process.env.NEXT_PUBLIC_API_URL}/web/search?take=20`;
-
-        if (query) {
-          url += `&textSearch=${encodeURIComponent(query)}`;
-        }
-
-        if (filterParams) {
-          url += `&${filterParams}`;
-        }
+        if (query) url += `&textSearch=${encodeURIComponent(query)}`;
+        if (filterParams) url += `&${filterParams}`;
 
         const res = await fetch(url);
         const data = await res.json();
@@ -141,34 +110,22 @@ export default function ScriptsPage() {
     })();
   }, [query, filters, buildFilterParams, hasActiveFilters]);
 
-  const displayPosts: BackendPost[] =
-    query || hasActiveFilters ? posts : defaultPosts;
-
+  const displayPosts: BackendPost[] = query || hasActiveFilters ? posts : defaultPosts;
   const displayError = query || hasActiveFilters ? error : "";
-  const displayLoading =
-    query || hasActiveFilters ? loading : defaultLoading;
+  const displayLoading = query || hasActiveFilters ? loading : defaultLoading;
 
   return (
     <div className="flex gap-4 items-start mt-2">
-      {/* LEFT */}
       <div className="flex-1">
-        {displayLoading &&
-          Array.from({ length: 5 }).map((_, index) => (
-            <PostSkeleton key={index} />
-          ))}
+        {displayLoading && Array.from({ length: 5 }).map((_, index) => <PostSkeleton key={index} />)}
 
         {displayError && !displayLoading && (
           <div className="text-red-500 p-4">{displayError}</div>
         )}
 
-        {!displayLoading &&
-          !displayError &&
-          displayPosts.length === 0 &&
-          (query || hasActiveFilters) && (
-            <div className="text-gray-500 p-4">
-              No results found.
-            </div>
-          )}
+        {!displayLoading && !displayError && displayPosts.length === 0 && (query || hasActiveFilters) && (
+          <div className="text-gray-500 p-4">No results found.</div>
+        )}
 
         <div className="flex flex-col gap-4">
           {displayPosts.map((post) => {
@@ -182,31 +139,34 @@ export default function ScriptsPage() {
                     avatar: post.author.avatar || "",
                     profile: post.author.profile || "",
                   }
-                  : {
-                    name: "Unknown",
-                    jobRole: "",
-                    avatar: "",
-                    profile: "",
-                  },
-              likes:
-                typeof post.likes === "number" ? post.likes : 0,
+                  : { name: "Unknown", jobRole: "", avatar: "", profile: "" },
+              likes: typeof post.likes === "number" ? post.likes : 0,
             };
-
-            console.log(post)
             return <Post key={post._id ?? post.id} {...safePost} />;
           })}
         </div>
       </div>
 
-      {/* RIGHT */}
       <div className="flex flex-col gap-4 shrink-0 xl:max-w-75 lg:max-w-56">
-        <FiltersCard
-          onFilterChange={handleFilterChange}
-          onClearFilters={handleClearFilters}
-        />
+        <FiltersCard onFilterChange={handleFilterChange} onClearFilters={handleClearFilters} />
         <Creative />
         <Notifications />
       </div>
     </div>
+  );
+};
+
+// ✅ Default export with Suspense
+export default function ScriptsPage() {
+  return (
+    <Suspense fallback={
+      <div className="flex gap-4 items-start mt-2">
+        <div className="flex-1">
+          {Array.from({ length: 5 }).map((_, i) => <PostSkeleton key={i} />)}
+        </div>
+      </div>
+    }>
+      <ScriptsContent />
+    </Suspense>
   );
 }

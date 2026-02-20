@@ -1,5 +1,6 @@
 "use client";
 
+import { Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
@@ -10,15 +11,15 @@ import { useRouter } from "next/navigation";
 
 type PostType = "script" | "synopsis" | "storyboard";
 
-export default function PostsPage() {
-  const router = useRouter()
+// ✅ Inner component that uses useSearchParams
+const PostsContent = () => {
+  const router = useRouter();
   const searchParams = useSearchParams();
   const rawType = searchParams.get("type") as PostType | null;
   const primaryType: PostType = ["script", "synopsis", "storyboard"].includes(rawType ?? "")
     ? (rawType as PostType)
     : "script";
 
-  // Track which secondary forms are visible (everything except the primary)
   const [visible, setVisible] = useState<Set<PostType>>(new Set());
   const [loading, setLoading] = useState(false);
 
@@ -41,16 +42,28 @@ export default function PostsPage() {
   };
 
   const handleCreate = async () => {
-    // Always submit primary first, then any visible secondaries
-    const order: PostType[] = [primaryType, ...Array.from(visible)];
-    for (const t of order) {
-      const fn = refMap[t].current;
-      if (fn) await fn();
+    try {
+      setLoading(true);
+      const order: PostType[] = [primaryType, ...Array.from(visible)];
+
+      for (const t of order) {
+        const fn = refMap[t].current;
+        if (fn) {
+          const result: any = await fn();
+          if (result === false) {
+            setLoading(false);
+            return;
+          }
+        }
+      }
+
+      router.push("/my-posts");
+    } catch (error) {
+      console.error("Submission failed:", error);
+      setLoading(false);
     }
-    router.push("/my-posts");
   };
 
-  // The two "other" types that can be added as secondary
   const others = (["script", "synopsis", "storyboard"] as PostType[]).filter(
     (t) => t !== primaryType
   );
@@ -58,13 +71,11 @@ export default function PostsPage() {
   const componentProps = (type: PostType) => ({
     submitRef: refMap[type],
     setLoading,
-    // Which "add" buttons to show inside this component
     others: others.filter((t) => t !== type),
     visible,
     onToggle: toggle,
   });
 
-  // Render order: primary first, then visible secondaries in the order they were added
   const renderOrder: PostType[] = [primaryType, ...Array.from(visible)];
 
   return (
@@ -75,12 +86,20 @@ export default function PostsPage() {
         if (type === "storyboard") return <PostCreationStoryBoard key="storyboard" {...componentProps("storyboard")} />;
       })}
 
-      {/* Single shared Create Post button */}
       <div className="flex justify-end">
         <Button className="bg-green-600 hover:bg-green-700" onClick={handleCreate} disabled={loading}>
           {loading ? "Submitting..." : "Create Post"}
         </Button>
       </div>
     </div>
+  );
+};
+
+// ✅ Default export wraps with Suspense
+export default function PostsPage() {
+  return (
+    <Suspense fallback={<div className="p-6 text-gray-500">Loading...</div>}>
+      <PostsContent />
+    </Suspense>
   );
 }

@@ -5,7 +5,7 @@ import add1 from "@/assets/images/ads1.svg"
 
 const Ads = () => {
   return (
-    <div className="flex flex-col gap-4 ">
+    <div className="md:flex flex-col gap-4 hidden">
 
       <div className="overflow-hidden rounded-2xl  shadow-md">
         <Image

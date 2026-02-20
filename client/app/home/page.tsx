@@ -7,12 +7,12 @@ import Footer from './components/Footer'
 
 const HomePage = () => {
   return (
-    <div>
-        <Navbar />
-        <HeroSection />
-        <HowItWorks />
-        <Content />
-        <Footer />
+    <div className="overflow-x-hidden">
+      <Navbar />
+      <HeroSection />
+      <HowItWorks />
+      <Content />
+      <Footer />
     </div>
   )
 }

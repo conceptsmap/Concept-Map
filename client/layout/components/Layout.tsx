@@ -42,7 +42,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
       {showNotifications && (
         <div
           key={pathname}
-          className="flex flex-col gap-4 shrink-0 xl:max-w-75 lg:max-w-56"
+          className="hidden md:flex flex-col gap-4  shrink-0 xl:max-w-75 lg:max-w-56"
         >
           <PostCreativeSelector />
           {showNotifications && <Notifications />}

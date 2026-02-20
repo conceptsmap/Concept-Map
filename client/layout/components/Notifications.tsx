@@ -14,6 +14,7 @@ const Notifications = () => {
   return (
     <div
       className="
+      hidden md:block
         w-full
             xl:max-w-75
         lg:max-w-56

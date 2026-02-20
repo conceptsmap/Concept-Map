@@ -57,7 +57,7 @@ const HeroSection = () => {
             src={dashboard}
             alt="Dashboard"
             priority
-            className={`
+            className={` hidden md:block
       absolute left-1/2 top-0 z-20 -translate-x-1/2 rounded-xl
       transition-all duration-700 ease-out
       animate-[fadeInUp_0.8s_ease-out_forwards]
@@ -70,7 +70,7 @@ const HeroSection = () => {
             alt="Comment"
             width={400}
             height={300}
-            className={`
+            className={` hidden md:blocke
       absolute left-10 -top-5 z-30 rounded-xl
       transition-all duration-700 delay-200 ease-out
       animate-[slideInLeft_0.8s_ease-out_forwards,levitate_6s_ease-in-out_infinite_0.8s]
@@ -84,7 +84,7 @@ const HeroSection = () => {
             width={200}
             height={250}
             className={`
-      absolute right-14 -top-5 z-30 rounded-xl
+      absolute  md:right-14 -top-5 z-30 rounded-xl
       transition-all duration-700 delay-300 ease-out
       animate-[slideInRight_0.8s_ease-out_forwards,levitate_6s_ease-in-out_infinite_0.8s]
     `}
@@ -96,7 +96,7 @@ const HeroSection = () => {
             alt="Post"
             width={200}
             height={300}
-            className={`
+            className={` hidden md:block
       absolute top-85 right-23 z-30 rounded-xl
       transition-all duration-700 delay-400 ease-out
       animate-[slideInRight_0.8s_ease-out_forwards,levitate_6s_ease-in-out_infinite_0.8s]
@@ -110,7 +110,7 @@ const HeroSection = () => {
             width={400}
             height={300}
             className={`
-      absolute top-40 left-35 z-30 rounded-xl
+      absolute md:top-40 md:left-35 z-30 rounded-xl
       transition-all duration-700 delay-500 ease-out
       animate-[slideInLeft_0.8s_ease-out_forwards,levitate_6s_ease-in-out_infinite_0.8s]
     `}
@@ -119,7 +119,7 @@ const HeroSection = () => {
 
 
         <section className="relative bg-white">
-          <div className="relative mx-auto max-w-6xl">
+          <div className="relative mx-auto max-w-6xl hidden md:block">
             <Image
               src={connector}
               alt="Key Features"
@@ -131,11 +131,11 @@ const HeroSection = () => {
 
       <KeyFeatures />
 
-      <section className="bg-white pt-20 pb-16 mt-10 lg:mt-0">
+      <section className="bg-white pt-16 md:pt-20 md:pb-16 md:mt-10 lg:mt-0">
         <div className={"mx-auto max-w-5xl px-6"}>
           <div
             ref={cardsRef}
-            className="flex flex-col md:flex-row justify-between overflow-hidden"
+            className="flex flex-col gap-5 md:gap-3 md:flex-row justify-between overflow-hidden"
           >
             {/* LEFT CARD */}
             <div

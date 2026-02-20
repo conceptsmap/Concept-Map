@@ -37,7 +37,7 @@ export default function PostCreativeSelector() {
   };
 
   return (
-    <div className="w-full xl:max-w-75 lg:max-w-56 rounded-2xl bg-white p-5 shadow-md space-y-4">
+    <div className=" xl:max-w-75 lg:max-w-56 rounded-2xl bg-white p-5 shadow-md space-y-4">
       <div className="space-y-1">
         <h3 className="text-base font-bold flex items-center">
           <Table2 className="h-4 w-4 mr-1 inline" />

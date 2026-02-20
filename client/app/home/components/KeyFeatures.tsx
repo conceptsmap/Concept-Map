@@ -23,15 +23,15 @@ const KeyFeatures = () => {
 
     return () => observer.disconnect()
   }, [])
-  
+
   return (
-    <section className="relative bg-white">
+    <section className="relative bg-white hidden md:block">
       <div
         ref={featureRef}
         className="relative mx-auto max-w-6xl h-[290px] px-6"
       >
         <div className="absolute inset-0 flex items-start justify-center mt-10 lg:mt-0">
-          <div className="relative w-full max-w-[900px]">
+          <div className="relative w-full max-w-[900px] hidden md:block">
             <Image
               src={buyer}
               alt="Buyers"
@@ -47,7 +47,7 @@ const KeyFeatures = () => {
             <Image
               src={seller}
               alt="Sellers"
-              className={`
+              className={` hidden md:block
                 absolute top-34 left-[61.9%] -translate-x-1/2 z-10
                 transition-all duration-700 ease-out
                 ${showFeatures
