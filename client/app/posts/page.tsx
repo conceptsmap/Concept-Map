@@ -50,7 +50,7 @@ const PostsContent = () => {
         const fn = refMap[t].current;
         if (fn) {
           const result: any = await fn();
-          if (result === false) {
+          if (result === false || !result) {
             setLoading(false);
             return;
           }

@@ -114,6 +114,8 @@ export default function PostCreationSynopsis({
       const data = await res.json();
       if (!res.ok) throw new Error(data?.message || "Failed to create synopsis");
       setSuccess("Synopsis created successfully!");
+      return "Successfully created script";
+
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : "Failed to create synopsis");
     } finally {

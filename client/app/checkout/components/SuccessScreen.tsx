@@ -1,8 +1,11 @@
+"use client"
 import React from 'react'
 import Image from "next/image"
 import success from "@/assets/icons/success.svg"
+import { useRouter } from 'next/navigation'
 
 const SuccessScreen = () => {
+  const router = useRouter()
   return (
     <div className="w-[399px] min-h-[520px] rounded-3xl bg-[#013913] p-6 text-white flex flex-col items-center justify-center">
       <div className="flex h-16 w-16 items-center justify-center rounded-full">
@@ -17,7 +20,7 @@ const SuccessScreen = () => {
         Your purchased item is now available for download
       </p>
 
-      <button className="mt-6 w-full rounded-xl bg-[#1DBF73] py-3 font-bold cursor-pointer">
+      <button onClick={() => router.push("/purchases")} className="mt-6 w-full rounded-xl bg-[#1DBF73] py-3 font-bold cursor-pointer">
         View Purchases
       </button>
     </div>

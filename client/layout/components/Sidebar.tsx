@@ -55,7 +55,8 @@ const Sidebar = () => {
     { icon: bookmark, label: "Saved", href: "/saved", active: pathname.startsWith("/saved") },
     { icon: task, label: "Profile", href: "/profile", active: pathname.startsWith("/profile") },
     { icon: table_list, label: "My Posts", href: "/my-posts", active: pathname.startsWith("/my-posts") },
-    { icon: offer, label: "Earnings", href: "/earnings", active: pathname.startsWith("/earnings") },
+    // { icon: offer, label: "Earnings", href: "/earnings", active: pathname.startsWith("/earnings") },
+    { icon: offer, label: "My Purchases", href: "/purchases", active: pathname.startsWith("/purchases") },
     { icon: community, label: "Community", href: "/community", active: pathname.startsWith("/community") },
     // { icon: task, label: "Gig Marketplace", href: "/gig-marketplace", active: pathname.startsWith("/gig-marketplace"), highlight: true },
   ]

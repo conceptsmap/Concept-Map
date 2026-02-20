@@ -200,6 +200,8 @@ export default function PostCreationScript({
         throw new Error(data?.message || "Failed to create script");
       }
 
+      return "Successfully created script";
+
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : "Failed to create script");
     } finally {

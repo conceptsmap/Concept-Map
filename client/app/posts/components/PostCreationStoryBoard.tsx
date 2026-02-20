@@ -221,6 +221,7 @@ export default function PostCreationStoryBoard({
       }
 
       setSuccess("Story board created successfully!");
+      return "Successfully created script";
     } catch (err: unknown) {
       setError(
         err instanceof Error ? err.message : "Failed to create story board"
