@@ -8,13 +8,14 @@ const Navbar = () => {
     <header className="w-full bg-[#013913] py-4">
       <div className="mx-auto flex h-14 max-w-7xl items-center justify-between px-6">
         <div className="flex items-center gap-2">
-          <Image
+          {/* <Image
             src={story}
             alt="Story logo"
             width={40}
             height={40}
             priority
-          />
+          /> */}
+          <p className="text-white  font-semibold text-xl">ConceptsMap</p>
         </div>
 
         <nav className="hidden md:flex items-center gap-8">
