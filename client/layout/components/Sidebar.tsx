@@ -14,6 +14,7 @@ import toggle from "@/assets/icons/toggle.svg"
 import table_list from "@/assets/icons/table_list.svg"
 import signout from "@/assets/icons/signout.svg"
 import offer from "@/assets/icons/offer.svg"
+import earnings from "@/assets/icons/earnings.svg"
 
 import { Button } from "@/components/ui/button"
 
@@ -58,6 +59,7 @@ const Sidebar = () => {
     // { icon: offer, label: "Earnings", href: "/earnings", active: pathname.startsWith("/earnings") },
     { icon: offer, label: "My Purchases", href: "/purchases", active: pathname.startsWith("/purchases") },
     { icon: community, label: "Community", href: "/community", active: pathname.startsWith("/community") },
+    { icon: earnings, label: "Earnings", href: "/earnings", active: pathname.startsWith("/earnings") },
     // { icon: task, label: "Gig Marketplace", href: "/gig-marketplace", active: pathname.startsWith("/gig-marketplace"), highlight: true },
   ]
 
