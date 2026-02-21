@@ -41,7 +41,6 @@ const Profile = () => {
                 const data = await res.json()
 
                 if (res.ok && data?.data) {
-                    console.log(data)
                     setUser(data.data)
                 } else {
                     setError(data?.message || "Failed to fetch user")
@@ -92,12 +91,20 @@ const Profile = () => {
                             Edit profile
                         </button>
                     </div>
-
                     <div className="pt-10 flex gap-8 text-sm">
-                        <Stat label="Posts" value="08" />
-                        <Stat label="Followers" value="1.2k" />
-                        <Stat label="Followings" value="898" />
+
+                        {
+                            user.role === "CREATOR" && (
+                                <>
+                                    <Stat label="Posts" value="08" />
+                                    <Stat label="Followers" value="1.2k" />
+                                    <Stat label="Followings" value="898" />
+                                </>
+                            )
+                        }
                     </div>
+
+
 
                     <div className="mt-4">
                         <div className="flex items-center gap-3">
@@ -105,7 +112,7 @@ const Profile = () => {
                                 {user?.username || "User Name"}
                             </h2>
                             <span className="rounded-sm bg-[#DBFFE7] px-2 py-0.5 text-sm text-[#013913]">
-                                {user?.jobRole || "Writer"}
+                                {user?.jobRole || (user?.role === "CREATOR" ? "ScriptWriter" : "Buyer")}
                             </span>
                         </div>
 
@@ -122,7 +129,13 @@ const Profile = () => {
             </div>
 
             <div className="bg-white rounded-3xl shadow-sm">
-                <MenuItem label="My Posts" icon={board} href="/my-posts" />
+                {
+                    user.role === "CREATOR" ?
+                        <MenuItem label="My Posts" icon={board} href="/my-posts" /> :
+                        <MenuItem label="My Purchases" icon={board} href="/purchases" />
+
+                }
+
                 <MenuItem label="My Reviews" icon={smile} />
                 <MenuItem label="Security & Privacy Settings" icon={settings} />
                 <MenuItem label="Contact Support" icon={support} />
@@ -134,7 +147,7 @@ const Profile = () => {
                     </button>
                 </div>
             </div>
-        </div>
+        </div >
     )
 }
 

@@ -6,7 +6,7 @@ import { posts } from '../dashboard/components/posts';
 
 type PostType = 'all' | 'synopsis' | 'storyboard' | 'script';
 
-const categories: PostType[] = ['all', 'synopsis', 'storyboard', 'script'];
+const categories: PostType[] = ['all', 'synopsis', 'script', 'storyboard'];
 
 const SavedPage = () => {
     const [activePostType, setActivePostType] = useState<PostType>('all');

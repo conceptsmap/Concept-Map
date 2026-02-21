@@ -21,7 +21,7 @@ interface ApiScript {
 
 type PostType = 'all' | 'synopsis' | 'storyboard' | 'story_board' | 'script';
 
-const categories: PostType[] = ['all', 'synopsis', 'storyboard', 'script'];
+const categories: PostType[] = ['all', 'synopsis', 'script', 'storyboard'];
 
 const MyPostsPage = () => {
     const [posts, setPosts] = useState<PostProps[]>([]);

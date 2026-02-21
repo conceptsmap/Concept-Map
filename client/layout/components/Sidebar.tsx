@@ -44,6 +44,7 @@ const Sidebar = () => {
     { icon: home, label: "Home", href: "/dashboard", active: pathname === "/dashboard" },
     { icon: search, label: "Search", href: "/search", active: pathname.startsWith("/search") },
     { icon: bookmark, label: "Saved", href: "/saved", active: pathname.startsWith("/saved") },
+    { icon: task, label: "Profile", href: "/profile", active: pathname.startsWith("/profile") },
     { icon: table_list, label: "My Purchases", href: "/purchases", active: pathname.startsWith("/purchases") },
     // { icon: task, label: "Request Gigs", href: "/request-gigs", active: pathname.startsWith("/request-gigs"), highlight: true },
     { icon: community, label: "Community", href: "/community", active: pathname.startsWith("/community"), highlight: true },

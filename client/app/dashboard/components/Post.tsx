@@ -192,9 +192,9 @@ const Post: React.FC<PostProps> = ({
           )}
           <div>
             <p className="text-base font-semibold text-gray-900">{author.name}</p>
-            {author.jobRole && (
-              <p className="text-sm text-gray-500">{author.jobRole}</p>
-            )}
+
+            <p className="text-sm text-gray-500">{author.jobRole || "ScriptWriter"}</p>
+
           </div>
         </div>
 

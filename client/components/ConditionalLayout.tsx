@@ -10,16 +10,16 @@ export default function ConditionalLayout({ children }: { children: React.ReactN
   useEffect(() => {
     const token = localStorage.getItem("auth_token");
 
-    if (token && (pathname === "/" || pathname.startsWith("/login"))) {
+    if (token && (pathname === "/" || pathname.startsWith("/login") || pathname.startsWith("/register"))) {
       router.replace("/dashboard");
     }
 
-    if (!token && !(pathname === "/" || pathname.startsWith("/login"))) {
+    if (!token && !(pathname === "/" || pathname.startsWith("/login") || pathname.startsWith("/register"))) {
       router.replace("/login");
     }
   }, [pathname, router]);
 
-  const noLayout = pathname === "/" || pathname.startsWith("/login");
+  const noLayout = pathname === "/" || pathname.startsWith("/login") || pathname.startsWith("/register");
 
   return noLayout ? <>{children}</> : <Layout>{children}</Layout>;
 }

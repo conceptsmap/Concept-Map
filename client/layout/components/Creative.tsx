@@ -58,19 +58,19 @@ export default function PostCreativeSelector() {
         />
 
         <CreativeItem
-          emoji={<ScrollText className="h-5 w-5" />}
-          bg="bg-purple-600"
-          title="Story Board"
-          desc="Post a new story board"
-          onClick={handleStoryboardClick}
-        />
-
-        <CreativeItem
           emoji={<FilePenLine className="h-5 w-5" />}
           bg="bg-green-700"
           title="Script"
           desc="Post a new script"
           onClick={handleScriptClick}
+        />
+
+        <CreativeItem
+          emoji={<ScrollText className="h-5 w-5" />}
+          bg="bg-purple-600"
+          title="Story Board"
+          desc="Post a new story board"
+          onClick={handleStoryboardClick}
         />
       </div>
     </div>

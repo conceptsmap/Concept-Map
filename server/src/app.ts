@@ -45,7 +45,7 @@ app.use(
     origin: [
       /http(|s):\/\/(|www\.)localhost:(3000|3001|3002|3003)$/,
       /http(|s):\/\/(|www\.)127.0.0.1:(3000|3001|3002|3003)$/,
-      "https://concept-map-seven.vercel.app",
+      "https://conceptsmap-mocha.vercel.app",
     ],
     credentials: true,
   }),
