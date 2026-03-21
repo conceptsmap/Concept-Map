@@ -1,5 +1,6 @@
 import { Router } from "express";
 import { SearchController } from "../../controllers/search.controller";
+import { optionalJwtVerifyMiddleware } from "../../middleware/jwtVerify";
 
 export class SearchRouter {
   public router: Router;
@@ -12,7 +13,11 @@ export class SearchRouter {
   }
 
   private initRoutes() {
-    this.router.get("/", this.searchController.filterScript);
+    this.router.get(
+      "/",
+      optionalJwtVerifyMiddleware,
+      this.searchController.filterScript,
+    );
   }
 }
 

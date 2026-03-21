@@ -65,6 +65,11 @@ const ScriptsContent = () => {
     filters.maxPrice !== 50000;
 
   useEffect(() => {
+    const token = localStorage.getItem("auth_token");
+    const authHeaders: HeadersInit = token
+      ? { Authorization: `Bearer ${token}` }
+      : {};
+
     const filterParams = buildFilterParams(filters);
     const hasFiltersOrQuery = query || hasActiveFilters;
 
@@ -72,7 +77,9 @@ const ScriptsContent = () => {
       (async () => {
         setDefaultLoading(true);
         try {
-          const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/web/search?take=50`);
+          const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/web/search?take=50`, {
+            headers: authHeaders,
+          });
           const data = await res.json();
           if (res.ok && data?.data?.scripts) setDefaultPosts(data.data.scripts);
         } catch { } finally {
@@ -92,7 +99,7 @@ const ScriptsContent = () => {
         if (query) url += `&textSearch=${encodeURIComponent(query)}`;
         if (filterParams) url += `&${filterParams}`;
 
-        const res = await fetch(url);
+        const res = await fetch(url, { headers: authHeaders });
         const data = await res.json();
 
         if (res.ok && data?.data?.scripts) {

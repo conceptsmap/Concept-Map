@@ -1,18 +1,21 @@
 'use client'
 
 import React, { useEffect, useState } from 'react'
+import { useRouter } from 'next/navigation';
 
 import Post, { PostProps, } from '../dashboard/components/Post';
 import PostSkeleton from '../dashboard/components/PostSkelton';
 
 interface ApiScript {
     _id: string;
+    createdAt?: string;
     main_title?: string;
     title?: string;
     description?: string;
     type?: string[];
     likes?: number;
     comments?: number;
+    is_draft?: boolean;
     synopsis?: { price?: number; currency?: string; content?: string };
     script?: { price?: number; currency?: string; content?: { name: string; scenes: { name: string; description: string }[] }[] };
     story_borad?: { price?: number; currency?: string; content?: { name: string; cloud_url: string }[] };
@@ -24,10 +27,48 @@ type PostType = 'all' | 'synopsis' | 'storyboard' | 'story_board' | 'script';
 const categories: PostType[] = ['all', 'synopsis', 'script', 'storyboard'];
 
 const MyPostsPage = () => {
+    const router = useRouter();
     const [posts, setPosts] = useState<PostProps[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
     const [activePostType, setActivePostType] = useState<PostType>('all');
+
+    const handleEdit = (postId: string) => {
+        router.push(`/edit-script/${postId}`);
+    };
+
+    const handleDelete = async (postId: string) => {
+        // if (!window.confirm('Are you sure you want to delete this post? This action cannot be undone.')) {
+        //     return;
+        // }
+
+        try {
+            const token = localStorage.getItem('auth_token');
+            if (!token) {
+                setError('Please log in to delete posts');
+                return;
+            }
+
+            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api';
+            const res = await fetch(`${apiUrl}/web/script/${postId}`, {
+                method: 'DELETE',
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    'Content-Type': 'application/json',
+                },
+            });
+
+            if (res.ok) {
+                setPosts(posts.filter(post => post.id !== postId));
+            } else {
+                const data = await res.json();
+                setError(data?.message || 'Failed to delete post');
+            }
+        } catch (err) {
+            console.error('Failed to delete post:', err);
+            setError('Failed to delete post');
+        }
+    };
 
 
     useEffect(() => {
@@ -56,6 +97,9 @@ const MyPostsPage = () => {
                         if (script.type?.includes('SYNOPSIS')) postType = 'synopsis';
                         else if (script.type?.includes('STORY_BOARD')) postType = 'story_board';
 
+                        const createdAtMs = script.createdAt ? new Date(script.createdAt).getTime() : 0;
+                        const isReviewing = !script.is_draft && createdAtMs > 0 && (Date.now() - createdAtMs) < 2 * 60 * 1000;
+
                         return {
                             id: script._id,
                             author: script.userId && typeof script.userId === 'object'
@@ -70,13 +114,14 @@ const MyPostsPage = () => {
                             type: postType,
                             likes: script.likes || 0,
                             comments: script.comments || 0,
-                            rightsLabel: 'Basic / Exclusive Rights',
+                            rightsLabel: isReviewing ? 'Reviewing by platform' : '',
                             synopsis: script.synopsis?.content,
                             description: script.description || '',
                             script: script.script,
                             storyboard: script.story_borad?.content?.[0]?.cloud_url
                                 ? { image: script.story_borad.content[0].cloud_url }
                                 : undefined,
+                            isDraft: script.is_draft || false,
                         };
                     });
                     setPosts(mappedPosts);
@@ -156,6 +201,9 @@ const MyPostsPage = () => {
                                 key={post.id}
                                 {...post}
                                 locked={false}
+                                isOwner={true}
+                                onEdit={handleEdit}
+                                onDelete={handleDelete}
                             />
                         ))
                     ) : (

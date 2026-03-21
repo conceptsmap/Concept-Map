@@ -122,7 +122,7 @@ const Profile = () => {
 
                         <p className="mt-1 text-sm text-[#777777]">
                             {user?.bio ||
-                                "Passionate storyteller | Crime & Thriller Enthusiast"}
+                                "We design, build, and scale digital experiences that drive results."}
                         </p>
                     </div>
                 </div>

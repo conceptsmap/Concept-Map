@@ -11,15 +11,16 @@ export class SearchController {
   filterScript = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const filters = req.query;
-      console.log(filters);
-      const result = await this.searchService.searchScript(filters);
+      const result = await this.searchService.searchScript(
+        filters,
+        req.user?.id,
+      );
       res.status(201).json({
         status: "success",
         message: "Successfully fetch scripts",
         data: result,
       });
     } catch (error) {
-      console.log(error);
       next(error);
     }
   };

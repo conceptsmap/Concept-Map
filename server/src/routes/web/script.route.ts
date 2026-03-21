@@ -1,7 +1,9 @@
 import { Router } from "express";
 import { ScriptController } from "../../controllers/script.controller";
 import multer from "multer";
-import jwtVerifyMiddleware from "../../middleware/jwtVerify";
+import jwtVerifyMiddleware, {
+  optionalJwtVerifyMiddleware,
+} from "../../middleware/jwtVerify";
 
 export class ScriptRouter {
   public router: Router;
@@ -32,7 +34,52 @@ export class ScriptRouter {
       jwtVerifyMiddleware,
       this.scriptController.createSynopsis,
     );
-    this.router.get("/all", this.scriptController.getAllScripts);
+    this.router.get(
+      "/bids/received",
+      jwtVerifyMiddleware,
+      this.scriptController.getReceivedBids,
+    );
+    this.router.get(
+      "/bids/placed",
+      jwtVerifyMiddleware,
+      this.scriptController.getPlacedBids,
+    );
+    this.router.patch(
+      "/bids/:bidId/accept",
+      jwtVerifyMiddleware,
+      this.scriptController.acceptBid,
+    );
+    this.router.delete(
+      "/bids/:bidId",
+      jwtVerifyMiddleware,
+      this.scriptController.deleteBid,
+    );
+    this.router.post(
+      "/payments",
+      jwtVerifyMiddleware,
+      this.scriptController.createPayment,
+    );
+    this.router.get(
+      "/payments/buyer",
+      jwtVerifyMiddleware,
+      this.scriptController.getBuyerPayments,
+    );
+    this.router.get(
+      "/payments/seller",
+      jwtVerifyMiddleware,
+      this.scriptController.getSellerPayments,
+    );
+    this.router.get("/bids/:bidId", this.scriptController.getBid);
+    this.router.post(
+      "/:id/bid",
+      jwtVerifyMiddleware,
+      this.scriptController.createBid,
+    );
+    this.router.get(
+      "/all",
+      optionalJwtVerifyMiddleware,
+      this.scriptController.getAllScripts,
+    );
     this.router.get("/:id", this.scriptController.getScript);
     this.router.post(
       "/upload",
@@ -43,6 +90,17 @@ export class ScriptRouter {
       "/all/details",
       jwtVerifyMiddleware,
       this.scriptController.getAllOtherScripts,
+    );
+    // Edit and Delete endpoints
+    this.router.put(
+      "/:id",
+      jwtVerifyMiddleware,
+      this.scriptController.updateScript,
+    );
+    this.router.delete(
+      "/:id",
+      jwtVerifyMiddleware,
+      this.scriptController.deleteScript,
     );
   }
 }

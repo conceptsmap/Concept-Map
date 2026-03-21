@@ -77,32 +77,58 @@ export default function PostCreationSynopsis({
   const [genre, setGenre] = useState("CRIME");
   const [industryCategory, setIndustryCategory] = useState("TECHNOLOGY");
   const [price, setPrice] = useState("");
+  const [saleType, setSaleType] = useState<"FIXED" | "BIDDABLE">("FIXED");
+  const [minimumBid, setMinimumBid] = useState("");
   const [synopsisContent, setSynopsisContent] = useState("");
   const [countries, setCountries] = useState<string[]>([]);
   const [states, setStates] = useState<string[]>([]);
   const [confirmRights, setConfirmRights] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+  const [isDraft, setIsDraft] = useState(false);
 
   const availableStates = [...new Set(countries.flatMap((c) => STATES_BY_COUNTRY[c] ?? []))];
 
   const handleSubmit = async () => {
     setError(""); setSuccess("");
-    if (!confirmRights) { setError("Please confirm that you own the rights to this synopsis."); return; }
     const token = localStorage.getItem("auth_token");
     if (!token) { setError("Please log in first."); return; }
-    if (!title || !description) { setError("Title and Description are required."); return; }
+    const isPublishing = !isDraft;
+    if (isPublishing && !confirmRights) { setError("Please confirm that you own the rights to this synopsis."); return; }
+    if (isPublishing && (!title.trim() || !description.trim())) { setError("Title and Description are required."); return; }
+
+    if (isPublishing && saleType === "FIXED" && (!price || Number(price) <= 0)) {
+      setError("Valid fixed price is required.");
+      return;
+    }
+
+    if (isPublishing && saleType === "BIDDABLE" && (!minimumBid || Number(minimumBid) <= 0)) {
+      setError("Valid minimum bid is required.");
+      return;
+    }
 
     setLoading(true);
     try {
       const payload: Record<string, unknown> = {
-        main_title: title, description, category, genre,
-        industry_category: industryCategory,
-        synopsis: {
-          ...(price ? { price: Number(price), currency: "INR" } : {}),
-          ...(synopsisContent ? { content: synopsisContent } : {}),
-        },
+        is_draft: isDraft,
       };
+
+      if (title.trim()) payload.main_title = title.trim();
+      if (description.trim()) payload.description = description.trim();
+      if (category) payload.category = category;
+      if (genre) payload.genre = genre;
+      if (industryCategory) payload.industry_category = industryCategory;
+
+      const synopsisPayload: Record<string, unknown> = {
+        sale_type: saleType,
+        currency: "INR",
+      };
+
+      if (price && Number(price) > 0) synopsisPayload.price = Number(price);
+      if (minimumBid && Number(minimumBid) > 0) synopsisPayload.minimum_bid = Number(minimumBid);
+      if (synopsisContent.trim()) synopsisPayload.content = synopsisContent.trim();
+
+      payload.synopsis = synopsisPayload;
       if (countries.length) payload.country = countries;
       if (states.length) payload.state = states;
 
@@ -113,8 +139,8 @@ export default function PostCreationSynopsis({
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data?.message || "Failed to create synopsis");
-      setSuccess("Synopsis created successfully!");
-      return "Successfully created script";
+      setSuccess(isDraft ? "Draft saved successfully!" : "Synopsis created successfully!");
+      return isDraft ? "Draft saved successfully" : "Successfully created script";
 
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : "Failed to create synopsis");
@@ -211,9 +237,30 @@ export default function PostCreationSynopsis({
           </Select>
         </div>
         <div className="space-y-2">
-          <Label>Price <span className="text-gray-400 text-xs font-normal">(optional)</span></Label>
-          <Input type="number" placeholder="8000" value={price} onChange={(e) => setPrice(e.target.value)} min={0} />
+          <Label>Sale Type <span className="text-red-500">*</span></Label>
+          <Select value={saleType} onValueChange={(v) => setSaleType(v as "FIXED" | "BIDDABLE")}>
+            <SelectTrigger><SelectValue /></SelectTrigger>
+            <SelectContent>
+              <SelectItem value="FIXED">Fixed Price</SelectItem>
+              <SelectItem value="BIDDABLE">Biddable</SelectItem>
+            </SelectContent>
+          </Select>
         </div>
+      </div>
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        {saleType === "FIXED" && (
+          <div className="space-y-2">
+            <Label>Price <span className="text-red-500">*</span></Label>
+            <Input type="number" placeholder="8000" value={price} onChange={(e) => setPrice(e.target.value)} min={0} />
+          </div>
+        )}
+        {saleType === "BIDDABLE" && (
+          <div className="space-y-2">
+            <Label>Minimum Bid <span className="text-red-500">*</span></Label>
+            <Input type="number" placeholder="5000" value={minimumBid} onChange={(e) => setMinimumBid(e.target.value)} min={0} />
+          </div>
+        )}
       </div>
 
       <div className="space-y-2">
@@ -235,6 +282,14 @@ export default function PostCreationSynopsis({
           ))}
         </div>
       )}
+
+      <div className="flex items-start gap-2">
+        <Checkbox id="synopsis-draft" checked={isDraft} onCheckedChange={(v) => setIsDraft(Boolean(v))} />
+        <div>
+          <Label htmlFor="synopsis-draft" className="text-sm leading-snug">Save as Draft</Label>
+          <p className="text-xs text-gray-500 mt-1">Drafts can be saved without filling all fields and edited later.</p>
+        </div>
+      </div>
 
       <div className="flex items-start gap-2">
         <Checkbox id="synopsis-rights" checked={confirmRights} onCheckedChange={(v) => setConfirmRights(Boolean(v))} />

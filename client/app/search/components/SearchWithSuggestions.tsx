@@ -37,7 +37,11 @@ export default function SearchWithSuggestions() {
     const controller = new AbortController();
     const fetchSuggestions = async () => {
       try {
-        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/web/search?textSearch=${encodeURIComponent(value)}&take=5`, { signal: controller.signal });
+        const token = localStorage.getItem("auth_token");
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/web/search?textSearch=${encodeURIComponent(value)}&take=5`, {
+          signal: controller.signal,
+          headers: token ? { Authorization: `Bearer ${token}` } : {},
+        });
         const data = await res.json();
         if (res.ok && data?.data?.scripts) {
           setSuggestions((data.data.scripts as BackendSuggestion[]).map((s) => s.main_title || s.title || ""));

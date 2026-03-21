@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 
@@ -39,8 +39,26 @@ interface ScriptBlock {
 
 interface ScriptData {
   price?: number
+  sale_type?: 'FIXED' | 'BIDDABLE'
+  minimum_bid?: number
   currency?: string
   content?: ScriptBlock[]
+}
+
+interface SynopsisData {
+  price?: number
+  sale_type?: 'FIXED' | 'BIDDABLE'
+  minimum_bid?: number
+  currency?: string
+  content?: string
+}
+
+interface StoryboardData {
+  price?: number
+  sale_type?: 'FIXED' | 'BIDDABLE'
+  minimum_bid?: number
+  currency?: string
+  image?: string
 }
 
 interface Comment {
@@ -63,11 +81,9 @@ interface PostDetailProps {
   rightsLabel?: string
   publishedAt?: string
   locked?: boolean
-  synopsis?: string
+  synopsis?: SynopsisData
   script?: ScriptData
-  storyboard?: {
-    image: string
-  }
+  storyboard?: StoryboardData
   price?: number
 }
 
@@ -92,6 +108,41 @@ const PostDetail: React.FC<PostDetailProps> = ({
   const [likeCount, setLikeCount] = useState(likes)
   const [commentCount, setCommentCount] = useState(comments)
   const [showCommentsModal, setShowCommentsModal] = useState(false)
+  const [bidAmount, setBidAmount] = useState('')
+  const [bidSubmitting, setBidSubmitting] = useState(false)
+  const [bidMessage, setBidMessage] = useState('')
+  const [bidError, setBidError] = useState('')
+  const [acceptedBidId, setAcceptedBidId] = useState<string | null>(null)
+
+  useEffect(() => {
+    // Check if buyer has an accepted bid on this post
+    const checkAcceptedBid = async () => {
+      const token = localStorage.getItem('auth_token')
+      if (!token) return
+
+      try {
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api'
+        const res = await fetch(`${apiUrl}/web/script/bids/placed`, {
+          headers: { Authorization: `Bearer ${token}` },
+        })
+
+        const data = await res.json()
+        if (res.ok && data?.data) {
+          // Find accepted bid for this post
+          const acceptedBid = data.data.find(
+            (bid: any) => bid.script_id?._id === id && bid.status === 'ACCEPTED'
+          )
+          if (acceptedBid) {
+            setAcceptedBidId(acceptedBid._id)
+          }
+        }
+      } catch (error) {
+        console.error('Failed to check accepted bids:', error)
+      }
+    }
+
+    checkAcceptedBid()
+  }, [id])
 
   console.log(storyboard, type)
 
@@ -117,11 +168,58 @@ const PostDetail: React.FC<PostDetailProps> = ({
     setLikeCount(prev => liked ? prev - 1 : prev + 1)
   }
 
+  const handlePlaceBid = async () => {
+    setBidMessage('')
+    setBidError('')
+
+    const token = localStorage.getItem('auth_token')
+    if (!token) {
+      setBidError('Please log in to place a bid.')
+      return
+    }
+
+    const amount = Number(bidAmount)
+    if (!Number.isFinite(amount) || amount <= 0) {
+      setBidError('Enter a valid bid amount.')
+      return
+    }
+
+    if ((script?.minimum_bid || 0) > 0 && amount < (script?.minimum_bid || 0)) {
+      setBidError(`Bid must be at least ₹${(script?.minimum_bid || 0).toLocaleString()}`)
+      return
+    }
+
+    try {
+      setBidSubmitting(true)
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api'
+      const res = await fetch(`${apiUrl}/web/script/${id}/bid`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ amount }),
+      })
+
+      const data = await res.json()
+      if (!res.ok) {
+        throw new Error(data?.message || 'Failed to place bid')
+      }
+
+      setBidMessage('Bid submitted successfully.')
+      setBidAmount('')
+    } catch (error) {
+      setBidError(error instanceof Error ? error.message : 'Failed to place bid')
+    } finally {
+      setBidSubmitting(false)
+    }
+  }
+
   const renderContent = () => {
     if (type === 'synopsis') {
       return (
         <p className="text-sm text-gray-700 min-h-60 leading-relaxed whitespace-pre-line">
-          {synopsis}
+          {typeof synopsis === 'string' ? synopsis : synopsis?.content}
         </p>
       )
     }
@@ -168,6 +266,16 @@ const PostDetail: React.FC<PostDetailProps> = ({
 
     return null
   }
+
+  // Helper: get the pricing data for the current post type
+  const getPricingData = () => {
+    if (type === 'script') return script
+    if (type === 'synopsis') return synopsis
+    if (type === 'story_board') return storyboard
+    return null
+  }
+
+  const pricingData = getPricingData()
 
   return (
     <div className="w-full rounded-2xl bg-white p-6 shadow-sm border border-gray-100">
@@ -246,7 +354,7 @@ const PostDetail: React.FC<PostDetailProps> = ({
 
         {/* Lock Overlay Only When Locked */}
         {locked && (
-          <div className="absolute inset-x-0 bottom-0  bg-gradient-to-t from-white via-white/90 to-transparent flex flex-col items-center justify-end pb-4">
+          <div className="absolute inset-x-0 bottom-0 bg-linear-to-t from-white via-white/90 to-transparent flex flex-col items-center justify-end pb-4">
             <div className="rounded-md bg-[#013913] text-white px-4 py-2 text-sm font-semibold flex items-center gap-2">
               <Image src={lockWhite} alt="lock" className="w-4 h-4" />
               Locked
@@ -274,16 +382,58 @@ const PostDetail: React.FC<PostDetailProps> = ({
       </div>
 
       {/* Purchase */}
-      {locked && (
+      {locked && pricingData?.sale_type !== 'BIDDABLE' && (
         <div className="mt-4 flex items-center justify-end gap-3">
           <span className="text-lg font-bold text-green-600">
-            ₹{(script?.price ?? price ?? 0).toLocaleString()}
+            ₹{(pricingData?.price ?? price ?? 0).toLocaleString()}
           </span>
           <Link href={`/checkout?postId=${id}`}>
             <Button className="bg-green-500 hover:bg-green-600 px-6">
               Buy Now
             </Button>
           </Link>
+        </div>
+      )}
+
+      {locked && pricingData?.sale_type === 'BIDDABLE' && acceptedBidId && (
+        <div className="mt-4 rounded-lg border border-green-200 bg-green-50 p-4 space-y-3">
+          <div className="flex items-center justify-between">
+            <p className="text-sm font-semibold text-green-900">🎉 Your bid has been accepted!</p>
+            <p className="text-sm text-green-700">Ready to complete the payment</p>
+          </div>
+
+          <Link href={`/checkout?bidId=${acceptedBidId}`}>
+            <Button className="w-full bg-green-600 hover:bg-green-700 px-6">
+              Go to Payment
+            </Button>
+          </Link>
+        </div>
+      )}
+
+      {locked && pricingData?.sale_type === 'BIDDABLE' && !acceptedBidId && (
+        <div className="mt-4 rounded-lg border border-gray-200 bg-gray-50 p-4 space-y-3">
+          <div className="flex items-center justify-between">
+            <p className="text-sm font-semibold text-gray-800">This {type === 'script' ? 'script' : type === 'synopsis' ? 'synopsis' : 'storyboard'} is open for bidding</p>
+            <p className="text-sm text-gray-600">
+              Minimum Bid: ₹{(pricingData?.minimum_bid || 0).toLocaleString()}
+            </p>
+          </div>
+
+          <div className="flex items-center gap-2">
+            <Input
+              type="number"
+              min={pricingData?.minimum_bid || 0}
+              value={bidAmount}
+              onChange={(event) => setBidAmount(event.target.value)}
+              placeholder="Enter your bid"
+            />
+            <Button className="bg-green-500 hover:bg-green-600" onClick={handlePlaceBid} disabled={bidSubmitting}>
+              {bidSubmitting ? 'Submitting...' : 'Place Bid'}
+            </Button>
+          </div>
+
+          {bidMessage && <p className="text-sm text-green-700">{bidMessage}</p>}
+          {bidError && <p className="text-sm text-red-600">{bidError}</p>}
         </div>
       )}
 

@@ -19,7 +19,7 @@ declare global {
 const jwtVerifyMiddleware = (
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) => {
   const tokenHeader = req.headers.authorization;
 
@@ -51,6 +51,32 @@ const jwtVerifyMiddleware = (
       },
     });
   }
+};
+
+export const optionalJwtVerifyMiddleware = (
+  req: Request,
+  _res: Response,
+  next: NextFunction,
+) => {
+  const tokenHeader = req.headers.authorization;
+
+  if (!tokenHeader) {
+    return next();
+  }
+
+  const token = tokenHeader.split(" ")[1];
+  if (!token) {
+    return next();
+  }
+
+  try {
+    const user = jwt.verify(token, JWT_SECRET_KEY!) as IUser;
+    req.user = user;
+  } catch {
+    // Ignore invalid token for optional auth paths.
+  }
+
+  return next();
 };
 
 export default jwtVerifyMiddleware;

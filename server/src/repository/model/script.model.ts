@@ -6,22 +6,29 @@ import {
   ScriptCategory,
   ScriptType,
   IScript,
+  SaleType,
 } from "../../types/model";
 
 const ScriptSchema: Schema = new Schema(
   {
     main_title: {
       type: String,
-      required: true,
+      required: function (this: IScript) {
+        return !this.is_draft;
+      },
     },
     description: {
       type: String,
-      required: true,
+      required: function (this: IScript) {
+        return !this.is_draft;
+      },
     },
     category: {
       type: String,
       enum: Object.values(ScriptCategory),
-      required: true,
+      required: function (this: IScript) {
+        return !this.is_draft;
+      },
     },
     genre: {
       type: String,
@@ -29,12 +36,16 @@ const ScriptSchema: Schema = new Schema(
         ...Object.values(TVCOTTSeriesGenre),
         ...Object.values(ShortsGenre),
       ],
-      required: true,
+      required: function (this: IScript) {
+        return !this.is_draft;
+      },
     },
     industry_category: {
       type: String,
       enum: Object.values(IndustryCategory),
-      required: true,
+      required: function (this: IScript) {
+        return !this.is_draft;
+      },
     },
     type: {
       type: [String],
@@ -46,8 +57,20 @@ const ScriptSchema: Schema = new Schema(
       ref: "User",
       required: true,
     },
+    is_draft: {
+      type: Boolean,
+      default: false,
+    },
     script: {
       price: {
+        type: Number,
+      },
+      sale_type: {
+        type: String,
+        enum: Object.values(SaleType),
+        default: SaleType.FIXED,
+      },
+      minimum_bid: {
         type: Number,
       },
       currency: {
@@ -105,7 +128,7 @@ const ScriptSchema: Schema = new Schema(
   },
   {
     timestamps: true,
-  }
+  },
 );
 
 const ScriptModel = mongoose.model<IScript>("Script", ScriptSchema);

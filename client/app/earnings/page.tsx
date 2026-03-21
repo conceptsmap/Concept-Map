@@ -1,7 +1,8 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Image from 'next/image'
+import Link from 'next/link'
 import {
   AreaChart,
   Area,
@@ -118,10 +119,74 @@ const UpiCard: React.FC<{ upiId: string }> = ({ upiId }) => (
   </div>
 )
 
+interface SellerPayment {
+  _id: string
+  price: number
+  payment_method: string
+  payment_status: string
+  transaction_id: string
+  createdAt: string
+  script_id?: {
+    _id?: string
+    main_title?: string
+    userId?: {
+      username?: string
+      email?: string
+    }
+  }
+  user_id?: {
+    username?: string
+    email?: string
+  }
+}
+
 
 const Earnings = () => {
   const [amount, setAmount] = useState('')
   const [selectedMonth, setSelectedMonth] = useState('April')
+  const [sellerPayments, setSellerPayments] = useState<SellerPayment[]>([])
+  const [buyerPayments, setBuyerPayments] = useState<SellerPayment[]>([])
+  const [paymentsLoading, setPaymentsLoading] = useState(true)
+
+  useEffect(() => {
+    const fetchSellerPayments = async () => {
+      const token = localStorage.getItem('auth_token')
+      if (!token) {
+        setPaymentsLoading(false)
+        return
+      }
+
+      try {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/web/script/payments/seller`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
+
+        const data = await res.json()
+        if (res.ok && data?.data) {
+          setSellerPayments(data.data)
+        }
+
+        const buyerRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/web/script/payments/buyer`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
+
+        const buyerData = await buyerRes.json()
+        if (buyerRes.ok && buyerData?.data) {
+          setBuyerPayments(buyerData.data)
+        }
+      } catch (error) {
+        console.error('Failed to fetch seller payments:', error)
+      } finally {
+        setPaymentsLoading(false)
+      }
+    }
+
+    fetchSellerPayments()
+  }, [])
 
   return (
     <div className="min-h-screen  py-1 flex justify-center">
@@ -173,6 +238,88 @@ const Earnings = () => {
             </button>
           </div>
 
+        </div>
+
+        <div className="bg-white rounded-2xl p-3 border border-gray-100">
+          <p className="text-xl font-bold text-gray-900 mb-1">Recent Seller Payments</p>
+          <p className="text-[13px] text-gray-400 mb-4">
+            Payments received from buyers are listed here.
+          </p>
+
+          {paymentsLoading ? (
+            <p className="text-sm text-gray-500">Loading payment details...</p>
+          ) : sellerPayments.length === 0 ? (
+            <p className="text-sm text-gray-500">No payment records yet.</p>
+          ) : (
+            <div className="space-y-2">
+              {sellerPayments.slice(0, 8).map((payment) => (
+                <div key={payment._id} className="rounded-lg border border-gray-200 p-3 flex items-center justify-between gap-3">
+                  <div>
+                    <p className="text-sm font-semibold text-gray-900">{payment.script_id?.main_title || 'Untitled'}</p>
+                    <p className="text-xs text-gray-500">
+                      Buyer: {payment.user_id?.username || payment.user_id?.email || 'Unknown'}
+                    </p>
+                    <p className="text-xs text-gray-500">
+                      {new Date(payment.createdAt).toLocaleString()} | {payment.payment_method} | {payment.transaction_id}
+                    </p>
+                  </div>
+                  <div className="text-right">
+                    <p className="text-sm font-semibold text-green-600">₹{Number(payment.price || 0).toLocaleString()}</p>
+                    <p className="text-xs text-gray-500">{payment.payment_status}</p>
+                    {payment.script_id?._id && (
+                      <Link
+                        href={`/dashboard/${payment.script_id._id}?locked=false`}
+                        className="inline-flex items-center rounded-md border border-green-200 bg-green-50 px-3 py-1.5 text-xs font-medium text-green-700 hover:bg-green-100 mt-2"
+                      >
+                        See Details
+                      </Link>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+
+        <div className="bg-white rounded-2xl p-3 border border-gray-100">
+          <p className="text-xl font-bold text-gray-900 mb-1">Buyer Purchases</p>
+          <p className="text-[13px] text-gray-400 mb-4">
+            Scripts purchased by you and seller details.
+          </p>
+
+          {paymentsLoading ? (
+            <p className="text-sm text-gray-500">Loading purchase details...</p>
+          ) : buyerPayments.length === 0 ? (
+            <p className="text-sm text-gray-500">No purchase records yet.</p>
+          ) : (
+            <div className="space-y-2">
+              {buyerPayments.slice(0, 8).map((payment) => (
+                <div key={payment._id} className="rounded-lg border border-gray-200 p-3 flex items-center justify-between gap-3">
+                  <div>
+                    <p className="text-sm font-semibold text-gray-900">{payment.script_id?.main_title || 'Untitled'}</p>
+                    <p className="text-xs text-gray-500">
+                      Seller: {payment.script_id?.userId?.username || payment.script_id?.userId?.email || 'Unknown'}
+                    </p>
+                    <p className="text-xs text-gray-500">
+                      {new Date(payment.createdAt).toLocaleString()} | {payment.payment_method} | {payment.transaction_id}
+                    </p>
+                  </div>
+                  <div className="text-right">
+                    <p className="text-sm font-semibold text-green-600">₹{Number(payment.price || 0).toLocaleString()}</p>
+                    <p className="text-xs text-gray-500">{payment.payment_status}</p>
+                    {payment.script_id?._id && (
+                      <Link
+                        href={`/dashboard/${payment.script_id._id}?locked=false`}
+                        className="inline-flex items-center rounded-md border border-green-200 bg-green-50 px-3 py-1.5 text-xs font-medium text-green-700 hover:bg-green-100 mt-2"
+                      >
+                        See Details
+                      </Link>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
         <div className="flex gap-2.5  rounded-xl px-2">
           <span className="text-[15px] shrink-0 mt-0.5"><Image src={secure} alt="Secure" width={20} height={20} /></span>

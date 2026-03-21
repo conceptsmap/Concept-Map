@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useEffect, useState } from "react"
+import React, { useState } from "react"
 import Image from "next/image"
 
 import visa from "@/assets/images/visa.svg"
@@ -16,23 +16,80 @@ type Status = "method" | "waiting" | "success"
 type Section = "card" | "upi" | "bank"
 type CardType = "visa" | "master" | "new" | null
 
-const PaymentMethod = ({ price }: any) => {
+const PAYMENT_METHOD_MAP = {
+  card: "DEBIT_CARD",
+  upi: "UPI",
+  bank: "NETBANKING",
+} as const
+
+const PaymentMethod = ({
+  price,
+  postId,
+  bidId,
+}: {
+  price: number
+  postId?: string | null
+  bidId?: string | null
+}) => {
   const [status, setStatus] = useState<Status>("method")
   const [openSection, setOpenSection] = useState<Section>("card")
   const [selectedCard, setSelectedCard] = useState<CardType>("visa")
   const [upi, setUpi] = useState("")
+  const [error, setError] = useState("")
+
+  const normalizedBidId =
+    bidId && bidId !== "null" && bidId !== "undefined" ? bidId : null
+  const normalizedPostId =
+    postId && postId !== "null" && postId !== "undefined" ? postId : null
 
   const isValidUpi = /^[a-zA-Z0-9.\-_]{2,}@[a-zA-Z]{2,}$/.test(upi)
 
-  useEffect(() => {
-    if (status === "waiting") {
-      const timer = setTimeout(() => {
-        setStatus("success")
-      }, 2500)
+  const handlePay = async () => {
+    setError("")
 
-      return () => clearTimeout(timer)
+    const token = localStorage.getItem("auth_token")
+    if (!token) {
+      setError("Please log in first.")
+      return
     }
-  }, [status])
+
+    if (!normalizedBidId && !normalizedPostId) {
+      setError("No item selected for payment.")
+      return
+    }
+
+    if (openSection === "upi" && !isValidUpi) {
+      setError("Please enter a valid UPI ID.")
+      return
+    }
+
+    setStatus("waiting")
+
+    try {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/web/script/payments`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          payment_method: PAYMENT_METHOD_MAP[openSection],
+          ...(normalizedBidId ? { bidId: normalizedBidId } : {}),
+          ...(normalizedPostId ? { postId: normalizedPostId } : {}),
+        }),
+      })
+
+      const data = await res.json()
+      if (!res.ok) {
+        throw new Error(data?.message || "Payment failed")
+      }
+
+      setStatus("success")
+    } catch (payError) {
+      setStatus("method")
+      setError(payError instanceof Error ? payError.message : "Payment failed")
+    }
+  }
 
   if (status === "waiting") {
     return (
@@ -47,7 +104,7 @@ const PaymentMethod = ({ price }: any) => {
   }
 
   return (
-    <div className=" w-[399px] min-h-[520px] rounded-3xl bg-white p-5 shadow-sm flex flex-col p-4">
+    <div className=" w-[399px] min-h-[520px] rounded-3xl bg-white p-4 shadow-sm flex flex-col">
 
       <h2 className="mb-4 text-xl font-bold">Payment Method</h2>
 
@@ -155,11 +212,12 @@ const PaymentMethod = ({ price }: any) => {
       <div className="flex-1" />
 
       <button
-        onClick={() => setStatus("waiting")}
+        onClick={handlePay}
         className="rounded-xl bg-[#22C55E] py-4 text-white font-semibold cursor-pointer"
       >
         Pay ₹{price.toLocaleString()}
       </button>
+      {error && <p className="mt-3 text-sm text-red-600">{error}</p>}
     </div>
   )
 }

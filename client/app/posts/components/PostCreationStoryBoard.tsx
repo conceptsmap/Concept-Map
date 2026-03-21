@@ -84,6 +84,8 @@ export default function PostCreationStoryBoard({
   const [genre, setGenre] = useState("CRIME");
   const [industryCategory, setIndustryCategory] = useState("TECHNOLOGY");
   const [price, setPrice] = useState("");
+  const [saleType, setSaleType] = useState<"FIXED" | "BIDDABLE">("FIXED");
+  const [minimumBid, setMinimumBid] = useState("");
   const [boardFiles, setBoardFiles] = useState<BoardFile[]>([]);
   const [countries, setCountries] = useState<string[]>([]);
   const [states, setStates] = useState<string[]>([]);
@@ -91,6 +93,7 @@ export default function PostCreationStoryBoard({
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const [isDraft, setIsDraft] = useState(false);
 
   const availableStates = [...new Set(countries.flatMap((c) => STATES_BY_COUNTRY[c] ?? []))];
 
@@ -128,7 +131,9 @@ export default function PostCreationStoryBoard({
     setError("");
     setSuccess("");
 
-    if (!confirmRights) {
+    const isPublishing = !isDraft;
+
+    if (isPublishing && !confirmRights) {
       setError("Please confirm that you own the rights to this story board.");
       return;
     }
@@ -139,8 +144,18 @@ export default function PostCreationStoryBoard({
       return;
     }
 
-    if (!title || !description) {
+    if (isPublishing && (!title.trim() || !description.trim())) {
       setError("Title and Description are required.");
+      return;
+    }
+
+    if (isPublishing && saleType === "FIXED" && (!price || Number(price) <= 0)) {
+      setError("Valid fixed price is required.");
+      return;
+    }
+
+    if (isPublishing && saleType === "BIDDABLE" && (!minimumBid || Number(minimumBid) <= 0)) {
+      setError("Valid minimum bid is required.");
       return;
     }
 
@@ -186,18 +201,26 @@ export default function PostCreationStoryBoard({
 
       // ✅ STEP 2 — Send Final Storyboard Payload
       const payload: Record<string, unknown> = {
-        main_title: title,
-        description,
-        category,
-        genre,
-        industry_category: industryCategory,
-        story_borad: {
-          ...(price ? { price: Number(price), currency: "INR" } : {}),
-          ...(uploadedContent.length > 0
-            ? { content: uploadedContent }
-            : {}),
-        },
+        is_draft: isDraft,
       };
+
+      if (title.trim()) payload.main_title = title.trim();
+      if (description.trim()) payload.description = description.trim();
+      if (category) payload.category = category;
+      if (genre) payload.genre = genre;
+      if (industryCategory) payload.industry_category = industryCategory;
+
+      const storyboardPayload: Record<string, unknown> = {
+        sale_type: saleType,
+        currency: "INR",
+      };
+
+      if (price && Number(price) > 0) storyboardPayload.price = Number(price);
+      if (minimumBid && Number(minimumBid) > 0) storyboardPayload.minimum_bid = Number(minimumBid);
+      if (uploadedContent.length > 0) storyboardPayload.content = uploadedContent;
+
+      payload.story_borad = storyboardPayload;
+
 
       if (countries.length) payload.country = countries;
       if (states.length) payload.state = states;
@@ -220,8 +243,8 @@ export default function PostCreationStoryBoard({
         throw new Error(data?.message || "Failed to create story board");
       }
 
-      setSuccess("Story board created successfully!");
-      return "Successfully created script";
+      setSuccess(isDraft ? "Draft saved successfully!" : "Story board created successfully!");
+      return isDraft ? "Draft saved successfully" : "Successfully created script";
     } catch (err: unknown) {
       setError(
         err instanceof Error ? err.message : "Failed to create story board"
@@ -229,7 +252,8 @@ export default function PostCreationStoryBoard({
     } finally {
       setLoading(false);
     }
-  };
+  }
+
 
 
   useEffect(() => { submitRef.current = handleSubmit; });
@@ -321,9 +345,30 @@ export default function PostCreationStoryBoard({
           </Select>
         </div>
         <div className="space-y-2">
-          <Label>Price <span className="text-gray-400 text-xs font-normal">(optional)</span></Label>
-          <Input type="number" placeholder="8000" value={price} onChange={(e) => setPrice(e.target.value)} min={0} />
+          <Label>Sale Type <span className="text-red-500">*</span></Label>
+          <Select value={saleType} onValueChange={(v) => setSaleType(v as "FIXED" | "BIDDABLE")}>
+            <SelectTrigger><SelectValue /></SelectTrigger>
+            <SelectContent>
+              <SelectItem value="FIXED">Fixed Price</SelectItem>
+              <SelectItem value="BIDDABLE">Biddable</SelectItem>
+            </SelectContent>
+          </Select>
         </div>
+      </div>
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        {saleType === "FIXED" && (
+          <div className="space-y-2">
+            <Label>Price <span className="text-red-500">*</span></Label>
+            <Input type="number" placeholder="8000" value={price} onChange={(e) => setPrice(e.target.value)} min={0} />
+          </div>
+        )}
+        {saleType === "BIDDABLE" && (
+          <div className="space-y-2">
+            <Label>Minimum Bid <span className="text-red-500">*</span></Label>
+            <Input type="number" placeholder="5000" value={minimumBid} onChange={(e) => setMinimumBid(e.target.value)} min={0} />
+          </div>
+        )}
       </div>
 
       {/* Multi-file upload for story board panels */}
@@ -356,9 +401,9 @@ export default function PostCreationStoryBoard({
               <div key={bf.id} className="flex gap-3 items-start border rounded-lg p-3 bg-gray-50">
                 {/* Thumbnail */}
                 {bf.preview ? (
-                  <img src={bf.preview} alt={bf.name} className="w-16 h-16 object-cover rounded-md flex-shrink-0 border" />
+                  <img src={bf.preview} alt={bf.name} className="w-16 h-16 object-cover rounded-md shrink-0 border" />
                 ) : (
-                  <div className="w-16 h-16 flex items-center justify-center rounded-md bg-gray-200 flex-shrink-0 text-xs text-gray-500 text-center">PDF</div>
+                  <div className="w-16 h-16 flex items-center justify-center rounded-md bg-gray-200 shrink-0 text-xs text-gray-500 text-center">PDF</div>
                 )}
                 {/* Editable name + remove */}
                 <div className="flex-1 min-w-0 space-y-1">
@@ -370,7 +415,7 @@ export default function PostCreationStoryBoard({
                   />
                   <p className="text-xs text-gray-400 truncate">{bf.file.name}</p>
                 </div>
-                <button type="button" onClick={() => removeFile(bf.id)} className="text-gray-400 hover:text-red-500 flex-shrink-0 mt-1">
+                <button type="button" onClick={() => removeFile(bf.id)} className="text-gray-400 hover:text-red-500 shrink-0 mt-1">
                   <Trash2 className="w-4 h-4" />
                 </button>
               </div>
@@ -393,6 +438,14 @@ export default function PostCreationStoryBoard({
           ))}
         </div>
       )}
+
+      <div className="flex items-start gap-2">
+        <Checkbox id="storyboard-draft" checked={isDraft} onCheckedChange={(v) => setIsDraft(Boolean(v))} />
+        <div>
+          <Label htmlFor="storyboard-draft" className="text-sm leading-snug">Save as Draft</Label>
+          <p className="text-xs text-gray-500 mt-1">Draft storyboards can be saved without uploading files or completing every field.</p>
+        </div>
+      </div>
 
       <div className="flex items-start gap-2">
         <Checkbox id="storyboard-rights" checked={confirmRights} onCheckedChange={(v) => setConfirmRights(Boolean(v))} />

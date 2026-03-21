@@ -29,6 +29,7 @@ const CheckoutContent = () => {
     const searchParams = useSearchParams()
     const router = useRouter()
     const postId = searchParams.get('postId')
+    const bidId = searchParams.get('bidId')
 
     const [post, setPost] = useState<PostData | null>(null)
     const [buyer, setBuyer] = useState<BuyerData | null>(null)
@@ -36,7 +37,7 @@ const CheckoutContent = () => {
 
     useEffect(() => {
         const fetchData = async () => {
-            if (!postId) {
+            if (!postId && !bidId) {
                 setLoading(false)
                 return
             }
@@ -46,33 +47,65 @@ const CheckoutContent = () => {
                     process.env.NEXT_PUBLIC_API_URL ||
                     'http://localhost:8000/api'
 
-                const postRes = await fetch(`${apiUrl}/web/script/${postId}`)
-                const postData = await postRes.json()
-
-                if (postRes.ok && postData?.data) {
-                    const script = postData.data
-
-                    const postType =
-                        Array.isArray(script.type) && script.type.length > 0
-                            ? script.type[0].replace('_', ' ')
-                            : 'Script'
-
-                    const price =
-                        script.script?.price ??
-                        script.synopsis?.price ??
-                        script.story_board?.price ??
-                        0
-
-                    setPost({
-                        id: script._id,
-                        title: script.main_title || script.title || 'Untitled',
-                        type: postType,
-                        price,
-                        seller: {
-                            name: script.userId?.username || 'Unknown Seller',
-                            email: script.userId?.email,
-                        },
+                // If bidId is provided, fetch bid details
+                if (bidId) {
+                    const token = localStorage.getItem('auth_token')
+                    const bidRes = await fetch(`${apiUrl}/web/script/bids/${bidId}`, {
+                        headers: token ? { Authorization: `Bearer ${token}` } : {},
                     })
+
+                    const bidData = await bidRes.json()
+
+                    if (bidRes.ok && bidData?.data) {
+                        const bid = bidData.data
+                        const script = bid.script_id
+
+                        const postType =
+                            Array.isArray(script?.type) && script.type.length > 0
+                                ? script.type[0].replace('_', ' ')
+                                : 'Script'
+
+                        setPost({
+                            id: script?._id,
+                            title: script?.main_title || 'Untitled',
+                            type: postType,
+                            price: bid.amount,
+                            seller: {
+                                name: script?.userId?.username || 'Unknown Seller',
+                                email: script?.userId?.email,
+                            },
+                        })
+                    }
+                } else if (postId) {
+                    // Original fixed-price flow
+                    const postRes = await fetch(`${apiUrl}/web/script/${postId}`)
+                    const postData = await postRes.json()
+
+                    if (postRes.ok && postData?.data) {
+                        const script = postData.data
+
+                        const postType =
+                            Array.isArray(script.type) && script.type.length > 0
+                                ? script.type[0].replace('_', ' ')
+                                : 'Script'
+
+                        const price =
+                            script.script?.price ??
+                            script.synopsis?.price ??
+                            script.story_board?.price ??
+                            0
+
+                        setPost({
+                            id: script._id,
+                            title: script.main_title || script.title || 'Untitled',
+                            type: postType,
+                            price,
+                            seller: {
+                                name: script.userId?.username || 'Unknown Seller',
+                                email: script.userId?.email,
+                            },
+                        })
+                    }
                 }
 
                 const token = localStorage.getItem('auth_token')
@@ -99,11 +132,11 @@ const CheckoutContent = () => {
         }
 
         fetchData()
-    }, [postId])
+    }, [bidId, postId])
 
     if (loading) return <SkeletonCheckoutLoader />
 
-    if (!postId || !post) {
+    if ((!postId && !bidId) || !post) {
         return (
             <div className="min-h-screen bg-[#F4F6F5] flex items-center justify-center">
                 <div className="text-center">
@@ -150,7 +183,7 @@ const CheckoutContent = () => {
                     </section>
                 </div>
             </div>
-            <PaymentMethod price={post.price} />
+            <PaymentMethod price={post.price} postId={postId} bidId={bidId} />
         </div>
     )
 }

@@ -17,7 +17,7 @@ interface PostData {
   title: string
   description?: string
   hashtags?: string[]
-  type: 'synopsis' | 'storyboard' | 'script'
+  type: 'synopsis' | 'story_board' | 'script'
   likes: number
   comments: number
   rightsLabel?: string
@@ -26,6 +26,8 @@ interface PostData {
   synopsis?: string
   script?: {
     price?: number
+    sale_type?: 'FIXED' | 'BIDDABLE'
+    minimum_bid?: number
     currency?: string
     content?: {
       name: string
@@ -83,15 +85,23 @@ export default function PostDetailPage() {
             title: script.main_title || script.title || 'Untitled',
             description: script.description || '',
             type: Array.isArray(script.type) && script.type.length > 0
-              ? script.type[0].toLowerCase()
+              ? (script.type[0] === 'STORY_BOARD' ? 'story_board' : script.type[0].toLowerCase())
               : 'script',
             likes: typeof script.likes === 'number' ? script.likes : 0,
             comments: typeof script.comments === 'number' ? script.comments : 0,
-            rightsLabel: script.rightsLabel || 'Basic / Exclusive Rights',
-            synopsis: script.synopsis?.content,
+            rightsLabel: script.rightsLabel || '',
+            synopsis: typeof script.synopsis === 'string'
+              ? { content: script.synopsis }
+              : script.synopsis,
             script: script.script,
-            storyboard: script.story_borad?.content?.[0]?.cloud_url
-              ? { image: script.story_borad.content[0].cloud_url }
+            storyboard: script.story_borad
+              ? {
+                price: script.story_borad.price,
+                sale_type: script.story_borad.sale_type,
+                minimum_bid: script.story_borad.minimum_bid,
+                currency: script.story_borad.currency,
+                image: script.story_borad.content?.[0]?.cloud_url
+              }
               : undefined,
             price: script.script?.price || script.synopsis?.price || script.story_borad?.price,
             locked: isLocked,

@@ -20,15 +20,18 @@ export interface IOtp extends Document {
 
 //ScriptSchema model type
 export interface IScript extends Document {
-  main_title: string;
-  description: string;
-  category: ScriptCategory;
-  genre: TVCOTTSeriesGenre | ShortsGenre;
-  industry_category: IndustryCategory;
+  main_title?: string;
+  description?: string;
+  category?: ScriptCategory;
+  genre?: TVCOTTSeriesGenre | ShortsGenre;
+  industry_category?: IndustryCategory;
   type: ScriptType[];
   userId: Types.ObjectId;
+  is_draft: boolean;
   script?: {
     price?: number;
+    sale_type?: SaleType;
+    minimum_bid?: number;
     currency?: string;
     content?: Array<{
       name: string;
@@ -40,6 +43,8 @@ export interface IScript extends Document {
   };
   story_borad?: {
     price?: number;
+    sale_type?: SaleType;
+    minimum_bid?: number;
     currency?: string;
     content?: Array<{
       name: string;
@@ -48,6 +53,8 @@ export interface IScript extends Document {
   };
   synopsis?: {
     price?: number;
+    sale_type?: SaleType;
+    minimum_bid?: number;
     currency?: string;
     content?: string;
   };
@@ -55,17 +62,20 @@ export interface IScript extends Document {
 
 // Data interface for creation (does NOT extend Document)
 export interface IScriptCreate {
-  main_title: string;
-  description: string;
-  category: ScriptCategory;
-  genre: TVCOTTSeriesGenre | ShortsGenre;
-  industry_category: IndustryCategory;
+  main_title?: string;
+  description?: string;
+  category?: ScriptCategory;
+  genre?: TVCOTTSeriesGenre | ShortsGenre;
+  industry_category?: IndustryCategory;
   type: ScriptType[];
   userId: Types.ObjectId;
-  country: string[];
-  state: string[];
+  country?: string[];
+  state?: string[];
+  is_draft?: boolean;
   script?: {
     price?: number;
+    sale_type?: SaleType;
+    minimum_bid?: number;
     currency?: string;
     content?: Array<{
       name: string;
@@ -77,6 +87,8 @@ export interface IScriptCreate {
   };
   story_borad?: {
     price?: number;
+    sale_type?: SaleType;
+    minimum_bid?: number;
     currency?: string;
     content?: Array<{
       name: string;
@@ -85,6 +97,8 @@ export interface IScriptCreate {
   };
   synopsis?: {
     price?: number;
+    sale_type?: SaleType;
+    minimum_bid?: number;
     currency?: string;
     content?: string;
   };
@@ -98,6 +112,13 @@ export interface IPurschase extends Document {
   payment_status: string;
   reason: string;
   transaction_id: string;
+}
+
+export interface IBid extends Document {
+  script_id: Types.ObjectId;
+  buyer_id: Types.ObjectId;
+  amount: number;
+  status: BidStatus;
 }
 
 //actions in which we do otp verification
@@ -192,4 +213,15 @@ export enum PaymentMethod {
   NETBANKING = "NETBANKING",
   UPI = "UPI",
   DEBIT_CARD = "DEBIT_CARD",
+}
+
+export enum SaleType {
+  FIXED = "FIXED",
+  BIDDABLE = "BIDDABLE",
+}
+
+export enum BidStatus {
+  PENDING = "PENDING",
+  ACCEPTED = "ACCEPTED",
+  REJECTED = "REJECTED",
 }

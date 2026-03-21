@@ -43,6 +43,10 @@ export interface PostProps {
   rightsLabel?: string
   onExpand?: () => void
   locked?: boolean
+  isOwner?: boolean
+  onEdit?: (id: string) => void
+  onDelete?: (id: string) => void
+  isDraft?: boolean
 
   synopsis?: string
 
@@ -81,13 +85,17 @@ const Post: React.FC<PostProps> = ({
   type,
   likes,
   comments,
-  rightsLabel = 'Basic / Exclusive Rights',
+  rightsLabel = '',
   synopsis,
   script,
   storyboard,
   onExpand,
   locked = true,
-  description
+  description,
+  isOwner = false,
+  onEdit,
+  onDelete,
+  isDraft = false
 }) => {
   const generatedLikeCount = Math.floor(Math.random() * 10000)
   const randomNumber = Math.floor(Math.random() * 100)
@@ -96,6 +104,7 @@ const Post: React.FC<PostProps> = ({
   const [saved, setSaved] = useState(randomNumber % 4 === 0 ? true : isSaved)
   const [likeCount, setLikeCount] = useState(generatedLikeCount)
   const [showCommentsModal, setShowCommentsModal] = useState(false)
+  const [showMenuDropdown, setShowMenuDropdown] = useState(false)
   const commentInputRef = useRef<HTMLInputElement>(null)
 
   // Mock comments data
@@ -219,13 +228,48 @@ const Post: React.FC<PostProps> = ({
             <span className="text-sm font-medium">{Math.floor(Math.random() * 10000)}</span>
           </button>
 
-          <button className="text-black hover:text-gray-600 transition-colors">
-            <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 16 16">
-              <circle cx="8" cy="2.5" r="1.5" />
-              <circle cx="8" cy="8" r="1.5" />
-              <circle cx="8" cy="13.5" r="1.5" />
-            </svg>
-          </button>
+          <div className="relative">
+            <button
+              onClick={() => setShowMenuDropdown(!showMenuDropdown)}
+              className="text-black hover:text-gray-600 transition-colors"
+            >
+              <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 16 16">
+                <circle cx="8" cy="2.5" r="1.5" />
+                <circle cx="8" cy="8" r="1.5" />
+                <circle cx="8" cy="13.5" r="1.5" />
+              </svg>
+            </button>
+
+            {/* Dropdown Menu */}
+            {showMenuDropdown && isOwner && (
+              <div className="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-lg shadow-lg z-50">
+                <button
+                  onClick={() => {
+                    onEdit?.(id)
+                    setShowMenuDropdown(false)
+                  }}
+                  className="w-full text-left px-4 py-2 hover:bg-gray-50 text-gray-700 font-medium transition-colors flex items-center gap-2"
+                >
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                  </svg>
+                  Edit
+                </button>
+                <button
+                  onClick={() => {
+                    onDelete?.(id)
+                    setShowMenuDropdown(false)
+                  }}
+                  className="w-full text-left px-4 py-2 hover:bg-red-50 text-red-600 font-medium transition-colors flex items-center gap-2 border-t border-gray-200"
+                >
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                  </svg>
+                  Delete
+                </button>
+              </div>
+            )}
+          </div>
         </div>
       </div>
 
@@ -234,6 +278,16 @@ const Post: React.FC<PostProps> = ({
         <h2 className="text-xl font-bold text-gray-900 mb-1">
           {title}
         </h2>
+        {isDraft && (
+          <div className="inline-block mb-2">
+            <span className="inline-flex items-center gap-1.5 rounded-full bg-yellow-50 px-3 py-1 text-xs font-semibold text-yellow-700 border border-yellow-200">
+              <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 16 16">
+                <path d="M8 0a8 8 0 110 16A8 8 0 018 0zM8 13.5a1.5 1.5 0 110-3 1.5 1.5 0 010 3zm0-9.5a1 1 0 011 1v4a1 1 0 11-2 0V5a1 1 0 011-1z" />
+              </svg>
+              DRAFT
+            </span>
+          </div>
+        )}
         <p className="text-sm text-gray-500 font-medium">
           {description}
         </p>
@@ -277,7 +331,7 @@ const Post: React.FC<PostProps> = ({
             </div>
 
             {/* Type + expand */}
-            <div className="flex flex-row items-start gap-2 flex-shrink-0 min-w-[60px]">
+            <div className="flex flex-row items-start gap-2 shrink-0 min-w-15">
               <span className="inline-block rounded-md bg-white px-3 p-1 text-sm font-medium text-[#013913] shadow-sm border">
                 {type}
               </span>
@@ -297,20 +351,21 @@ const Post: React.FC<PostProps> = ({
 
 
       {/* Footer: Rights Badge */}
-      <div className="flex items-center justify-start mb-4">
-        <span className="inline-flex items-center gap-1.5  rounded-lg bg-[#DBFFE7] px-3 py-1 text-sm  text-[#013913] border border-green-100">
-          <Lock className="w-3 h-3 text-[#013913]" />
-
-          {rightsLabel}
-        </span>
-      </div>
+      {rightsLabel && (
+        <div className="flex items-center justify-start mb-4">
+          <span className="inline-flex items-center gap-1.5 rounded-lg bg-[#DBFFE7] px-3 py-1 text-sm text-[#013913] border border-green-100">
+            <Lock className="w-3 h-3 text-[#013913]" />
+            {rightsLabel}
+          </span>
+        </div>
+      )}
 
       {/* Comment Input + See More Button */}
       <div className="flex items-center gap-3  0">
         <Input ref={commentInputRef} placeholder="Add a comment..." />
         <button
           onClick={handleSave}
-          className={`flex-shrink-0 rounded-lg border p-2 transition-colors shadow-sm ${false
+          className={`shrink-0 rounded-lg border p-2 transition-colors shadow-sm ${false
             ? 'border-yellow-400 bg-yellow-50 text-yellow-600 hover:bg-yellow-100'
             : 'border-gray-200 bg-white text-gray-400 hover:bg-gray-50 hover:text-gray-600'
             }`}
@@ -346,7 +401,7 @@ const Post: React.FC<PostProps> = ({
             {mockComments.map((comment) => (
               <div key={comment.id} className="flex gap-3 pb-4 border-b border-gray-200 last:border-b-0">
                 {/* Avatar */}
-                <div className="flex-shrink-0">
+                <div className="shrink-0">
                   <div className="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center">
                     <span className="text-sm font-semibold text-green-700">
                       {comment.author.avatar}

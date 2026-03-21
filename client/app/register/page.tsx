@@ -5,10 +5,9 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import google from "@/assets/icons/google.png";
-import facebook from "@/assets/icons/facebook.png";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { Eye, EyeOff } from "lucide-react";
 
 export default function LoginPage() {
     const router = useRouter();
@@ -20,6 +19,8 @@ export default function LoginPage() {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
     const [success, setSuccess] = useState("");
+    const [showPassword, setShowPassword] = useState(false);
+    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
     async function handleSubmit(e: React.FormEvent) {
         e.preventDefault();
@@ -106,30 +107,46 @@ export default function LoginPage() {
                             />
                         </div>
 
-                        <div className="space-y-2">
+                        <div className="space-y-2 relative">
                             <Label htmlFor="password">Password</Label>
                             <Input
                                 id="password"
-                                type="password"
+                                type={showPassword ? "text" : "password"}
                                 placeholder="At least 8 characters"
                                 required
                                 value={password}
                                 onChange={e => setPassword(e.target.value)}
                                 disabled={loading}
+                                className="pr-10"
                             />
+                            <button
+                                type="button"
+                                onClick={() => setShowPassword(!showPassword)}
+                                className="absolute right-3 top-[36px] text-gray-500"
+                            >
+                                {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                            </button>
                         </div>
 
-                        <div className="space-y-2">
+                        <div className="space-y-2 relative">
                             <Label htmlFor="confirmPassword">Confirm Password</Label>
                             <Input
                                 id="confirmPassword"
-                                type="password"
+                                type={showConfirmPassword ? "text" : "password"}
                                 placeholder="Confirm password"
                                 required
                                 value={confirmPassword}
                                 onChange={e => setConfirmPassword(e.target.value)}
                                 disabled={loading}
+                                className="pr-10"
                             />
+                            <button
+                                type="button"
+                                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                                className="absolute right-3 top-[36px] text-gray-500"
+                            >
+                                {showConfirmPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                            </button>
                         </div>
 
                         <div className="space-y-2">
@@ -172,10 +189,10 @@ export default function LoginPage() {
                     src="/login.png"
                     alt="Login Visual"
                     fill
-                    className="object-fit"
+                    className="object-cover"
                     priority
                     sizes="(min-width: 1024px) 50vw, 0vw"
-                />e
+                />
                 <div className="absolute inset-0 bg-black/20" />
             </div>
         </div>

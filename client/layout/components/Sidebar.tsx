@@ -18,6 +18,14 @@ import earnings from "@/assets/icons/earnings.svg"
 
 import { Button } from "@/components/ui/button"
 
+type NavTab = {
+  icon: string
+  label: string
+  href: string
+  active: boolean
+  highlight?: boolean
+}
+
 const Sidebar = () => {
   const pathname = usePathname()
   const [collapsed, setCollapsed] = useState(true)
@@ -40,23 +48,25 @@ const Sidebar = () => {
   }
 
   // Buyer tabs
-  const buyerTabs = [
+  const buyerTabs: NavTab[] = [
     { icon: home, label: "Home", href: "/dashboard", active: pathname === "/dashboard" },
     { icon: search, label: "Search", href: "/search", active: pathname.startsWith("/search") },
     { icon: bookmark, label: "Saved", href: "/saved", active: pathname.startsWith("/saved") },
     { icon: task, label: "Profile", href: "/profile", active: pathname.startsWith("/profile") },
+    { icon: offer, label: "Bids", href: "/bids", active: pathname.startsWith("/bids") },
     { icon: table_list, label: "My Purchases", href: "/purchases", active: pathname.startsWith("/purchases") },
     // { icon: task, label: "Request Gigs", href: "/request-gigs", active: pathname.startsWith("/request-gigs"), highlight: true },
     { icon: community, label: "Community", href: "/community", active: pathname.startsWith("/community"), highlight: true },
   ]
 
   // Seller tabs (CREATOR role)
-  const sellerTabs = [
+  const sellerTabs: NavTab[] = [
     { icon: home, label: "Home", href: "/dashboard", active: pathname === "/dashboard" },
     { icon: search, label: "Search", href: "/search", active: pathname.startsWith("/search") },
     { icon: bookmark, label: "Saved", href: "/saved", active: pathname.startsWith("/saved") },
     { icon: task, label: "Profile", href: "/profile", active: pathname.startsWith("/profile") },
     { icon: table_list, label: "My Posts", href: "/my-posts", active: pathname.startsWith("/my-posts") },
+    { icon: offer, label: "Bids", href: "/bids", active: pathname.startsWith("/bids") },
     // { icon: offer, label: "Earnings", href: "/earnings", active: pathname.startsWith("/earnings") },
     { icon: offer, label: "My Purchases", href: "/purchases", active: pathname.startsWith("/purchases") },
     { icon: community, label: "Community", href: "/community", active: pathname.startsWith("/community") },
@@ -72,7 +82,7 @@ const Sidebar = () => {
       <aside
         className={`
         h-screen bg-white shadow-sm transition-all duration-300
-        ${collapsed ? "w-[88px]" : "w-[200px]"}
+        ${collapsed ? "w-22" : "w-50"}
         rounded-3xl p-4
         flex flex-col
       `}
@@ -94,7 +104,7 @@ const Sidebar = () => {
     <aside
       className={`
       h-screen bg-white shadow-sm transition-all duration-300
-      ${collapsed ? "w-[88px]" : "w-[200px]"}
+      ${collapsed ? "w-22" : "w-50"}
       rounded-3xl py-4 px-2
       flex flex-col
     `}

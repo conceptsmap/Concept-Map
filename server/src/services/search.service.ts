@@ -1,6 +1,8 @@
 import ScriptModel from "../repository/model/script.model";
+import PurchaseModel from "../repository/model/purschase.model";
 import { CrudRepository } from "../repository/query/crud.repository";
 import { IScript } from "../types/model";
+import mongoose from "mongoose";
 
 export class SearchService {
   private readonly crudRepository: CrudRepository<IScript>;
@@ -9,7 +11,7 @@ export class SearchService {
     this.crudRepository = new CrudRepository(ScriptModel);
   }
 
-  async searchScript(searchFilter: any) {
+  async searchScript(searchFilter: any, userId?: string) {
     const {
       skip = "0",
       take = "10",
@@ -24,10 +26,28 @@ export class SearchService {
 
     const parsedMinPrice = parseInt(minPrice);
     const parsedMaxPrice = parseInt(maxPrice);
+    const reviewCutoff = new Date(Date.now() - 2 * 60 * 1000);
 
     const filterQuery: any = {
+      is_draft: { $ne: true },
+      createdAt: { $lte: reviewCutoff },
       $and: [],
     };
+
+    if (userId) {
+      const purchases = await PurchaseModel.find({
+        user_id: new mongoose.Types.ObjectId(userId),
+      })
+        .select("script_id")
+        .lean();
+
+      const purchasedScriptIds = purchases.map(
+        (purchase) => purchase.script_id,
+      );
+      if (purchasedScriptIds.length > 0) {
+        filterQuery._id = { $nin: purchasedScriptIds };
+      }
+    }
 
     /* ========================
      TYPE FILTER
@@ -189,7 +209,7 @@ export class SearchService {
         type,
         likes: typeof script.likes === "number" ? script.likes : 0,
         comments: typeof script.comments === "number" ? script.comments : 0,
-        rightsLabel: script.rightsLabel || "Basic / Exclusive Rights",
+        rightsLabel: script.rightsLabel || "",
         synopsis,
         script: scriptContent,
         storyboard,

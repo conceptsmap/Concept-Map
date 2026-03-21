@@ -30,7 +30,10 @@ const DashboardPage = () => {
     const fetchPosts = async () => {
       try {
         const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api';
-        const res = await fetch(`${apiUrl}/web/script/all`);
+        const token = localStorage.getItem('auth_token');
+        const res = await fetch(`${apiUrl}/web/script/all`, {
+          headers: token ? { Authorization: `Bearer ${token}` } : {},
+        });
         const data = await res.json();
         if (res.ok && data?.data) {
           const mappedPosts: PostProps[] = data.data.map((script: ApiScript) => {
@@ -54,7 +57,7 @@ const DashboardPage = () => {
               likes: script.likes || 0,
               comments: script.comments || 0,
               description: script.description || '',
-              rightsLabel: 'Basic / Exclusive Rights',
+              rightsLabel: '',
               synopsis: script.synopsis?.content,
               script: script.script,
               storyboard: script.story_borad?.content?.[0]?.cloud_url

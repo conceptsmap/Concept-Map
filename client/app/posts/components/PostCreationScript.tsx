@@ -6,11 +6,10 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
-import { PenLine, X, Plus } from "lucide-react";
+import { PenLine, X } from "lucide-react";
 import {
   Select, SelectTrigger, SelectValue, SelectContent, SelectItem,
 } from "@/components/ui/select";
-import { useRouter } from "next/navigation";
 
 type PostType = "script" | "synopsis" | "storyboard";
 
@@ -85,19 +84,21 @@ function MultiSelectTags({
 export default function PostCreationScript({
   submitRef, setLoading, others, visible, onToggle, isPrimary = true, onRemove,
 }: Props) {
-  const router = useRouter()
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [category, setCategory] = useState("TVC");
   const [genre, setGenre] = useState("CRIME");
   const [industryCategory, setIndustryCategory] = useState("TECHNOLOGY");
   const [price, setPrice] = useState("");
+  const [saleType, setSaleType] = useState<"FIXED" | "BIDDABLE">("FIXED");
+  const [minimumBid, setMinimumBid] = useState("");
   const [scriptContent, setScriptContent] = useState("");
   const [countries, setCountries] = useState<string[]>([]);
   const [states, setStates] = useState<string[]>([]);
   const [confirmRights, setConfirmRights] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+  const [isDraft, setIsDraft] = useState(false);
 
   // Available states = union of states for all selected countries
   const availableStates = [...new Set(countries.flatMap((c) => STATES_BY_COUNTRY[c] ?? []))];
@@ -113,43 +114,50 @@ export default function PostCreationScript({
       return;
     }
 
-    if (!confirmRights) {
+    const isPublishing = !isDraft;
+
+    if (isPublishing && !confirmRights) {
       setError("Please confirm that you own the rights to this content.");
       return;
     }
 
-    if (!title?.trim()) {
+    if (isPublishing && !title?.trim()) {
       setError("Title is required.");
       return;
     }
 
-    if (!description?.trim()) {
+    if (isPublishing && !description?.trim()) {
       setError("Description is required.");
       return;
     }
 
-    if (!category) {
+    if (isPublishing && !category) {
       setError("Category is required.");
       return;
     }
 
-    if (!genre) {
+    if (isPublishing && !genre) {
       setError("Genre is required.");
       return;
     }
 
-    if (!industryCategory) {
+    if (isPublishing && !industryCategory) {
       setError("Industry category is required.");
       return;
     }
 
-    if (!scriptContent?.trim()) {
+    if (isPublishing && !scriptContent?.trim()) {
       setError("Script content is required.");
       return;
     }
 
-    if (!price || Number(price) <= 0) {
-      setError("Valid price is required.");
+    if (isPublishing && saleType === "FIXED" && (!price || Number(price) <= 0)) {
+      setError("Valid fixed price is required.");
+      return;
+    }
+
+    if (isPublishing && saleType === "BIDDABLE" && (!minimumBid || Number(minimumBid) <= 0)) {
+      setError("Valid minimum bid is required.");
       return;
     }
 
@@ -158,29 +166,45 @@ export default function PostCreationScript({
 
     try {
       const payload: Record<string, unknown> = {
-        main_title: title.trim(),
-        description: description.trim(),
-        category,
-        genre,
-        industry_category: industryCategory,
         country: countries,
         state: states,
-        script: {
-          price: Number(price),
-          currency: "INR",
-          content: [
-            {
-              name: "Scene 1",
-              scenes: [
-                {
-                  name: "Scene 1",
-                  description: scriptContent.trim(),
-                },
-              ],
-            },
-          ],
-        },
+        is_draft: isDraft,
       };
+
+      if (title.trim()) payload.main_title = title.trim();
+      if (description.trim()) payload.description = description.trim();
+      if (category) payload.category = category;
+      if (genre) payload.genre = genre;
+      if (industryCategory) payload.industry_category = industryCategory;
+
+      const scriptPayload: Record<string, unknown> = {
+        sale_type: saleType,
+        currency: "INR",
+      };
+
+      if (price && Number(price) > 0) {
+        scriptPayload.price = Number(price);
+      }
+
+      if (minimumBid && Number(minimumBid) > 0) {
+        scriptPayload.minimum_bid = Number(minimumBid);
+      }
+
+      if (scriptContent.trim()) {
+        scriptPayload.content = [
+          {
+            name: "Scene 1",
+            scenes: [
+              {
+                name: "Scene 1",
+                description: scriptContent.trim(),
+              },
+            ],
+          },
+        ];
+      }
+
+      payload.script = scriptPayload;
 
       const res = await fetch(
         `${process.env.NEXT_PUBLIC_API_URL}/web/script/script`,
@@ -200,7 +224,8 @@ export default function PostCreationScript({
         throw new Error(data?.message || "Failed to create script");
       }
 
-      return "Successfully created script";
+      setSuccess(isDraft ? "Draft saved successfully!" : "Script created successfully!");
+      return isDraft ? "Draft saved successfully" : "Successfully created script";
 
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : "Failed to create script");
@@ -298,10 +323,28 @@ export default function PostCreationScript({
           </Select>
         </div>
         <div className="space-y-2">
-          <Label>Price </Label>
-          <Input type="number" placeholder="8000" value={price} onChange={(e) => setPrice(e.target.value)} min={0} />
+          <Label>Sale Type <span className="text-red-500">*</span></Label>
+          <Select value={saleType} onValueChange={(v: "FIXED" | "BIDDABLE") => setSaleType(v)}>
+            <SelectTrigger><SelectValue /></SelectTrigger>
+            <SelectContent>
+              <SelectItem value="FIXED">Fixed Price</SelectItem>
+              <SelectItem value="BIDDABLE">Biddable</SelectItem>
+            </SelectContent>
+          </Select>
         </div>
       </div>
+
+      {saleType === "FIXED" ? (
+        <div className="space-y-2">
+          <Label>Fixed Price <span className="text-red-500">*</span></Label>
+          <Input type="number" placeholder="8000" value={price} onChange={(e) => setPrice(e.target.value)} min={0} />
+        </div>
+      ) : (
+        <div className="space-y-2">
+          <Label>Minimum Bid <span className="text-red-500">*</span></Label>
+          <Input type="number" placeholder="5000" value={minimumBid} onChange={(e) => setMinimumBid(e.target.value)} min={0} />
+        </div>
+      )}
 
       <div className="space-y-2">
         <Label>Script Content <span className="text-gray-400 text-xs font-normal">(optional)</span></Label>
@@ -326,6 +369,14 @@ export default function PostCreationScript({
       <div className="flex items-start gap-2">
         <Checkbox id="script-rights" checked={confirmRights} onCheckedChange={(v) => setConfirmRights(Boolean(v))} />
         <Label htmlFor="script-rights" className="text-sm leading-snug">I confirm that I own the rights to these contents</Label>
+      </div>
+
+      <div className="flex items-start gap-2">
+        <Checkbox id="script-draft" checked={isDraft} onCheckedChange={(v) => setIsDraft(Boolean(v))} />
+        <div>
+          <Label htmlFor="script-draft" className="text-sm leading-snug">Save as Draft</Label>
+          <p className="text-xs text-gray-500 mt-1">Drafts can be saved with incomplete fields and completed later from My Posts.</p>
+        </div>
       </div>
 
       {error && <p className="text-red-600 text-sm">{error}</p>}
