@@ -121,6 +121,15 @@ export interface IBid extends Document {
   status: BidStatus;
 }
 
+export interface IReview extends Document {
+  reviewer_id: Types.ObjectId;
+  seller_id: Types.ObjectId;
+  script_id: Types.ObjectId;
+  payment_id: Types.ObjectId;
+  rating: number;
+  comment?: string;
+}
+
 //actions in which we do otp verification
 export enum VerificationAction {
   VERIFY_EMAIL = "VERIFY_EMAIL",
@@ -224,4 +233,33 @@ export enum BidStatus {
   PENDING = "PENDING",
   ACCEPTED = "ACCEPTED",
   REJECTED = "REJECTED",
+}
+
+export enum OpportunityStatus {
+  OPEN = "OPEN",
+  CLOSED = "CLOSED",
+}
+
+export enum PitchStatus {
+  PENDING = "PENDING",
+  ACCEPTED = "ACCEPTED",
+  REJECTED = "REJECTED",
+}
+
+export interface IOpportunity extends Document {
+  buyer_id: Types.ObjectId;
+  title: string;
+  description: string;
+  budget: number;
+  required_type?: ScriptType;
+  status: OpportunityStatus;
+}
+
+export interface IOpportunityPitch extends Document {
+  opportunity_id: Types.ObjectId;
+  seller_id: Types.ObjectId;
+  script_id?: Types.ObjectId;
+  pitch_type: ScriptType;
+  message?: string;
+  status: PitchStatus;
 }

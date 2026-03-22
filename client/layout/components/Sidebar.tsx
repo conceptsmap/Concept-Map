@@ -15,6 +15,9 @@ import table_list from "@/assets/icons/table_list.svg"
 import signout from "@/assets/icons/signout.svg"
 import offer from "@/assets/icons/offer.svg"
 import earnings from "@/assets/icons/earnings.svg"
+import bid from "@/assets/icons/bid.svg"
+import lightbulb from "@/assets/icons/lightbulb.svg"
+
 
 import { Button } from "@/components/ui/button"
 
@@ -53,8 +56,9 @@ const Sidebar = () => {
     { icon: search, label: "Search", href: "/search", active: pathname.startsWith("/search") },
     { icon: bookmark, label: "Saved", href: "/saved", active: pathname.startsWith("/saved") },
     { icon: task, label: "Profile", href: "/profile", active: pathname.startsWith("/profile") },
-    { icon: offer, label: "Bids", href: "/bids", active: pathname.startsWith("/bids") },
+    { icon: bid, label: "Bids", href: "/bids", active: pathname.startsWith("/bids") },
     { icon: table_list, label: "My Purchases", href: "/purchases", active: pathname.startsWith("/purchases") },
+    { icon: lightbulb, label: "Opportunities", href: "/opportunities", active: pathname.startsWith("/opportunities"), highlight: true },
     // { icon: task, label: "Request Gigs", href: "/request-gigs", active: pathname.startsWith("/request-gigs"), highlight: true },
     { icon: community, label: "Community", href: "/community", active: pathname.startsWith("/community"), highlight: true },
   ]
@@ -66,11 +70,12 @@ const Sidebar = () => {
     { icon: bookmark, label: "Saved", href: "/saved", active: pathname.startsWith("/saved") },
     { icon: task, label: "Profile", href: "/profile", active: pathname.startsWith("/profile") },
     { icon: table_list, label: "My Posts", href: "/my-posts", active: pathname.startsWith("/my-posts") },
-    { icon: offer, label: "Bids", href: "/bids", active: pathname.startsWith("/bids") },
+    { icon: bid, label: "Bids", href: "/bids", active: pathname.startsWith("/bids") },
     // { icon: offer, label: "Earnings", href: "/earnings", active: pathname.startsWith("/earnings") },
     { icon: offer, label: "My Purchases", href: "/purchases", active: pathname.startsWith("/purchases") },
     { icon: community, label: "Community", href: "/community", active: pathname.startsWith("/community") },
     { icon: earnings, label: "Earnings", href: "/earnings", active: pathname.startsWith("/earnings") },
+    { icon: lightbulb, label: "Opportunities", href: "/opportunities", active: pathname.startsWith("/opportunities"), highlight: true },
     // { icon: task, label: "Gig Marketplace", href: "/gig-marketplace", active: pathname.startsWith("/gig-marketplace"), highlight: true },
   ]
 

@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react'
 import Post, { PostProps, PostType } from './components/Post'
 import Navbar from '@/layout/components/Navbar';
 import PostSkeleton from './components/PostSkelton';
+import { useSearchParams } from 'next/navigation';
 
 interface ApiScript {
   _id: string;
@@ -21,10 +22,16 @@ interface ApiScript {
 }
 
 const DashboardPage = () => {
+  const searchParams = useSearchParams();
   const [posts, setPosts] = useState<PostProps[]>([]);
   const [allPosts, setAllPosts] = useState<PostProps[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedCategory, setSelectedCategory] = useState('ALL');
+
+  useEffect(() => {
+    const categoryFromQuery = (searchParams.get('category') || 'ALL').toUpperCase();
+    setSelectedCategory(categoryFromQuery);
+  }, [searchParams]);
 
   useEffect(() => {
     const fetchPosts = async () => {

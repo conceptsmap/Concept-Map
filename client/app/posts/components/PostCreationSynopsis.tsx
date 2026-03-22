@@ -12,9 +12,10 @@ import {
 } from "@/components/ui/select";
 
 type PostType = "script" | "synopsis" | "storyboard";
+type SubmitMode = "publish" | "draft";
 
 interface Props {
-  submitRef: React.MutableRefObject<(() => void) | null>;
+  submitRef: React.MutableRefObject<((mode?: SubmitMode) => Promise<any> | any) | null>;
   setLoading: (v: boolean) => void;
   others: PostType[];
   visible: Set<PostType>;
@@ -85,15 +86,15 @@ export default function PostCreationSynopsis({
   const [confirmRights, setConfirmRights] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
-  const [isDraft, setIsDraft] = useState(false);
 
   const availableStates = [...new Set(countries.flatMap((c) => STATES_BY_COUNTRY[c] ?? []))];
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (mode: SubmitMode = "publish") => {
     setError(""); setSuccess("");
     const token = localStorage.getItem("auth_token");
     if (!token) { setError("Please log in first."); return; }
-    const isPublishing = !isDraft;
+    const shouldSaveDraft = mode === "draft";
+    const isPublishing = !shouldSaveDraft;
     if (isPublishing && !confirmRights) { setError("Please confirm that you own the rights to this synopsis."); return; }
     if (isPublishing && (!title.trim() || !description.trim())) { setError("Title and Description are required."); return; }
 
@@ -110,7 +111,7 @@ export default function PostCreationSynopsis({
     setLoading(true);
     try {
       const payload: Record<string, unknown> = {
-        is_draft: isDraft,
+        is_draft: shouldSaveDraft,
       };
 
       if (title.trim()) payload.main_title = title.trim();
@@ -139,8 +140,8 @@ export default function PostCreationSynopsis({
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data?.message || "Failed to create synopsis");
-      setSuccess(isDraft ? "Draft saved successfully!" : "Synopsis created successfully!");
-      return isDraft ? "Draft saved successfully" : "Successfully created script";
+      setSuccess(shouldSaveDraft ? "Draft saved successfully!" : "Synopsis created successfully!");
+      return shouldSaveDraft ? "Draft saved successfully" : "Successfully created script";
 
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : "Failed to create synopsis");
@@ -282,14 +283,6 @@ export default function PostCreationSynopsis({
           ))}
         </div>
       )}
-
-      <div className="flex items-start gap-2">
-        <Checkbox id="synopsis-draft" checked={isDraft} onCheckedChange={(v) => setIsDraft(Boolean(v))} />
-        <div>
-          <Label htmlFor="synopsis-draft" className="text-sm leading-snug">Save as Draft</Label>
-          <p className="text-xs text-gray-500 mt-1">Drafts can be saved without filling all fields and edited later.</p>
-        </div>
-      </div>
 
       <div className="flex items-start gap-2">
         <Checkbox id="synopsis-rights" checked={confirmRights} onCheckedChange={(v) => setConfirmRights(Boolean(v))} />

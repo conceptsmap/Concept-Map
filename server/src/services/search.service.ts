@@ -21,6 +21,8 @@ export class SearchService {
       maxPrice = "50000",
       minPrice = "0",
       location = "",
+      country = "",
+      state = "",
       category,
     } = searchFilter;
 
@@ -86,6 +88,35 @@ export class SearchService {
         ]),
       });
     }
+
+    if (country) {
+      const countries = country
+        .split(",")
+        .map((c: string) => c.trim())
+        .filter(Boolean);
+      if (countries.length > 0) {
+        filterQuery.$and.push({
+          $or: countries.map((c: string) => ({
+            country: { $elemMatch: { $regex: `^${c}$`, $options: "i" } },
+          })),
+        });
+      }
+    }
+
+    if (state) {
+      const states = state
+        .split(",")
+        .map((s: string) => s.trim())
+        .filter(Boolean);
+      if (states.length > 0) {
+        filterQuery.$and.push({
+          $or: states.map((s: string) => ({
+            state: { $elemMatch: { $regex: `^${s}$`, $options: "i" } },
+          })),
+        });
+      }
+    }
+
     if (category) {
       filterQuery.$and.push({
         category: { $in: category.split(",") },

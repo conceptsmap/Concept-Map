@@ -44,14 +44,14 @@
   --radius-2xl: calc(var(--radius) + 8px);
   --radius-3xl: calc(var(--radius) + 12px);
   --radius-4xl: calc(var(--radius) + 16px);
-  --primary-blue: #246AF3;
-  --primary-light-blue: #EEF5FF;
-  --primary-orange: #FF8000;
+  --primary-blue: #246af3;
+  --primary-light-blue: #eef5ff;
+  --primary-orange: #ff8000;
   --primary-dark-green: #013913;
-  --primary-green: #1DBF73;
-  --primary-light-green: #E8F8ED;
-  --primary-gray: #F5F5F5;
-  --primary-green-2: #1DBF73;
+  --primary-green: #1dbf73;
+  --primary-light-green: #e8f8ed;
+  --primary-gray: #f5f5f5;
+  --primary-green-2: #1dbf73;
 }
 
 :root {
@@ -134,7 +134,8 @@
 }
 
 @keyframes levitate {
-  0%, 100% {
+  0%,
+  100% {
     transform: translateY(0);
   }
   50% {
@@ -142,3 +143,11 @@
   }
 }
 
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}

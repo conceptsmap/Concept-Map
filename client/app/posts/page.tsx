@@ -10,6 +10,7 @@ import PostCreationSynopsis from "./components/PostCreationSynopsis";
 import { useRouter } from "next/navigation";
 
 type PostType = "script" | "synopsis" | "storyboard";
+type SubmitMode = "publish" | "draft";
 
 // ✅ Inner component that uses useSearchParams
 const PostsContent = () => {
@@ -23,11 +24,11 @@ const PostsContent = () => {
   const [visible, setVisible] = useState<Set<PostType>>(new Set());
   const [loading, setLoading] = useState(false);
 
-  const scriptRef = useRef<(() => void) | null>(null);
-  const synopsisRef = useRef<(() => void) | null>(null);
-  const storyboardRef = useRef<(() => void) | null>(null);
+  const scriptRef = useRef<((mode?: SubmitMode) => Promise<any> | any) | null>(null);
+  const synopsisRef = useRef<((mode?: SubmitMode) => Promise<any> | any) | null>(null);
+  const storyboardRef = useRef<((mode?: SubmitMode) => Promise<any> | any) | null>(null);
 
-  const refMap: Record<PostType, React.MutableRefObject<(() => void) | null>> = {
+  const refMap: Record<PostType, React.MutableRefObject<((mode?: SubmitMode) => Promise<any> | any) | null>> = {
     script: scriptRef,
     synopsis: synopsisRef,
     storyboard: storyboardRef,
@@ -41,7 +42,7 @@ const PostsContent = () => {
     });
   };
 
-  const handleCreate = async () => {
+  const handleSubmitAll = async (mode: SubmitMode) => {
     try {
       setLoading(true);
       const order: PostType[] = [primaryType, ...Array.from(visible)];
@@ -49,7 +50,7 @@ const PostsContent = () => {
       for (const t of order) {
         const fn = refMap[t].current;
         if (fn) {
-          const result: any = await fn();
+          const result: any = await fn(mode);
           if (result === false || !result) {
             setLoading(false);
             return;
@@ -86,8 +87,11 @@ const PostsContent = () => {
         if (type === "storyboard") return <PostCreationStoryBoard key="storyboard" {...componentProps("storyboard")} />;
       })}
 
-      <div className="flex justify-end">
-        <Button className="bg-green-600 hover:bg-green-700" onClick={handleCreate} disabled={loading}>
+      <div className="flex justify-end gap-3">
+        <Button variant="outline" onClick={() => handleSubmitAll("draft")} disabled={loading}>
+          {loading ? "Submitting..." : "Save as Draft"}
+        </Button>
+        <Button className="bg-green-600 hover:bg-green-700" onClick={() => handleSubmitAll("publish")} disabled={loading}>
           {loading ? "Submitting..." : "Create Post"}
         </Button>
       </div>

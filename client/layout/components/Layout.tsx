@@ -1,6 +1,6 @@
 "use client"
 
-import React from 'react'
+import React, { useEffect } from 'react'
 import { usePathname } from 'next/navigation';
 import Sidebar from './Sidebar'
 import Notifications from './Notifications'
@@ -16,8 +16,18 @@ const SearchWithSuggestionsBar = dynamic(
 const Layout = ({ children }: { children: React.ReactNode }) => {
   const pathname = usePathname() ?? '';
 
+  useEffect(() => {
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = "auto";
+    };
+  }, []);
+
   const showSearchBar =
-    pathname !== '/' && !pathname.startsWith('/login') && !pathname.startsWith('/signup') && !pathname.startsWith('/checkout');
+    pathname !== '/' &&
+    !pathname.startsWith('/login') &&
+    !pathname.startsWith('/signup') &&
+    !pathname.startsWith('/checkout');
 
   const hideNotificationsRoutes = [
     "/checkout",
@@ -31,26 +41,29 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
     !hideNotificationsRoutes.includes(pathname);
 
   return (
-    <div className='bg-[#F5F5F5] p-2 flex gap-3'>
+    <div className='h-dvh bg-[#F5F5F5] p-2 flex gap-3'>
       <Sidebar />
 
-      <div className='flex-1 min-w-0 flex flex-col gap-2'>
+      <div className='flex-1 min-w-0 flex flex-col gap-2 '>
         {showSearchBar && <SearchWithSuggestionsBar />}
-        <main className='flex-1'>{children}</main>
+
+        <main className='flex-1 overflow-y-auto overscroll-contain no-scrollbar '>
+          {children}
+        </main>
       </div>
 
       {showNotifications && (
-        <div
-          key={pathname}
-          className="hidden md:flex flex-col gap-4  shrink-0 xl:max-w-75 lg:max-w-56"
-        >
+        <div className="hidden md:flex flex-col gap-4 shrink-0 xl:max-w-75 lg:max-w-56">
           <PostCreativeSelector />
-          {showNotifications && <Notifications />}
+          <div className="flex-1 overflow-y-auto overscroll-contain no-scrollbar">
+            <Notifications />
+          </div>
         </div>
-      )}
+      )
+      }
 
       <Ads />
-    </div>
+    </div >
   )
 }
 

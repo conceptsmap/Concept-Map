@@ -42,11 +42,15 @@ interface ScriptData {
     };
     synopsis?: {
         price?: number;
+        sale_type?: 'FIXED' | 'BIDDABLE';
+        minimum_bid?: number;
         currency?: string;
         content?: string;
     };
     story_borad?: {
         price?: number;
+        sale_type?: 'FIXED' | 'BIDDABLE';
+        minimum_bid?: number;
         currency?: string;
         content?: { name: string; cloud_url: string }[];
     };
@@ -134,10 +138,14 @@ export default function EditScriptPage() {
                 if (script.type?.includes('SYNOPSIS')) {
                     setScriptType('synopsis');
                     setPrice(script.synopsis?.price?.toString() || '');
+                    setSaleType(script.synopsis?.sale_type === 'BIDDABLE' ? 'BIDDABLE' : 'FIXED');
+                    setMinimumBid(script.synopsis?.minimum_bid?.toString() || '');
                     setContent(script.synopsis?.content || '');
                 } else if (script.type?.includes('STORY_BOARD')) {
                     setScriptType('storyboard');
                     setPrice(script.story_borad?.price?.toString() || '');
+                    setSaleType(script.story_borad?.sale_type === 'BIDDABLE' ? 'BIDDABLE' : 'FIXED');
+                    setMinimumBid(script.story_borad?.minimum_bid?.toString() || '');
                     if (script.story_borad?.content) {
                         setExistingBoardFiles(script.story_borad.content);
                     }
@@ -237,18 +245,13 @@ export default function EditScriptPage() {
             return;
         }
 
-        if (scriptType === 'script') {
-            if (isPublishing && saleType === 'FIXED' && (!price || Number(price) <= 0)) {
-                setError('Valid fixed price is required.');
-                return;
-            }
+        if (isPublishing && saleType === 'FIXED' && (!price || Number(price) <= 0)) {
+            setError('Valid fixed price is required.');
+            return;
+        }
 
-            if (isPublishing && saleType === 'BIDDABLE' && (!minimumBid || Number(minimumBid) <= 0)) {
-                setError('Valid minimum bid is required.');
-                return;
-            }
-        } else if (isPublishing && (!price || Number(price) <= 0)) {
-            setError('Valid price is required.');
+        if (isPublishing && saleType === 'BIDDABLE' && (!minimumBid || Number(minimumBid) <= 0)) {
+            setError('Valid minimum bid is required.');
             return;
         }
 
@@ -278,8 +281,12 @@ export default function EditScriptPage() {
                     currency: 'INR',
                 };
 
-                if (price && Number(price) > 0) scriptPayload.price = Number(price);
-                if (minimumBid && Number(minimumBid) > 0) scriptPayload.minimum_bid = Number(minimumBid);
+                if (saleType === 'FIXED' && price && Number(price) > 0) {
+                    scriptPayload.price = Number(price);
+                }
+                if (saleType === 'BIDDABLE' && minimumBid && Number(minimumBid) > 0) {
+                    scriptPayload.minimum_bid = Number(minimumBid);
+                }
                 if (content.trim()) {
                     scriptPayload.content = [
                         {
@@ -297,10 +304,16 @@ export default function EditScriptPage() {
                 updatePayload.script = scriptPayload;
             } else if (scriptType === 'synopsis') {
                 const synopsisPayload: any = {
+                    sale_type: saleType,
                     currency: 'INR',
                 };
 
-                if (price && Number(price) > 0) synopsisPayload.price = Number(price);
+                if (saleType === 'FIXED' && price && Number(price) > 0) {
+                    synopsisPayload.price = Number(price);
+                }
+                if (saleType === 'BIDDABLE' && minimumBid && Number(minimumBid) > 0) {
+                    synopsisPayload.minimum_bid = Number(minimumBid);
+                }
                 if (content.trim()) synopsisPayload.content = content.trim();
 
                 updatePayload.synopsis = synopsisPayload;
@@ -341,10 +354,16 @@ export default function EditScriptPage() {
                 }
 
                 const storyboardPayload: any = {
+                    sale_type: saleType,
                     currency: 'INR',
                 };
 
-                if (price && Number(price) > 0) storyboardPayload.price = Number(price);
+                if (saleType === 'FIXED' && price && Number(price) > 0) {
+                    storyboardPayload.price = Number(price);
+                }
+                if (saleType === 'BIDDABLE' && minimumBid && Number(minimumBid) > 0) {
+                    storyboardPayload.minimum_bid = Number(minimumBid);
+                }
                 if (storyboardContent.length > 0) storyboardPayload.content = storyboardContent;
 
                 updatePayload.story_borad = storyboardPayload;
@@ -503,58 +522,41 @@ export default function EditScriptPage() {
                 </div>
 
                 {/* Price */}
-                {scriptType === 'script' ? (
-                    <>
-                        <div className="space-y-2">
-                            <Label htmlFor="sale-type">Sale Type <span className="text-red-500">*</span></Label>
-                            <Select value={saleType} onValueChange={(value: 'FIXED' | 'BIDDABLE') => setSaleType(value)}>
-                                <SelectTrigger id="sale-type">
-                                    <SelectValue />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    <SelectItem value="FIXED">Fixed Price</SelectItem>
-                                    <SelectItem value="BIDDABLE">Biddable</SelectItem>
-                                </SelectContent>
-                            </Select>
-                        </div>
+                <div className="space-y-2">
+                    <Label htmlFor="sale-type">Sale Type <span className="text-red-500">*</span></Label>
+                    <Select value={saleType} onValueChange={(value: 'FIXED' | 'BIDDABLE') => setSaleType(value)}>
+                        <SelectTrigger id="sale-type">
+                            <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                            <SelectItem value="FIXED">Fixed Price</SelectItem>
+                            <SelectItem value="BIDDABLE">Biddable</SelectItem>
+                        </SelectContent>
+                    </Select>
+                </div>
 
-                        {saleType === 'FIXED' ? (
-                            <div className="space-y-2">
-                                <Label htmlFor="price">Fixed Price (INR) <span className="text-red-500">*</span></Label>
-                                <Input
-                                    id="price"
-                                    type="number"
-                                    placeholder="1000"
-                                    value={price}
-                                    onChange={(e) => setPrice(e.target.value)}
-                                    min="0"
-                                    step="0.01"
-                                />
-                            </div>
-                        ) : (
-                            <div className="space-y-2">
-                                <Label htmlFor="minimum-bid">Minimum Bid (INR) <span className="text-red-500">*</span></Label>
-                                <Input
-                                    id="minimum-bid"
-                                    type="number"
-                                    placeholder="1000"
-                                    value={minimumBid}
-                                    onChange={(e) => setMinimumBid(e.target.value)}
-                                    min="0"
-                                    step="0.01"
-                                />
-                            </div>
-                        )}
-                    </>
-                ) : (
+                {saleType === 'FIXED' ? (
                     <div className="space-y-2">
-                        <Label htmlFor="price">Price (INR) <span className="text-red-500">*</span></Label>
+                        <Label htmlFor="price">Fixed Price (INR) <span className="text-red-500">*</span></Label>
                         <Input
                             id="price"
                             type="number"
                             placeholder="1000"
                             value={price}
                             onChange={(e) => setPrice(e.target.value)}
+                            min="0"
+                            step="0.01"
+                        />
+                    </div>
+                ) : (
+                    <div className="space-y-2">
+                        <Label htmlFor="minimum-bid">Minimum Bid (INR) <span className="text-red-500">*</span></Label>
+                        <Input
+                            id="minimum-bid"
+                            type="number"
+                            placeholder="1000"
+                            value={minimumBid}
+                            onChange={(e) => setMinimumBid(e.target.value)}
                             min="0"
                             step="0.01"
                         />

@@ -2,6 +2,8 @@
 
 import { useEffect, useState } from "react"
 import Image from "next/image"
+import Navbar from "@/layout/components/Navbar"
+import { useRouter } from "next/navigation"
 
 import profileImage from "@/assets/images/profile-image.png"
 import profileBg from "@/assets/images/profile-bg.jpg"
@@ -14,9 +16,17 @@ import arrow from "@/assets/icons/right-arrow.svg"
 import Link from "next/link"
 
 const Profile = () => {
+    const router = useRouter()
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState("")
     const [user, setUser] = useState<any>(null)
+    const [selectedCategory, setSelectedCategory] = useState("ALL")
+    const [sellerRating, setSellerRating] = useState<{ average: number; count: number } | null>(null)
+
+    const handleTopFilterClick = (category: string) => {
+        setSelectedCategory(category)
+        router.push(`/dashboard?category=${encodeURIComponent(category)}`)
+    }
 
     useEffect(() => {
         const fetchUser = async () => {
@@ -42,6 +52,20 @@ const Profile = () => {
 
                 if (res.ok && data?.data) {
                     setUser(data.data)
+                    // Fetch seller rating if CREATOR
+                    if (data.data.role === "CREATOR" && data.data._id) {
+                        try {
+                            const ratingRes = await fetch(
+                                `${apiUrl}/web/review/seller/${data.data._id}/rating`,
+                            )
+                            const ratingData = await ratingRes.json()
+                            if (ratingRes.ok && ratingData?.data) {
+                                setSellerRating(ratingData.data)
+                            }
+                        } catch {
+                            // Non-critical — rating section simply won't show
+                        }
+                    }
                 } else {
                     setError(data?.message || "Failed to fetch user")
                 }
@@ -65,6 +89,10 @@ const Profile = () => {
 
     return (
         <div className="mx-auto flex gap-3 flex-col">
+            <Navbar
+                activeCategory={selectedCategory}
+                onCategoryChange={handleTopFilterClick}
+            />
             <div className="overflow-hidden rounded-3xl bg-white shadow-sm">
                 <div className="relative h-48 w-full">
                     <Image
@@ -91,20 +119,26 @@ const Profile = () => {
                             Edit profile
                         </button>
                     </div>
-                    <div className="pt-10 flex gap-8 text-sm">
-
-                        {
-                            user.role === "CREATOR" && (
-                                <>
-                                    <Stat label="Posts" value="08" />
-                                    <Stat label="Followers" value="1.2k" />
-                                    <Stat label="Followings" value="898" />
-                                </>
-                            )
-                        }
+                    <div className="pt-10 flex gap-8 text-sm flex-wrap">
+                        {user.role === "CREATOR" && (
+                            <>
+                                <Stat label="Posts" value="08" />
+                                <Stat label="Followers" value="1.2k" />
+                                <Stat label="Followings" value="898" />
+                                {sellerRating && sellerRating.count > 0 && (
+                                    <div className="flex items-center gap-1">
+                                        <span className="font-bold text-gray-900 text-lg">
+                                            {sellerRating.average}
+                                        </span>
+                                        <span className="text-yellow-400 text-base">★</span>
+                                        <span className="text-gray-400">
+                                            ({sellerRating.count})
+                                        </span>
+                                    </div>
+                                )}
+                            </>
+                        )}
                     </div>
-
-
 
                     <div className="mt-4">
                         <div className="flex items-center gap-3">
@@ -133,10 +167,9 @@ const Profile = () => {
                     user.role === "CREATOR" ?
                         <MenuItem label="My Posts" icon={board} href="/my-posts" /> :
                         <MenuItem label="My Purchases" icon={board} href="/purchases" />
-
                 }
 
-                <MenuItem label="My Reviews" icon={smile} />
+                <MenuItem label="My Reviews" icon={smile} href="/my-reviews" />
                 <MenuItem label="Security & Privacy Settings" icon={settings} />
                 <MenuItem label="Contact Support" icon={support} />
                 <MenuItem label="FAQ & Help Center" icon={question} />

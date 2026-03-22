@@ -38,12 +38,26 @@ interface BidItem {
     script_id?: BidScript;
 }
 
+interface BuyerPayment {
+    _id: string;
+    price: number;
+    payment_method: string;
+    payment_status: string;
+    transaction_id: string;
+    reason?: string;
+    createdAt?: string;
+    script_id?: {
+        _id?: string;
+    };
+}
+
 export default function BidsPage() {
     const [role, setRole] = useState<string | null>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
     const [receivedBids, setReceivedBids] = useState<BidItem[]>([]);
     const [placedBids, setPlacedBids] = useState<BidItem[]>([]);
+    const [paymentsByScriptId, setPaymentsByScriptId] = useState<Record<string, BuyerPayment>>({});
     const [activeTab, setActiveTab] = useState<"received" | "placed">("received");
 
     const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000/api";
@@ -60,17 +74,21 @@ export default function BidsPage() {
         }
 
         try {
-            const [receivedRes, placedRes] = await Promise.all([
+            const [receivedRes, placedRes, buyerPaymentsRes] = await Promise.all([
                 fetch(`${apiUrl}/web/script/bids/received`, {
                     headers: { Authorization: `Bearer ${token}` },
                 }),
                 fetch(`${apiUrl}/web/script/bids/placed`, {
                     headers: { Authorization: `Bearer ${token}` },
                 }),
+                fetch(`${apiUrl}/web/script/payments/buyer`, {
+                    headers: { Authorization: `Bearer ${token}` },
+                }),
             ]);
 
             const receivedData = await receivedRes.json();
             const placedData = await placedRes.json();
+            const buyerPaymentsData = await buyerPaymentsRes.json();
 
             if (receivedRes.ok) {
                 setReceivedBids(receivedData?.data || []);
@@ -78,6 +96,23 @@ export default function BidsPage() {
 
             if (placedRes.ok) {
                 setPlacedBids(placedData?.data || []);
+            }
+
+            if (buyerPaymentsRes.ok) {
+                const paymentMap: Record<string, BuyerPayment> = {};
+                const payments: BuyerPayment[] = buyerPaymentsData?.data || [];
+
+                payments.forEach((payment) => {
+                    const scriptId = payment?.script_id?._id;
+                    // Keep the latest bid-purchase payment per script for quick lookup in bid cards.
+                    if (scriptId && payment?.reason === "Bid purchase") {
+                        if (!paymentMap[scriptId]) {
+                            paymentMap[scriptId] = payment;
+                        }
+                    }
+                });
+
+                setPaymentsByScriptId(paymentMap);
             }
 
             if (!receivedRes.ok && !placedRes.ok) {
@@ -159,11 +194,11 @@ export default function BidsPage() {
     };
 
     return (
-        <div className="space-y-6">
-            <div>
+        <div className="space-y-2">
+            {/* <div>
                 <h1 className="text-2xl font-bold text-gray-900">Bids</h1>
                 <p className="text-sm text-gray-500 mt-1">Manage bids on your scripts and track your offers.</p>
-            </div>
+            </div> */}
 
             <div className="flex items-center gap-2">
                 {canShowReceived && (
@@ -197,6 +232,7 @@ export default function BidsPage() {
                         const script = bid.script_id;
                         const buyer = bid.buyer_id;
                         const seller = script?.userId;
+                        const payment = script?._id ? paymentsByScriptId[script._id] : undefined;
 
                         return (
                             <div key={bid._id} className="rounded-xl border border-gray-200 bg-white p-4">
@@ -208,8 +244,8 @@ export default function BidsPage() {
                                         <div className="flex items-center gap-2 mt-1">
                                             <p className="text-xs text-gray-500">Status:</p>
                                             <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${bid.status === 'ACCEPTED' ? 'bg-green-100 text-green-800' :
-                                                    bid.status === 'REJECTED' ? 'bg-red-100 text-red-800' :
-                                                        'bg-yellow-100 text-yellow-800'
+                                                bid.status === 'REJECTED' ? 'bg-red-100 text-red-800' :
+                                                    'bg-yellow-100 text-yellow-800'
                                                 }`}>
                                                 {bid.status}
                                             </span>
@@ -240,12 +276,27 @@ export default function BidsPage() {
                                             </Button>
                                         )}
 
-                                        {activeTab === "placed" && bid.status === "ACCEPTED" && (
+                                        {activeTab === "placed" && bid.status === "ACCEPTED" && !payment && (
                                             <Button className="bg-green-600 hover:bg-green-700" onClick={() => {
                                                 window.location.href = `/checkout?bidId=${bid._id}`;
                                             }}>
                                                 Go to Payment
                                             </Button>
+                                        )}
+
+                                        {activeTab === "placed" && bid.status === "ACCEPTED" && payment && (
+                                            <div className="rounded-lg border border-green-200 bg-green-50 px-3 py-2 text-left">
+                                                <p className="text-xs font-semibold text-green-700">Payment Completed</p>
+                                                <p className="text-xs text-green-700 mt-0.5">
+                                                    Amount: ₹{Number(payment.price || 0).toLocaleString()}
+                                                </p>
+                                                <p className="text-xs text-green-700">
+                                                    Method: {payment.payment_method}
+                                                </p>
+                                                <p className="text-[11px] text-green-600 truncate max-w-55">
+                                                    Txn: {payment.transaction_id}
+                                                </p>
+                                            </div>
                                         )}
                                     </div>
                                 </div>

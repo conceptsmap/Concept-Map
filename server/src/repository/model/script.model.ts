@@ -96,6 +96,14 @@ const ScriptSchema: Schema = new Schema(
       price: {
         type: Number,
       },
+      sale_type: {
+        type: String,
+        enum: Object.values(SaleType),
+        default: SaleType.FIXED,
+      },
+      minimum_bid: {
+        type: Number,
+      },
       currency: {
         type: String,
       },
@@ -110,6 +118,14 @@ const ScriptSchema: Schema = new Schema(
     },
     synopsis: {
       price: {
+        type: Number,
+      },
+      sale_type: {
+        type: String,
+        enum: Object.values(SaleType),
+        default: SaleType.FIXED,
+      },
+      minimum_bid: {
         type: Number,
       },
       currency: {

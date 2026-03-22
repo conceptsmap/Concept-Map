@@ -25,7 +25,8 @@ const ScriptsContent = () => {
     genres: [],
     contentTypes: [],
     categories: [],
-    location: "",
+    country: "",
+    state: "",
     minPrice: 0,
     maxPrice: 50000,
   });
@@ -35,7 +36,8 @@ const ScriptsContent = () => {
     if (currentFilters.genres.length > 0) params.set("genre", currentFilters.genres.join(","));
     if (currentFilters.contentTypes.length > 0) params.set("type", currentFilters.contentTypes.join(","));
     if (currentFilters.categories.length > 0) params.set("category", currentFilters.categories.join(","));
-    if (currentFilters.location) params.set("location", currentFilters.location);
+    if (currentFilters.country) params.set("country", currentFilters.country);
+    if (currentFilters.state) params.set("state", currentFilters.state);
     params.set("minPrice", String(currentFilters.minPrice));
     params.set("maxPrice", String(currentFilters.maxPrice));
     return params.toString();
@@ -50,7 +52,8 @@ const ScriptsContent = () => {
       genres: [],
       contentTypes: [],
       categories: [],
-      location: "",
+      country: "",
+      state: "",
       minPrice: 0,
       maxPrice: 50000,
     });
@@ -60,7 +63,8 @@ const ScriptsContent = () => {
     filters.genres.length > 0 ||
     filters.contentTypes.length > 0 ||
     filters.categories.length > 0 ||
-    filters.location.length > 0 ||
+    filters.country.length > 0 ||
+    filters.state.length > 0 ||
     filters.minPrice !== 0 ||
     filters.maxPrice !== 50000;
 
