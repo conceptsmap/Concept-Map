@@ -110,7 +110,9 @@ export class ReviewController {
   ) => {
     try {
       const { paymentId } = req.params;
-      const review = await this.reviewService.getReviewByPayment(paymentId);
+      const review = await this.reviewService.getReviewByPayment(
+        paymentId as string,
+      );
       res.status(200).json({ status: "success", data: review });
     } catch (error) {
       next(error);
@@ -120,7 +122,9 @@ export class ReviewController {
   getSellerRating = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { sellerId } = req.params;
-      const rating = await this.reviewService.getSellerRating(sellerId);
+      const rating = await this.reviewService.getSellerRating(
+        sellerId as string,
+      );
       res.status(200).json({ status: "success", data: rating });
     } catch (error) {
       next(error);
