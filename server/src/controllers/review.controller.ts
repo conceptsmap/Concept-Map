@@ -58,7 +58,9 @@ export class ReviewController {
   ) => {
     try {
       const { sellerId } = req.params;
-      const reviews = await this.reviewService.getReviewsBySeller(sellerId);
+      const reviews = await this.reviewService.getReviewsBySeller(
+        sellerId as string,
+      );
       res.status(200).json({ status: "success", data: reviews });
     } catch (error) {
       next(error);
