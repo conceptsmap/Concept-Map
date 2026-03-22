@@ -104,7 +104,7 @@ const PaymentMethod = ({
   }
 
   return (
-    <div className=" w-[399px] min-h-[520px] rounded-3xl bg-white p-4 shadow-sm flex flex-col">
+    <div className="w-full max-w-99.75 min-h-130 rounded-3xl bg-white p-4 shadow-sm flex flex-col">
 
       <h2 className="mb-4 text-xl font-bold">Payment Method</h2>
 

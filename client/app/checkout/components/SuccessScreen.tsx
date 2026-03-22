@@ -7,7 +7,7 @@ import { useRouter } from 'next/navigation'
 const SuccessScreen = () => {
   const router = useRouter()
   return (
-    <div className="w-[399px] min-h-[520px] rounded-3xl bg-[#013913] p-6 text-white flex flex-col items-center justify-center">
+    <div className="w-full max-w-99.75 min-h-130 rounded-3xl bg-[#013913] p-6 text-white flex flex-col items-center justify-center">
       <div className="flex h-16 w-16 items-center justify-center rounded-full">
         <Image src={success} alt="Success" className="" />
       </div>

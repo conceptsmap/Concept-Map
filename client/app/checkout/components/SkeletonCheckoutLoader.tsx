@@ -4,7 +4,7 @@ import { Skeleton } from '@/components/ui/skeleton'
 
 const SkeletonCheckoutLoader = () => {
     return (
-        <div className='flex gap-3'>
+        <div className='flex w-full flex-col lg:flex-row gap-3'>
             <div className="min-h-screen bg-[#F4F6F5] flex items-top justify-center gap-3 w-full">
                 <div className="w-full rounded-3xl bg-white shadow-sm p-6">
 
@@ -48,8 +48,8 @@ const SkeletonCheckoutLoader = () => {
                 </div>
 
                 {/* Right Panel - Payment Method Skeleton */}
-                <div className="w-[399px]">
-                    <div className="rounded-3xl bg-white shadow-sm p-6 min-h-[520px]">
+                <div className="w-full max-w-99.75 lg:shrink-0">
+                    <div className="rounded-3xl bg-white shadow-sm p-6 min-h-130">
                         <Skeleton className="h-8 w-48 mb-6" />
                         <div className="space-y-4">
                             {[1, 2, 3].map((i) => (

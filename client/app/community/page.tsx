@@ -111,14 +111,14 @@ function DiscussionItem({
 const CommunityPage = () => {
   return (
 
-    <div className="flex gap-4 items-start mt-2">
+    <div className="flex flex-col lg:flex-row gap-4 items-start mt-2">
       <div className="flex-1">
 
         {communityPosts.map(post => (
           <CommunityPost key={post.id} post={post} />
         ))}
       </div>
-      <div className="flex flex-col gap-4 shrink-0   xl:max-w-75
+      <div className="hidden lg:flex flex-col gap-4 shrink-0   xl:max-w-75
         lg:max-w-56">
         <DiscussionSelector />
         <Notifications />

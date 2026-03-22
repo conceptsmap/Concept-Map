@@ -124,6 +124,12 @@
 }
 
 @layer base {
+  html,
+  body {
+    max-width: 100%;
+    overflow-x: hidden;
+  }
+
   * {
     @apply border-border outline-ring/50;
   }
@@ -150,4 +156,8 @@
 .no-scrollbar {
   -ms-overflow-style: none;
   scrollbar-width: none;
+}
+
+.bottom-safe {
+  padding-bottom: calc(env(safe-area-inset-bottom) + 0.5rem);
 }

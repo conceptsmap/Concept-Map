@@ -86,14 +86,42 @@ const Sidebar = () => {
   // Prevent hydration mismatch by not rendering tabs until mounted
   if (!mounted) {
     return (
+      <>
+        <aside
+          className={`
+          hidden md:flex h-full bg-white shadow-sm transition-all duration-300
+          ${collapsed ? "w-22" : "w-50"}
+          rounded-3xl p-4
+          flex-col
+        `}
+        >
+          <div className="mb-6 flex justify-start">
+            <button
+              onClick={() => setCollapsed(!collapsed)}
+              className="flex h-12 w-12 items-center justify-center rounded-xl border"
+            >
+              <Image src={toggle} alt="Menu" className="h-6 w-6" />
+            </button>
+          </div>
+          <nav className="space-y-1 flex-1"></nav>
+        </aside>
+
+        <div className="md:hidden h-12" />
+      </>
+    )
+  }
+
+  return (
+    <>
       <aside
         className={`
-        h-screen bg-white shadow-sm transition-all duration-300
+        hidden md:flex h-full bg-white shadow-sm transition-all duration-300
         ${collapsed ? "w-22" : "w-50"}
-        rounded-3xl p-4
-        flex flex-col
+        rounded-3xl py-4 px-2
+        flex-col
       `}
       >
+
         <div className="mb-6 flex justify-start">
           <button
             onClick={() => setCollapsed(!collapsed)}
@@ -102,81 +130,84 @@ const Sidebar = () => {
             <Image src={toggle} alt="Menu" className="h-6 w-6" />
           </button>
         </div>
-        <nav className="space-y-1 flex-1"></nav>
+
+        <nav className="space-y-1 flex-1">
+          {tabs.map((tab) => (
+            <SidebarItem
+              key={tab.href}
+              icon={tab.icon}
+              label={tab.label}
+              href={tab.href}
+              active={tab.active}
+              collapsed={collapsed}
+              highlight={tab.highlight}
+            />
+          ))}
+        </nav>
+
+        <div className="pt-4 border-t">
+          <Button
+            onClick={handleLogout}
+            variant={"outline"}
+            className={`
+        relative group
+        flex items-center justify-start gap-3 w-full
+        rounded-xl px-4 py-3
+        transition-colors
+        hover:bg-gray-100
+        ${collapsed ? "justify-center px-0" : ""}
+      `}
+          >
+            <Image src={signout} alt="Logout" className="h-5 w-5" />
+            {!collapsed && <span className="font-medium">Logout</span>}
+
+            {collapsed && (
+              <div
+                className="
+            pointer-events-none
+            absolute left-full top-1/2 z-50
+            ml-3 -translate-y-1/2
+            whitespace-nowrap
+            rounded-lg bg-gray-900 px-3 py-1.5
+            text-xs text-white
+            opacity-0
+            transition-opacity duration-200
+            group-hover:opacity-100
+          "
+              >
+                Logout
+              </div>
+            )}
+          </Button>
+        </div>
       </aside>
-    )
-  }
 
-  return (
-    <aside
-      className={`
-      h-screen bg-white shadow-sm transition-all duration-300
-      ${collapsed ? "w-22" : "w-50"}
-      rounded-3xl py-4 px-2
-      flex flex-col
-    `}
-    >
-
-      <div className="mb-6 flex justify-start">
-        <button
-          onClick={() => setCollapsed(!collapsed)}
-          className="flex h-12 w-12 items-center justify-center rounded-xl border"
-        >
-          <Image src={toggle} alt="Menu" className="h-6 w-6" />
-        </button>
-      </div>
-
-      <nav className="space-y-1 flex-1">
-        {tabs.map((tab) => (
-          <SidebarItem
-            key={tab.href}
-            icon={tab.icon}
-            label={tab.label}
-            href={tab.href}
-            active={tab.active}
-            collapsed={collapsed}
-            highlight={tab.highlight}
-          />
-        ))}
-      </nav>
-
-      <div className="pt-4 border-t">
-        <Button
-          onClick={handleLogout}
-          variant={"outline"}
-          className={`
-      relative group
-      flex items-center justify-start gap-3 w-full
-      rounded-xl px-4 py-3
-      transition-colors
-      hover:bg-gray-100
-      ${collapsed ? "justify-center px-0" : ""}
-    `}
-        >
-          <Image src={signout} alt="Logout" className="h-5 w-5" />
-          {!collapsed && <span className="font-medium">Logout</span>}
-
-          {collapsed && (
-            <div
-              className="
-          pointer-events-none
-          absolute left-full top-1/2 z-50
-          ml-3 -translate-y-1/2
-          whitespace-nowrap
-          rounded-lg bg-gray-900 px-3 py-1.5
-          text-xs text-white
-          opacity-0
-          transition-opacity duration-200
-          group-hover:opacity-100
-        "
+      <nav className="md:hidden fixed bottom-0 left-0 right-0 z-40 border-t border-gray-200 bg-white/95 backdrop-blur bottom-safe">
+        <div className="flex items-center gap-1 overflow-x-auto px-2 py-2 no-scrollbar">
+          {tabs.map((tab) => (
+            <Link
+              key={tab.href}
+              href={tab.href}
+              className={`min-w-16 flex-1 rounded-xl px-2 py-2 text-center ${tab.active ? "bg-[#E6FFEF]" : ""}`}
             >
-              Logout
+              <div className="flex flex-col items-center gap-1">
+                <Image src={tab.icon} alt={tab.label} className="h-4 w-4" />
+                <span className="truncate text-[10px] font-medium text-gray-700">{tab.label}</span>
+              </div>
+            </Link>
+          ))}
+          <button
+            onClick={handleLogout}
+            className="min-w-16 rounded-xl border border-gray-200 px-2 py-2"
+          >
+            <div className="flex flex-col items-center gap-1">
+              <Image src={signout} alt="Logout" className="h-4 w-4" />
+              <span className="text-[10px] font-medium text-gray-700">Logout</span>
             </div>
-          )}
-        </Button>
-      </div>
-
-    </aside>
+          </button>
+        </div>
+      </nav>
+    </>
 
   )
 }

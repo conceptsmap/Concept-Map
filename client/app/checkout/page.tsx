@@ -148,7 +148,7 @@ const CheckoutContent = () => {
     }
 
     return (
-        <div className="flex gap-3">
+        <div className="flex w-full flex-col lg:flex-row gap-3">
             <div className="min-h-screen bg-[#F4F6F5] flex items-top justify-center gap-3 w-full">
                 <div className="w-full rounded-3xl bg-white shadow-sm p-6">
                     <div className="flex items-start justify-between mb-2">
@@ -183,7 +183,9 @@ const CheckoutContent = () => {
                     </section>
                 </div>
             </div>
-            <PaymentMethod price={post.price} postId={postId} bidId={bidId} />
+            <div className="w-full lg:w-auto">
+                <PaymentMethod price={post.price} postId={postId} bidId={bidId} />
+            </div>
         </div>
     )
 }
@@ -208,8 +210,8 @@ const Row = ({
     value: string
     valueClass?: string
 }) => (
-    <div className="grid grid-cols-2 gap-4">
+    <div className="grid grid-cols-1 sm:grid-cols-2 gap-1 sm:gap-4">
         <span className="text-[#BEBEBE]">{label}</span>
-        <span className={`text-right text-[#484848] font-bold ${valueClass}`}>{value}</span>
+        <span className={`text-left sm:text-right text-[#484848] font-bold ${valueClass}`}>{value}</span>
     </div>
 )

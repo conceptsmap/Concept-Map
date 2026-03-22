@@ -41,10 +41,10 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
     !hideNotificationsRoutes.includes(pathname);
 
   return (
-    <div className='h-dvh bg-[#F5F5F5] p-2 flex gap-3'>
+    <div className='h-dvh bg-[#F5F5F5] p-2 flex flex-col md:flex-row gap-2 md:gap-3'>
       <Sidebar />
 
-      <div className='flex-1 min-w-0 flex flex-col gap-2 '>
+      <div className='flex-1 min-w-0 flex flex-col gap-2 pb-20 md:pb-0'>
         {showSearchBar && <SearchWithSuggestionsBar />}
 
         <main className='flex-1 overflow-y-auto overscroll-contain no-scrollbar '>

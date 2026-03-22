@@ -126,8 +126,19 @@ const ScriptsContent = () => {
   const displayLoading = query || hasActiveFilters ? loading : defaultLoading;
 
   return (
-    <div className="flex gap-4 items-start mt-2">
+    <div className="flex flex-col lg:flex-row gap-4 items-start mt-2">
       <div className="flex-1">
+        <div className="w-full lg:hidden mb-4">
+          <details className="rounded-2xl bg-white p-3 shadow-sm">
+            <summary className="cursor-pointer list-none text-sm font-semibold text-gray-800">
+              Filters
+            </summary>
+            <div className="mt-3">
+              <FiltersCard onFilterChange={handleFilterChange} onClearFilters={handleClearFilters} />
+            </div>
+          </details>
+        </div>
+
         {displayLoading && Array.from({ length: 5 }).map((_, index) => <PostSkeleton key={index} />)}
 
         {displayError && !displayLoading && (
@@ -158,7 +169,7 @@ const ScriptsContent = () => {
         </div>
       </div>
 
-      <div className="flex flex-col gap-4 shrink-0 xl:max-w-75 lg:max-w-56">
+      <div className="hidden lg:flex flex-col gap-4 shrink-0 xl:max-w-75 lg:max-w-56 w-full">
         <FiltersCard onFilterChange={handleFilterChange} onClearFilters={handleClearFilters} />
         <Creative />
         <Notifications />
@@ -171,7 +182,7 @@ const ScriptsContent = () => {
 export default function ScriptsPage() {
   return (
     <Suspense fallback={
-      <div className="flex gap-4 items-start mt-2">
+      <div className="flex flex-col lg:flex-row gap-4 items-start mt-2">
         <div className="flex-1">
           {Array.from({ length: 5 }).map((_, i) => <PostSkeleton key={i} />)}
         </div>
