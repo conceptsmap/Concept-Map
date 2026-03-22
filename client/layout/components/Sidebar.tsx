@@ -17,6 +17,8 @@ import offer from "@/assets/icons/offer.svg"
 import earnings from "@/assets/icons/earnings.svg"
 import bid from "@/assets/icons/bid.svg"
 import lightbulb from "@/assets/icons/lightbulb.svg"
+import badge from "@/assets/icons/badge-cent.svg"
+
 
 
 import { Button } from "@/components/ui/button"
@@ -71,7 +73,7 @@ const Sidebar = () => {
     { icon: task, label: "Profile", href: "/profile", active: pathname.startsWith("/profile") },
     { icon: table_list, label: "My Posts", href: "/my-posts", active: pathname.startsWith("/my-posts") },
     { icon: bid, label: "Bids", href: "/bids", active: pathname.startsWith("/bids") },
-    // { icon: offer, label: "Earnings", href: "/earnings", active: pathname.startsWith("/earnings") },
+    { icon: badge, label: "Sales", href: "/sales", active: pathname.startsWith("/sales") },
     { icon: offer, label: "My Purchases", href: "/purchases", active: pathname.startsWith("/purchases") },
     { icon: community, label: "Community", href: "/community", active: pathname.startsWith("/community") },
     { icon: earnings, label: "Earnings", href: "/earnings", active: pathname.startsWith("/earnings") },
