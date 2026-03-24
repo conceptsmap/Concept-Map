@@ -419,7 +419,7 @@ const PostDetail: React.FC<PostDetailProps> = ({
           : 'bg-[#F5F5F5] p-5'
           }`}
       >
-        {canReadAloud && (
+        {canReadAloud && !locked && (
           <div className="mb-3 flex justify-end">
             <Button
               type="button"
