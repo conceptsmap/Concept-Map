@@ -31,7 +31,7 @@ export default function HeroCarousel() {
     const slides = [
         {
             eyebrow: "The Creative Marketplace",
-            title: ["Find & Sell", "High-Quality", "Ad Scripts"],
+            title: ["Find & Sell", "High-Quality", "Scripts"],
             description: "A curated marketplace where elite scriptwriters and top agencies connect, transact, and create together.",
             primaryCta: "Browse Marketplace",
             secondaryCta: "Start Selling",
