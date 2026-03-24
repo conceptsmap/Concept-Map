@@ -17,9 +17,14 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
   const pathname = usePathname() ?? '';
 
   useEffect(() => {
-    document.body.style.overflow = "hidden";
+    const apply = () => {
+      document.body.style.overflow = window.innerWidth >= 768 ? "hidden" : "";
+    };
+    apply();
+    window.addEventListener("resize", apply);
     return () => {
-      document.body.style.overflow = "auto";
+      window.removeEventListener("resize", apply);
+      document.body.style.overflow = "";
     };
   }, []);
 
@@ -41,13 +46,13 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
     !hideNotificationsRoutes.includes(pathname);
 
   return (
-    <div className='h-dvh bg-[#F5F5F5] p-2 flex flex-col md:flex-row gap-2 md:gap-3'>
+    <div className='bg-[#F5F5F5] p-2 flex flex-col gap-2 md:h-dvh md:flex-row md:gap-3'>
       <Sidebar />
 
       <div className='flex-1 min-w-0 flex flex-col gap-2 pb-20 md:pb-0'>
         {showSearchBar && <SearchWithSuggestionsBar />}
 
-        <main className='flex-1 overflow-y-auto overscroll-contain no-scrollbar '>
+        <main className='md:flex-1 md:overflow-y-auto overscroll-contain no-scrollbar'>
           {children}
         </main>
       </div>

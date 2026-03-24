@@ -10,7 +10,7 @@ import heart_filled from '@/assets/icons/heart_filled.svg'
 
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { Lock } from 'lucide-react'
+import { Lock, Square, Volume2 } from 'lucide-react'
 import {
   Dialog,
   DialogContent,
@@ -113,6 +113,8 @@ const PostDetail: React.FC<PostDetailProps> = ({
   const [bidMessage, setBidMessage] = useState('')
   const [bidError, setBidError] = useState('')
   const [acceptedBidId, setAcceptedBidId] = useState<string | null>(null)
+  const [isSpeechSupported, setIsSpeechSupported] = useState(false)
+  const [isSpeaking, setIsSpeaking] = useState(false)
 
   useEffect(() => {
     // Check if buyer has an accepted bid on this post
@@ -143,6 +145,28 @@ const PostDetail: React.FC<PostDetailProps> = ({
 
     checkAcceptedBid()
   }, [id])
+
+  useEffect(() => {
+    const supportsSpeech =
+      typeof window !== 'undefined' &&
+      'speechSynthesis' in window &&
+      'SpeechSynthesisUtterance' in window
+
+    setIsSpeechSupported(supportsSpeech)
+
+    return () => {
+      if (supportsSpeech) {
+        window.speechSynthesis.cancel()
+      }
+    }
+  }, [])
+
+  useEffect(() => {
+    if (!isSpeechSupported) return
+
+    window.speechSynthesis.cancel()
+    setIsSpeaking(false)
+  }, [id, type, locked, isSpeechSupported])
 
   console.log(storyboard, type)
 
@@ -267,6 +291,49 @@ const PostDetail: React.FC<PostDetailProps> = ({
     return null
   }
 
+  const getReadAloudText = () => {
+    if (type === 'synopsis') {
+      return (typeof synopsis === 'string' ? synopsis : synopsis?.content) || ''
+    }
+
+    if (type === 'script' && script?.content?.length) {
+      return script.content
+        .map((block) => {
+          const sceneText = block.scenes
+            .map((scene) => (locked ? scene.description.slice(0, 800) : scene.description))
+            .join('\n\n')
+
+          return [block.name, sceneText].filter(Boolean).join('\n')
+        })
+        .join('\n\n')
+    }
+
+    return ''
+  }
+
+  const handleReadAloud = () => {
+    if (!isSpeechSupported) return
+
+    if (isSpeaking) {
+      window.speechSynthesis.cancel()
+      setIsSpeaking(false)
+      return
+    }
+
+    const textToRead = getReadAloudText().trim()
+    if (!textToRead) return
+
+    const utterance = new SpeechSynthesisUtterance(textToRead)
+    utterance.rate = 1
+    utterance.pitch = 1
+    utterance.onend = () => setIsSpeaking(false)
+    utterance.onerror = () => setIsSpeaking(false)
+
+    window.speechSynthesis.cancel()
+    window.speechSynthesis.speak(utterance)
+    setIsSpeaking(true)
+  }
+
   // Helper: get the pricing data for the current post type
   const getPricingData = () => {
     if (type === 'script') return script
@@ -276,6 +343,8 @@ const PostDetail: React.FC<PostDetailProps> = ({
   }
 
   const pricingData = getPricingData()
+  const canReadAloud = type === 'script' || type === 'synopsis'
+  const hasReadAloudText = getReadAloudText().trim().length > 0
 
   return (
     <div className="w-full rounded-2xl bg-white p-6 shadow-sm border border-gray-100">
@@ -350,6 +419,22 @@ const PostDetail: React.FC<PostDetailProps> = ({
           : 'bg-[#F5F5F5] p-5'
           }`}
       >
+        {canReadAloud && (
+          <div className="mb-3 flex justify-end">
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={handleReadAloud}
+              disabled={!isSpeechSupported || !hasReadAloudText}
+              className="gap-2"
+            >
+              {isSpeaking ? <Square className="w-4 h-4" /> : <Volume2 className="w-4 h-4" />}
+              {isSpeaking ? 'Stop Read Aloud' : 'Read Aloud'}
+            </Button>
+          </div>
+        )}
+
         {renderContent()}
 
         {/* Lock Overlay Only When Locked */}
