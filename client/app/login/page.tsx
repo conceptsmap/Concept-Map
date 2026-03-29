@@ -48,7 +48,7 @@ export default function LoginPage() {
       }
 
       setSuccess("Login successful!");
-      router.push(userRole === "BUYER" ? "/profile" : "/dashboard");
+      router.push('/profile');
     } catch (err: unknown) {
       if (err instanceof Error) {
         setError(err.message || "Login failed");

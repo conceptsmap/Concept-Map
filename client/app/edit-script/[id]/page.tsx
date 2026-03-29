@@ -6,7 +6,6 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { Checkbox } from '@/components/ui/checkbox';
 import {
     Select, SelectTrigger, SelectValue, SelectContent, SelectItem,
 } from '@/components/ui/select';
@@ -21,6 +20,7 @@ interface BoardFile {
 }
 
 type PostType = 'script' | 'synopsis' | 'storyboard';
+type SubmitMode = 'publish' | 'draft';
 
 interface ScriptData {
     _id: string;
@@ -93,7 +93,7 @@ export default function EditScriptPage() {
     const [boardFiles, setBoardFiles] = useState<BoardFile[]>([]);
     const [existingBoardFiles, setExistingBoardFiles] = useState<{ name: string; cloud_url: string }[]>([]);
     const fileInputRef = useRef<HTMLInputElement>(null);
-    const [isDraft, setIsDraft] = useState(false);
+    const [submitMode, setSubmitMode] = useState<SubmitMode>('publish');
 
     const availableStates = [...new Set(countries.flatMap((c) => STATES_BY_COUNTRY[c] ?? []))];
 
@@ -132,7 +132,6 @@ export default function EditScriptPage() {
                 setIndustryCategory(script.industry_category || 'TECHNOLOGY');
                 setCountries(script.country || []);
                 setStates(script.state || []);
-                setIsDraft(script.is_draft || false);
 
                 // Determine script type and populate content
                 if (script.type?.includes('SYNOPSIS')) {
@@ -222,8 +221,8 @@ export default function EditScriptPage() {
         );
     };
 
-    const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
+    const handleSubmit = async (mode: SubmitMode) => {
+        setSubmitMode(mode);
         setError('');
         setSuccessMessage('');
 
@@ -233,7 +232,8 @@ export default function EditScriptPage() {
             return;
         }
 
-        const isPublishing = !isDraft;
+        const isPublishing = mode === 'publish';
+        const isDraftMode = mode === 'draft';
 
         if (isPublishing && !title?.trim()) {
             setError('Title is required.');
@@ -266,7 +266,7 @@ export default function EditScriptPage() {
             let updatePayload: any = {
                 country: countries,
                 state: states,
-                is_draft: isDraft,
+                is_draft: isDraftMode,
             };
 
             if (title.trim()) updatePayload.main_title = title.trim();
@@ -384,7 +384,7 @@ export default function EditScriptPage() {
                 throw new Error(data?.message || 'Failed to update script');
             }
 
-            setSuccessMessage(isDraft ? 'Draft updated successfully!' : 'Script updated successfully!');
+            setSuccessMessage(isDraftMode ? 'Draft updated successfully!' : 'Script published successfully!');
             setTimeout(() => {
                 router.push('/my-posts');
             }, 2000);
@@ -426,23 +426,7 @@ export default function EditScriptPage() {
             )}
 
             {/* Form */}
-            {/* Draft Toggle */}
-            <div className="flex items-center gap-3 p-4 bg-gray-50 rounded-lg border border-gray-200 mb-6">
-                <Checkbox
-                    id="draft"
-                    checked={isDraft}
-                    onCheckedChange={(checked) => setIsDraft(Boolean(checked))}
-                />
-                <div className="flex-1">
-                    <Label htmlFor="draft" className="cursor-pointer">
-                        Save as Draft
-                    </Label>
-                    <p className="text-xs text-gray-500 mt-1">
-                        Draft scripts are not published and won't be visible to others
-                    </p>
-                </div>
-            </div>
-            <form onSubmit={handleSubmit} className="bg-white rounded-xl shadow-md p-6 space-y-6">
+            <form className="bg-white rounded-xl shadow-md p-6 space-y-6">
                 {/* Title */}
                 <div className="space-y-2">
                     <Label htmlFor="title">Title <span className="text-red-500">*</span></Label>
@@ -728,11 +712,24 @@ export default function EditScriptPage() {
                         Cancel
                     </Button>
                     <Button
-                        type="submit"
-                        className="bg-green-600 hover:bg-green-700"
+                        type="button"
+                        variant="outline"
+                        onClick={() => handleSubmit('draft')}
                         disabled={submitting}
                     >
-                        {submitting ? 'Updating...' : 'Update ' + scriptType.charAt(0).toUpperCase() + scriptType.slice(1)}
+                        {submitting && submitMode === 'draft'
+                            ? 'Saving Draft...'
+                            : 'Save as Draft'}
+                    </Button>
+                    <Button
+                        type="button"
+                        className="bg-green-600 hover:bg-green-700"
+                        onClick={() => handleSubmit('publish')}
+                        disabled={submitting}
+                    >
+                        {submitting && submitMode === 'publish'
+                            ? 'Publishing...'
+                            : 'Update & Publish'}
                     </Button>
                 </div>
             </form>

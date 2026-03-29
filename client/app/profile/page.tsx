@@ -89,10 +89,12 @@ const Profile = () => {
 
     return (
         <div className="mx-auto flex gap-3 flex-col">
-            <Navbar
-                activeCategory={selectedCategory}
-                onCategoryChange={handleTopFilterClick}
-            />
+            {
+                user?.role === "BUYER" && <Navbar
+                    activeCategory={selectedCategory}
+                    onCategoryChange={handleTopFilterClick}
+                />
+            }
             <div className="overflow-hidden rounded-3xl bg-white shadow-sm">
                 <div className="relative h-48 w-full">
                     <Image

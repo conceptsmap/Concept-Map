@@ -1,6 +1,7 @@
 "use client"
 
 import { useRef, useEffect, useState } from "react"
+import CMCertification from "./CMCertification"
 
 const testimonials = [
     {
@@ -159,6 +160,7 @@ const Testimonials = () => {
                     </div>
                 ))}
             </div>
+            <CMCertification />
         </section>
     )
 }
