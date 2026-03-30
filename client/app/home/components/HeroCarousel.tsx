@@ -38,7 +38,7 @@ export default function HeroCarousel() {
                 "Connect with top freelancers across design, development, and marketing. Get high-quality work done faster.",
             primaryCta: "Find Talent",
             secondaryCta: "Hire Experts",
-            image: "https://images.pexels.com/photos/6532521/pexels-photo-6532521.jpeg",
+            image: "https://images.pexels.com/photos/8036328/pexels-photo-8036328.jpeg",
         },
         {
             title: ["Get Work Done", "In Minutes,", "Not Days"],
@@ -46,7 +46,8 @@ export default function HeroCarousel() {
                 "Post your needs, connect with professionals, and start your project instantly.",
             primaryCta: "Get Started",
             secondaryCta: "How It Works",
-            image: "https://images.pexels.com/photos/5827885/pexels-photo-5827885.jpeg",
+            image: "https://images.pexels.com/photos/8085940/pexels-photo-8085940.jpeg",
+
         },
         {
             title: ["Hire Skilled", "Professionals", "On Demand"],
@@ -54,7 +55,7 @@ export default function HeroCarousel() {
                 "Browse talent, compare profiles, and hire the right expert quickly.",
             primaryCta: "Browse Talent",
             secondaryCta: "View Categories",
-            image: "https://images.pexels.com/photos/6077896/pexels-photo-6077896.jpeg",
+            image: "https://images.pexels.com/photos/13812367/pexels-photo-13812367.jpeg",
         },
         {
             title: ["Turn Your Skills", "Into Income", "Globally"],
@@ -62,7 +63,7 @@ export default function HeroCarousel() {
                 "Showcase your expertise and connect with clients worldwide.",
             primaryCta: "Start Selling",
             secondaryCta: "Become a Freelancer",
-            image: "https://images.pexels.com/photos/12845955/pexels-photo-12845955.jpeg",
+            image: "https://images.pexels.com/photos/4107226/pexels-photo-4107226.jpeg",
         },
     ]
 
