@@ -57,7 +57,7 @@ const HeroSection = () => {
                 <li className="flex items-center gap-3">
                   <Image src={board} alt="" className="w-5 h-5" />
                   <span className="font-medium">
-                    Browse Scripts, Storyboards &amp; Synopses
+                    Browse Scripts, Storyboards &amp; Synopsis
                   </span>
                 </li>
                 <li className="flex items-center gap-3">
