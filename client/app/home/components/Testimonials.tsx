@@ -160,7 +160,7 @@ const Testimonials = () => {
                     </div>
                 ))}
             </div>
-            <CMCertification />
+            {/* <CMCertification /> */}
         </section>
     )
 }

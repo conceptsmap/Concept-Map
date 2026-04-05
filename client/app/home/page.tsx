@@ -12,8 +12,10 @@ const HomePage = () => {
     <div className="overflow-x-hidden">
       <Navbar />
       <HeroSection />
-      <Testimonials />
       <HowItWorks />
+
+      <CMCertification />
+      <Testimonials />
 
       <Content />
       <Footer />
