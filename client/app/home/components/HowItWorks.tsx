@@ -8,19 +8,19 @@ const HowItWorks = () => {
     {
       number: "01",
       title: "Create Your Free Account",
-      description: "Get started by creating your account in minutes",
+      description: "Get Started By Creating Your Account In Minutes",
       color: "bg-[#1DBF73]"
     },
     {
       number: "02",
       title: "Discover & Engage",
-      description: "Explore content and connect with the community",
+      description: "Explore Content And Connect With The Community",
       color: "bg-white"
     },
     {
       number: "03",
       title: "Secure & Instant Access",
-      description: "Enjoy seamless and secure access to all features",
+      description: "Enjoy Seamless And Secure Access To All Features",
       color: "bg-white"
     }
   ]
@@ -33,7 +33,7 @@ const HowItWorks = () => {
 
           <div className='[@media(min-width:1200px)]:ps-28 lg:ps-24 ps-0 text-center lg:text-left '>
             <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-12">
-              How it Works
+              How It Works
             </h2>
 
             <div className="space-y-6 ps-0 [@media(min-width:1200px)]:ps-18">

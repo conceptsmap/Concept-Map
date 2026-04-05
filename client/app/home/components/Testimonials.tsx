@@ -104,7 +104,7 @@ const Testimonials = () => {
                     What People Say
                 </p>
                 <h2 className="text-4xl md:text-5xl font-bold text-white leading-tight">
-                    Trusted by Creators &amp; Buyers
+                    Trusted By Creators &amp; Buyers
                 </h2>
                 <p className="mt-4 text-white/70 text-sm md:text-base max-w-xl mx-auto">
                     Thousands of scriptwriters and agencies are already building their next

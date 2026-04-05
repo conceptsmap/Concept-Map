@@ -39,7 +39,7 @@ const Navbar = () => {
              transition-all
           "
           >
-            Sign up for free
+            Sign Up For Free
           </Button>
         </Link>
       </div>

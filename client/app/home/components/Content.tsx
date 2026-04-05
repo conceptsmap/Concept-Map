@@ -156,7 +156,7 @@ const Content = () => {
 
                 <div className="text-left">
                   <h2 className="text-3xl md:text-5xl text-[#013913] font-medium">
-                    Engaging Summaries <br /> at a Glance
+                    Engaging Summaries <br /> At One Glance
                   </h2>
 
                   <p className="mt-5 max-w-md text-sm md:text-base text-[#013913]">

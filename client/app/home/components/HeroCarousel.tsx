@@ -33,7 +33,7 @@ export default function HeroCarousel() {
 
     const slides = [
         {
-            title: ["Find the Perfect", "Freelancer for", "Your Business"],
+            title: ["Find The Perfect", "Freelancer For", "Your Business"],
             description:
                 "Connect with top freelancers across design, development, and marketing. Get high-quality work done faster.",
             primaryCta: "Find Talent",
@@ -47,7 +47,6 @@ export default function HeroCarousel() {
             primaryCta: "Get Started",
             secondaryCta: "How It Works",
             image: "https://images.pexels.com/photos/8085940/pexels-photo-8085940.jpeg",
-
         },
         {
             title: ["Hire Skilled", "Professionals", "On Demand"],
@@ -66,7 +65,6 @@ export default function HeroCarousel() {
             image: "https://images.pexels.com/photos/4107226/pexels-photo-4107226.jpeg",
         },
     ]
-
     return (
         <div className="relative w-[90%] my-3 mx-auto rounded-3xl h-[95vh] overflow-hidden">
 

@@ -30,7 +30,7 @@ const Footer = () => {
 
               <div className="text-white">
                 <h2 className="text-3xl md:text-4xl font-semibold leading-snug">
-                  Visualize the Story <br /> Before It Comes to Life
+                  Visualize The Story <br /> Before It Comes To Life
                 </h2>
 
                 <p className="mt-5 max-w-md text-sm md:text-base text-white">

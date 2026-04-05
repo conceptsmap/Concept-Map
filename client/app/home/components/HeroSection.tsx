@@ -89,19 +89,19 @@ const HeroSection = () => {
                 <li className="flex items-center gap-3">
                   <Image src={coins} alt="" className="w-5 h-5" />
                   <span className="font-medium">
-                    Showcase your work &amp; earn
+                    Showcase Your Work &amp; Earn
                   </span>
                 </li>
                 <li className="flex items-center gap-3">
                   <Image src={unlock} alt="" className="w-5 h-5" />
                   <span className="font-medium">
-                    Set your own pricing &amp; licensing
+                    Set Your Own Pricing &amp; Licensing
                   </span>
                 </li>
                 <li className="flex items-center gap-3">
                   <Image src={stats} alt="" className="w-5 h-5" />
                   <span className="font-medium">
-                    Get detailed sales analytics
+                    Get Detailed Sales Analytics
                   </span>
                 </li>
               </ul>
