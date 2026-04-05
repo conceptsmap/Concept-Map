@@ -4,7 +4,7 @@ import Image from "next/image"
 
 const CMCertification = () => {
     return (
-        <section className="bg-[#f6fbf8] py-24">
+        <section className=" bg-[#f6fbf8] py-32">
             <div className="mx-auto max-w-7xl px-6">
 
                 <div className="grid gap-10 lg:grid-cols-2 lg:items-center">
@@ -12,26 +12,26 @@ const CMCertification = () => {
                     {/* LEFT CONTENT */}
                     <div>
                         <h2 className="text-3xl md:text-5xl font-semibold text-[#0b6b2a] leading-tight">
-                            Get Certified <br /> Boost Your Career
+                            Advance Your Career <br /> with CM Certification
                         </h2>
 
                         <p className="mt-4 text-base md:text-lg text-[#355e4a] max-w-xl">
-                            Join our <span className="font-semibold text-[#0d8f44]">CM Certification</span> crash course and gain industry-recognized credentials from our empaneled institute.
+                            Enroll in our structured <span className="font-semibold text-[#0d8f44]">CM Certification Program</span> and earn a recognized credential from our empaneled institute, designed to validate your expertise and enhance your professional credibility.
                         </p>
 
                         {/* FEATURES */}
                         <div className="mt-6 space-y-3">
                             <div className="flex items-center gap-3 text-sm text-[#1f4431]">
                                 <span className="h-2 w-2 rounded-full bg-[#0d8f44]" />
-                                Industry-recognized certification
+                                Industry-recognized certification aligned with current standards
                             </div>
                             <div className="flex items-center gap-3 text-sm text-[#1f4431]">
                                 <span className="h-2 w-2 rounded-full bg-[#0d8f44]" />
-                                Fast-track crash course
+                                Accelerated learning through a focused, outcome-driven curriculum
                             </div>
                             <div className="flex items-center gap-3 text-sm text-[#1f4431]">
                                 <span className="h-2 w-2 rounded-full bg-[#0d8f44]" />
-                                Learn from experienced mentors
+                                Guidance and mentorship from experienced professionals
                             </div>
                         </div>
 
@@ -48,7 +48,7 @@ const CMCertification = () => {
                                 href="/learn-more"
                                 className="rounded-full border border-[#0d8f44]/30 px-6 py-3 text-sm font-semibold text-[#0d8f44] hover:bg-[#0d8f44]/10 transition"
                             >
-                                Learn More
+                                View Program Details
                             </Link>
                         </div>
                     </div>
@@ -68,18 +68,18 @@ const CMCertification = () => {
                                 />
 
                                 <h3 className="mt-4 text-xl font-semibold text-[#0b6b2a]">
-                                    CM Certification
+                                    CM Certification Program
                                 </h3>
 
                                 <p className="mt-2 text-sm text-[#355e4a]">
-                                    Validate your skills and stand out in the competitive market with a trusted certification.
+                                    Demonstrate your capabilities with a certification that reflects both practical knowledge and industry relevance.
                                 </p>
 
-                                <div className="mt-6 w-full rounded-xl bg-[#f6fbf8] p-4 text-sm text-[#1f4431]">
+                                {/* <div className="mt-6 w-full rounded-xl bg-[#f6fbf8] p-4 text-sm text-[#1f4431]">
                                     Duration: 4 Weeks <br />
-                                    Mode: Online <br />
-                                    Certificate: Included
-                                </div>
+                                    Delivery Mode: Online <br />
+                                    Certification: Included upon completion
+                                </div> */}
                             </div>
                         </div>
                     </div>
