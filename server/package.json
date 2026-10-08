@@ -17,7 +17,7 @@
   },
   "scripts": {
     "server:dev": "tsx watch src/app.ts",
-    "server:build": "tsc",
+    "server:build": "tsc && cp -r src/packages/notification/templates dist/packages/notification/",
     "server:start": "node dist/app.js",
     "seed:users": "tsx src/scripts/seedUsers.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
